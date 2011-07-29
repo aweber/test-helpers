@@ -3,7 +3,7 @@
 #
 PACKAGE = flaskapi
 
-COVERAGE_ARGS = --with-coverage --cover-package=$(package)
+COVERAGE_ARGS = --with-coverage --cover-package=$(PACKAGE) --cover-tests
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = bin/easy_install
 IPYTHON = bin/ipython
@@ -23,7 +23,7 @@ unit-test:
 
 coverage:
 	-rm -f .coverage
-	$(NOSE) --no-color $(COVERAGE_ARGS) tests/unit
+	$(NOSE) --no-color $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
 	-rm -f .coverage
 
 test: unit-test
