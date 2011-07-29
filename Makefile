@@ -2,8 +2,6 @@
 # Basic makefile for general targets
 #
 PACKAGE = flaskapi
-VERSION = $(shell git describe --tags)
-PYTHON_VERSION = py2.6
 
 COVERAGE_ARGS = --with-coverage --cover-package=$(package)
 EASY_INSTALL = bin/easy_install
@@ -14,6 +12,7 @@ PIP = bin/pip
 PYREVERSE = pyreverse -o png -p
 PYTHON = bin/python
 PYTHON_DOCTEST = $(PYTHON) -m doctest
+VERSION = $(shell $(PYTHON) ./version.py)
 
 ## Testing ##
 unit-test:
@@ -61,8 +60,8 @@ clean-requirements:
 
 ## Packaging ##
 .PHONY: dist upload
-dist: dist/$(PACKAGE)-$(VERSION)-$(PYTHON_VERSION).egg dist/$(PACKAGE)-$(VERSION).tar.gz
-dist/$(PACKAGE)-$(VERSION)-$(PYTHON_VERSION).egg dist/$(PACKAGE)-$(VERSION).tar.gz: $(PYTHON_SOURCES)
+dist: dist/$(PACKAGE)-$(VERSION).tar.gz
+dist/$(PACKAGE)-$(VERSION).tar.gz: $(PYTHON_SOURCES)
 	$(PYTHON) setup.py sdist
 
 upload: dist
