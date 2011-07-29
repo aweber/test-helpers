@@ -38,10 +38,10 @@ from subprocess import Popen, PIPE
 
 def call_git_describe():
     try:
-        command = ['git', 'describe', '--abbrev=4', '--tags', '--dirty', '--matching=v*']
+        command = ['git', 'describe', '--abbrev=4', '--tags', '--dirty', '--match=v*']
         p = Popen(command, stdout=PIPE, stderr=PIPE)
         p.stderr.close()
-        line = p.stdout.readlines()[0].strip()
+        line = p.stdout.readline().strip()
         return line.lstrip('v')
 
     except:
@@ -49,24 +49,19 @@ def call_git_describe():
 
 
 def read_release_version():
+    """Read the version from the file ``RELEASE-VERSION``"""
     try:
-        f = open("RELEASE-VERSION", "r")
-
-        try:
+        with open("RELEASE-VERSION", "r") as f:
             version = f.readlines()[0]
             return version.strip()
-
-        finally:
-            f.close()
-
     except:
         return None
 
 
 def write_release_version(version):
-    f = open("RELEASE-VERSION", "w")
-    f.write("%s\n" % version)
-    f.close()
+    """Write `version` to the file ``RELEASE-VERSION``"""
+    with open("RELEASE-VERSION", "w") as f:
+        f.write("%s\n" % version)
 
 
 def get_git_version():
@@ -92,7 +87,8 @@ def get_git_version():
     # If the current version is different from what's in the
     # RELEASE-VERSION file, update the file to be current.
 
-    write_release_version(version)
+    if release_version != version:
+        write_release_version(version)
 
     # Finally, return the current version.
 
