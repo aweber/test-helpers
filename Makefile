@@ -4,6 +4,7 @@
 PACKAGE = flaskapi
 
 COVERAGE_ARGS = --with-coverage --cover-package=$(package)
+DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = bin/easy_install
 IPYTHON = bin/ipython
 NOSE = bin/nosetests
@@ -11,7 +12,9 @@ NOSYD = bin/nosyd -1
 PIP = bin/pip
 PYREVERSE = pyreverse -o png -p
 PYTHON = bin/python
+PYTHON_DIST_SITE = nebula.ofc.lair:/var/www/secure/python-dist/
 PYTHON_DOCTEST = $(PYTHON) -m doctest
+SCP = scp
 VERSION = $(shell $(PYTHON) ./version.py)
 
 ## Testing ##
@@ -60,12 +63,16 @@ clean-requirements:
 
 ## Packaging ##
 .PHONY: dist upload
-dist: dist/$(PACKAGE)-$(VERSION).tar.gz
-dist/$(PACKAGE)-$(VERSION).tar.gz: $(PYTHON_SOURCES)
+dist: $(DIST_FILE)
+$(DIST_FILE): $(PYTHON_SOURCES)
 	$(PYTHON) setup.py sdist
 
 upload: dist
-	fab upload_package
+	@if echo $(VERSION) | grep -q dirty; then \
+	    echo "Stubbornly refusing to upload a dirty package! Tag a proper release!" >&2; \
+	    exit 1; \
+	fi
+	$(SCP) $(DIST_FILE) $(PYTHON_DIST_SITE)
 
 deploy-docs: $(PACKAGE)_docs.tar.gz
 	fab deploy_docs
