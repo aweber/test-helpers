@@ -18,7 +18,7 @@ setup(
     ],
     long_description = '''A git repo scaffold for new projects''',
     dependency_links=['https://nebula.ofc.lair/python-dist/'],
-    version = get_git_version(use_tags=True),
+    version = get_git_version(),
     author = 'AWeber Communications',
     author_email = '@aweber.com',
     entry_points = {
