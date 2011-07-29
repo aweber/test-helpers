@@ -1,0 +1,7 @@
+coverage
+dingus
+nose
+pep8
+pylint
+sphinx
+-e git+https://github.com/lacostej/nosyd.git@c6bba03669084ac41d7a#egg=nosyd
