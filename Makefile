@@ -1,7 +1,7 @@
 #
 # Basic makefile for general targets
 #
-PACKAGE = flaskapi
+PACKAGE = base_server
 
 COVERAGE_ARGS = --with-coverage --cover-package=$(PACKAGE) --cover-tests
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
@@ -41,7 +41,7 @@ doc:
 ## Static analysis ##
 .PHONY: lint uml metrics
 lint:
-	bin/pylint --rcfile pylintrc flaskapi
+	bin/pylint --rcfile pylintrc $(PACKAGE)
 
 
 ## Local Setup ##
