@@ -61,10 +61,10 @@ clean-requirements:
 	-rm -rf src
 
 
-## Packaging ##
-.PHONY: dist upload
+# Packaging
+.PHONY: dist upload $(DIST_FILE)
 dist: $(DIST_FILE)
-$(DIST_FILE): $(PYTHON_SOURCES)
+$(DIST_FILE):
 	$(PYTHON) setup.py sdist
 
 upload: dist
