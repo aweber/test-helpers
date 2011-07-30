@@ -38,6 +38,12 @@ from subprocess import Popen, PIPE
 
 def call_git_describe():
     try:
+        # Work around an apparent bug in git:
+        # http://comments.gmane.org/gmane.comp.version-control.git/178169
+        p = Popen(['git', 'status'], stdout=PIPE, stderr=PIPE)
+        p.stderr.close()
+        p.stdout.close()
+
         command = ['git', 'describe', '--abbrev=4', '--tags', '--dirty', '--match=v*']
         p = Popen(command, stdout=PIPE, stderr=PIPE)
         p.stderr.close()
@@ -76,7 +82,7 @@ def get_git_version():
     # If that doesn't work, fall back on the value that's in
     # RELEASE-VERSION.
 
-    if version is None:
+    if not version:
         version = release_version
 
     # If we still don't have anything, that's an error.
@@ -87,7 +93,7 @@ def get_git_version():
     # If the current version is different from what's in the
     # RELEASE-VERSION file, update the file to be current.
 
-    if release_version != version:
+    if version and release_version != version:
         write_release_version(version)
 
     # Finally, return the current version.
