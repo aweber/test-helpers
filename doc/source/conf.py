@@ -31,4 +31,4 @@ master_doc = 'index'
 todo_include_todos = True
 
 source_suffix = '.rst'
-project = 'base_server'
+project = '@@baseservice@@'

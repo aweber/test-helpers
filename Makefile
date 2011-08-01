@@ -1,7 +1,7 @@
 #
 # Basic makefile for general targets
 #
-PACKAGE = base_server
+PACKAGE = @@baseservice@@
 
 COVERAGE_ARGS = --with-coverage --cover-package=$(PACKAGE) --cover-tests
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz

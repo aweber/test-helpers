@@ -2,7 +2,7 @@ from fabric.api import *
 
 env.hosts = ['nebula.ofc.lair']
 
-PROJECT_NAME = 'baseservice'
+PROJECT_NAME = '@@baseservice@@'
 DOC_DIR = '/var/www/secure/sphinx/{0}'.format(PROJECT_NAME)
 
 def deploy_docs():

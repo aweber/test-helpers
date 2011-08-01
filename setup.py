@@ -9,7 +9,7 @@ if sys.version_info < (2, 6):
     raise Exception("This package requires Python 2.6 or higher.")
 
 setup(
-    name = 'baseservice',
+    name = '@@baseservice@@',
     description = 'A git repo scaffold for new projects',
     packages = find_packages(),
     include_package_data = True,
