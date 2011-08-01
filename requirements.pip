@@ -1,5 +1,5 @@
 coverage
-dingus
+deterministic_dingus
 nose
 pep8
 pylint
