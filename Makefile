@@ -18,7 +18,7 @@ SCP = scp
 VERSION = $(shell $(PYTHON) ./version.py)
 
 ## Testing ##
-.PHONY: unit-test coverage test integration-test system-test accceptance-test tdd
+.PHONY: unit-test coverage test integration-test system-test acceptance-test tdd
 unit-test:
 	$(NOSE) tests/unit
 
@@ -27,7 +27,7 @@ coverage:
 	$(NOSE) --no-color $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
 	-rm -f .coverage
 
-test: unit-test integration-test system-test accceptance-test
+test: unit-test integration-test system-test acceptance-test
 
 integration-test:
 	$(NOSE) tests/integration
