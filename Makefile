@@ -24,7 +24,7 @@ unit-test:
 
 coverage:
 	-rm -f .coverage
-	$(NOSE) --no-color $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
+	$(NOSE) $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
 	-rm -f .coverage
 
 test: unit-test integration-test system-test acceptance-test
