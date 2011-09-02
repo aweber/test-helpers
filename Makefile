@@ -3,7 +3,7 @@
 #
 PACKAGE = @@baseservice@@
 
-COVERAGE_ARGS = --with-coverage --cover-package=$(PACKAGE) --cover-tests
+COVERAGE_ARGS = --with-coverage --cover-package=$(PACKAGE) --cover-tests --cover-erase
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = bin/easy_install
 IPYTHON = bin/ipython
@@ -36,9 +36,7 @@ tdd:
 	$(NOSYD)
 
 coverage:
-	-rm -f .coverage
 	$(NOSE) $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
-	-rm -f .coverage
 
 
 ## Documentation ##
@@ -96,7 +94,7 @@ clean:
 	-find . -type f -name '*.pyc' -o -name '*.tar.gz' | xargs rm -f
 	-rm -f nosetests.xml
 	-rm -f pip-log.txt
-	-rm -f .nose-stopwatch-times
+	-rm -f .nose-stopwatch-times .coverage
 	#
 	-rm -rf build dist tmp uml/* *.egg-info RELEASE-VERSION
 
