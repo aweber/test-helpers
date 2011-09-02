@@ -71,7 +71,7 @@ clean-requirements:
 	-rm -rf src
 
 
-# Packaging
+## Packaging ##
 .PHONY: dist upload $(DIST_FILE)
 dist: $(DIST_FILE)
 $(DIST_FILE):
