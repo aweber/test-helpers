@@ -5,6 +5,7 @@ PACKAGE = @@baseservice@@
 
 COVERAGE = bin/coverage
 COVERAGE_ARGS = --with-coverage --cover-package=$(PACKAGE) --cover-tests --cover-erase
+DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z' 'A-Z')_CONF=configuration/development.conf
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = bin/easy_install
 IPYTHON = bin/ipython
@@ -22,25 +23,25 @@ VERSION = $(shell $(PYTHON) ./version.py)
 .PHONY: test unit-test integration-test system-test acceptance-test tdd coverage coverage-html
 test: unit-test integration-test system-test acceptance-test
 unit-test:
-	$(NOSE) tests/unit
+	$(DEVELOPMENT_ENV) $(NOSE) tests/unit
 
 integration-test:
-	$(NOSE) tests/integration
+	$(DEVELOPMENT_ENV) $(NOSE) tests/integration
 
 system-test:
-	$(NOSE) tests/system
+	$(DEVELOPMENT_ENV) $(NOSE) tests/system
 
 acceptance-test:
-	$(NOSE) tests/acceptance
+	$(DEVELOPMENT_ENV) $(NOSE) tests/acceptance
 
 tdd:
-	$(NOSYD)
+	$(DEVELOPMENT_ENV) $(NOSYD)
 
 coverage:
-	$(NOSE) $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
+	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
 
 integration-coverage:
-	$(NOSE) $(COVERAGE_ARGS) --cover-package=tests.integration tests/integration
+	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.integration tests/integration
 
 coverage-html:
 	$(COVERAGE) html
