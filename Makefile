@@ -3,6 +3,7 @@
 #
 PACKAGE = @@baseservice@@
 
+COVERAGE = bin/coverage
 COVERAGE_ARGS = --with-coverage --cover-package=$(PACKAGE) --cover-tests --cover-erase
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = bin/easy_install
@@ -18,7 +19,7 @@ SCP = scp
 VERSION = $(shell $(PYTHON) ./version.py)
 
 ## Testing ##
-.PHONY: test unit-test integration-test system-test acceptance-test tdd coverage
+.PHONY: test unit-test integration-test system-test acceptance-test tdd coverage coverage-html
 test: unit-test integration-test system-test acceptance-test
 unit-test:
 	$(NOSE) tests/unit
@@ -37,6 +38,9 @@ tdd:
 
 coverage:
 	$(NOSE) $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
+
+coverage-html:
+	$(COVERAGE) html
 
 
 ## Documentation ##
@@ -96,7 +100,7 @@ clean:
 	-rm -f pip-log.txt
 	-rm -f .nose-stopwatch-times .coverage
 	#
-	-rm -rf build dist tmp uml/* *.egg-info RELEASE-VERSION
+	-rm -rf build dist tmp uml/* *.egg-info RELEASE-VERSION htmlcov
 
 maintainer-clean: clean
 	rm -rf bin include lib man share src doc/doctrees doc/html
