@@ -89,3 +89,17 @@ deploy-docs: $(PACKAGE)_docs.tar.gz
 
 $(PACKAGE)_docs.tar.gz: doc
 	tar zcf $@ doc/html
+
+
+## Housekeeping ##
+clean:
+	# clean python bytecode files
+	-find . -type f -name '*.pyc' -o -name '*.tar.gz' | xargs rm -f
+	-rm -f nosetests.xml
+	-rm -f pip-log.txt
+	-rm -f .nose-stopwatch-times
+	#
+	-rm -rf build dist tmp uml/* *.egg-info RELEASE-VERSION
+
+maintainer-clean: clean
+	rm -rf bin include lib man share src doc/doctrees doc/html
