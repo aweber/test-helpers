@@ -39,6 +39,9 @@ tdd:
 coverage:
 	$(NOSE) $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
 
+integration-coverage:
+	$(NOSE) $(COVERAGE_ARGS) --cover-package=tests.integration tests/integration
+
 coverage-html:
 	$(COVERAGE) html
 
