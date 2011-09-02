@@ -3,7 +3,9 @@
 #
 PACKAGE = @@baseservice@@
 
-COVERAGE_ARGS = --with-coverage --cover-package=$(PACKAGE) --cover-tests
+COVERAGE = bin/coverage
+COVERAGE_ARGS = --with-coverage --cover-package=$(PACKAGE) --cover-tests --cover-erase
+DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z' 'A-Z')_CONF=configuration/development.conf
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = bin/easy_install
 IPYTHON = bin/ipython
@@ -18,28 +20,31 @@ SCP = scp
 VERSION = $(shell $(PYTHON) ./version.py)
 
 ## Testing ##
-.PHONY: unit-test coverage test integration-test system-test acceptance-test tdd
-unit-test:
-	$(NOSE) tests/unit
-
-coverage:
-	-rm -f .coverage
-	$(NOSE) --no-color $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
-	-rm -f .coverage
-
+.PHONY: test unit-test integration-test system-test acceptance-test tdd coverage coverage-html
 test: unit-test integration-test system-test acceptance-test
+unit-test:
+	$(DEVELOPMENT_ENV) $(NOSE) tests/unit
 
 integration-test:
-	$(NOSE) tests/integration
+	$(DEVELOPMENT_ENV) $(NOSE) tests/integration
 
 system-test:
-	$(NOSE) tests/system
+	$(DEVELOPMENT_ENV) $(NOSE) tests/system
 
 acceptance-test:
-	$(NOSE) tests/acceptance
+	$(DEVELOPMENT_ENV) $(NOSE) tests/acceptance
 
 tdd:
-	$(NOSYD)
+	$(DEVELOPMENT_ENV) $(NOSYD)
+
+coverage:
+	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
+
+integration-coverage:
+	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.integration tests/integration
+
+coverage-html:
+	$(COVERAGE) html
 
 
 ## Documentation ##
@@ -71,7 +76,7 @@ clean-requirements:
 	-rm -rf src
 
 
-# Packaging
+## Packaging ##
 .PHONY: dist upload $(DIST_FILE)
 dist: $(DIST_FILE)
 $(DIST_FILE):
@@ -89,3 +94,17 @@ deploy-docs: $(PACKAGE)_docs.tar.gz
 
 $(PACKAGE)_docs.tar.gz: doc
 	tar zcf $@ doc/html
+
+
+## Housekeeping ##
+clean:
+	# clean python bytecode files
+	-find . -type f -name '*.pyc' -o -name '*.tar.gz' | xargs rm -f
+	-rm -f nosetests.xml
+	-rm -f pip-log.txt
+	-rm -f .nose-stopwatch-times .coverage
+	#
+	-rm -rf build dist tmp uml/* *.egg-info RELEASE-VERSION htmlcov
+
+maintainer-clean: clean
+	rm -rf bin include lib man share src doc/doctrees doc/html
