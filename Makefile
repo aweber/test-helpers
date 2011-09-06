@@ -17,7 +17,7 @@ PYTHON = bin/python
 PYTHON_DIST_SITE = nebula.ofc.lair:/var/www/secure/python-dist/
 PYTHON_DOCTEST = $(PYTHON) -m doctest
 SCP = scp
-VERSION = $(shell $(PYTHON) ./version.py)
+VERSION = $(shell git describe --abbrev=4 --tags --dirty --match="v*" | cut -c 2-)
 
 ## Testing ##
 .PHONY: test unit-test integration-test system-test acceptance-test tdd coverage coverage-html
@@ -80,6 +80,7 @@ clean-requirements:
 .PHONY: dist upload $(DIST_FILE)
 dist: $(DIST_FILE)
 $(DIST_FILE):
+	echo $(VERSION) > RELEASE-VERSION
 	$(PYTHON) setup.py sdist
 
 upload: dist

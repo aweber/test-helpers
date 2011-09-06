@@ -3,10 +3,17 @@ import sys
 
 from setuptools import setup, find_packages
 
-from version import get_git_version
 
 if sys.version_info < (2, 6):
     raise Exception("This package requires Python 2.6 or higher.")
+
+
+def read_release_version():
+    """Read the version from the file ``RELEASE-VERSION``"""
+    with open("RELEASE-VERSION", "r") as f:
+        version = f.readlines()[0]
+        return version.strip()
+
 
 setup(
     name = '@@baseservice@@',
@@ -18,7 +25,7 @@ setup(
     ],
     long_description = '''A git repo scaffold for new projects''',
     dependency_links=['https://nebula.ofc.lair/python-dist/'],
-    version = get_git_version(),
+    version = read_release_version(),
     author = 'AWeber Communications',
     author_email = '@aweber.com',
     entry_points = {
