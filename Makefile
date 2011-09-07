@@ -17,7 +17,8 @@ PYTHON = bin/python
 PYTHON_DIST_SITE = nebula.ofc.lair:/var/www/secure/python-dist/
 PYTHON_DOCTEST = $(PYTHON) -m doctest
 SCP = scp
-VERSION = $(shell git describe --abbrev=4 --tags --dirty --match="v*" | cut -c 2-)
+# Work around a bug in git describe: http://comments.gmane.org/gmane.comp.version-control.git/178169
+VERSION = $(shell git status &>/dev/null && git describe --abbrev=4 --tags --dirty --match="v*" | cut -c 2-)
 
 ## Testing ##
 .PHONY: test unit-test integration-test system-test acceptance-test tdd coverage coverage-html
