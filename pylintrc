@@ -124,9 +124,6 @@ generated-members=REQUEST,acl_users,aq_parent
 #
 [BASIC]
 
-# Required attributes for module, separated by a comma
-required-attributes=__all__
-
 # Regular expression which should only match functions or classes name which do
 # not require a docstring
 no-docstring-rgx=__.*__
