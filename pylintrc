@@ -53,6 +53,27 @@ load-plugins=
 #enable-msg=
 
 # Disable the message(s) with the given id(s).
+#  :W0142: *Used * or ** magic*
+#    Used when a function or method is called using `*args` or `**kwargs` to
+#    dispatch arguments. This doesn't improve readability and should be used with
+#    care.
+#  Ignored because:
+#    This warning is ignored because it is perfectly acceptable python to use
+#    *args.  This is often used when wrapping a function (e.g. in a decorator
+#    that wraps, or when overloading a parent classes __init__).
+#
+#  :E0611: *No name %r in module %r*
+#    Used when a name cannot be found in a module.
+#  Ignored because:
+#    Unknown.  This error has been ignored since before this pylintrc was
+#    copied into EvO (and subsequently into base_service).
+#
+#  :E1103: *%s %r has no %r member (but some types could not be inferred)*
+#    Used when a variable is accessed for an unexistent member, but astng was not
+#    able to interpret all possible types of this variable.
+#  Ignored because:
+#    This type of error is trivially caught during testing, so anything picked
+#    up by this check is guaranteed to be a false positive.
 disable-msg=W0142,E0611,E1103
 
 
