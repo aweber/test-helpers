@@ -1,9 +1,13 @@
 from fabric.api import *
 
-env.hosts = ['nebula.ofc.lair']
 
 PROJECT_NAME = '@@baseservice@@'
 DOC_DIR = '/var/www/secure/sphinx/{0}'.format(PROJECT_NAME)
+
+@task
+def set_documentation_host():
+    env.hosts = ['nebula.ofc.lair']
+
 
 def deploy_docs():
     put('{0}_docs.tar.gz'.format(PROJECT_NAME), '/tmp/', mode=0666)
