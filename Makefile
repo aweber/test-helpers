@@ -77,6 +77,11 @@ clean-requirements:
 	-rm -rf src
 
 
+.PHONY: foreman
+foreman:
+	$(DEVELOPMENT_ENV) foreman start
+
+
 ## Packaging ##
 .PHONY: dist upload $(DIST_FILE)
 dist: $(DIST_FILE)
@@ -92,7 +97,7 @@ upload: dist
 	$(SCP) $(DIST_FILE) $(PYTHON_DIST_SITE)
 
 deploy-docs: $(PACKAGE)_docs.tar.gz
-	fab deploy_docs
+	fab set_documentation_host deploy_docs
 
 $(PACKAGE)_docs.tar.gz: doc
 	tar zcf $@ doc/html
@@ -110,3 +115,13 @@ clean:
 
 maintainer-clean: clean
 	rm -rf bin include lib man share src doc/doctrees doc/html
+
+## Service Deployment ##
+.PHONY: deploy-staging deploy-production
+deploy-staging: dist Procfile
+	caterer staging $(PACKAGE) Procfile > chef_script; sh chef_script
+	fab set_hosts:'staging','api' deploy_api:$(DIST_FILE)
+
+deploy-production: dist Procfile
+	caterer production $(PACKAGE) Procfile > chef_script; sh chef_script
+	fab set_hosts:'production','api' deploy_api:$(DIST_FILE)
