@@ -5,7 +5,7 @@ PACKAGE = @@baseservice@@
 
 COVERAGE = bin/coverage
 COVERAGE_ARGS = --with-coverage --cover-package=$(PACKAGE) --cover-tests --cover-erase
-DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z' 'A-Z')_CONF=configuration/development.conf
+DEVELOPMENT_ENV = source bin/activate; $(shell echo $(PACKAGE) | tr 'a-z' 'A-Z')_CONF=configuration/development.conf
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = bin/easy_install
 IPYTHON = bin/ipython
