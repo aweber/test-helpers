@@ -110,3 +110,13 @@ clean:
 
 maintainer-clean: clean
 	rm -rf bin include lib man share src doc/doctrees doc/html
+
+## Service Deployment ##
+.PHONY: deploy-staging deploy-production
+deploy-staging: dist Procfile
+	caterer staging $(PACKAGE) Procfile > chef_script; sh chef_script
+	fab set_hosts:'staging','api' deploy_api:$(DIST_FILE)
+
+deploy-production: dist Procfile
+	caterer production $(PACKAGE) Procfile > chef_script; sh chef_script
+	fab set_hosts:'production','api' deploy_api:$(DIST_FILE)
