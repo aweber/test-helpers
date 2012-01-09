@@ -77,6 +77,11 @@ clean-requirements:
 	-rm -rf src
 
 
+.PHONY: foreman
+foreman:
+	$(DEVELOPMENT_ENV) foreman start
+
+
 ## Packaging ##
 .PHONY: dist upload $(DIST_FILE)
 dist: $(DIST_FILE)
