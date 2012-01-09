@@ -2,14 +2,15 @@
 # Basic makefile for general targets
 #
 PACKAGE = @@baseservice@@
+MODULE = $(PACKAGE)
 
 ##
 ## NOTE: Anything changed below this line should be changed in base_service.git
-## and then propogated to individual projects.  This prevents conflicts and
+## and then merged into individual projects.  This prevents conflicts and
 ## maintains consistency between projects.
 ##
 COVERAGE = bin/coverage
-COVERAGE_ARGS = --with-coverage --cover-package=$(PACKAGE) --cover-tests --cover-erase
+COVERAGE_ARGS = --with-coverage --cover-package=$(MODULE) --cover-tests --cover-erase
 DEVELOPMENT_ENV = source bin/activate; $(shell echo $(PACKAGE) | tr 'a-z' 'A-Z')_CONF=configuration/development.conf
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = bin/easy_install
@@ -62,7 +63,7 @@ doc:
 ## Static analysis ##
 .PHONY: lint uml metrics
 lint:
-	bin/pylint --rcfile pylintrc $(PACKAGE)
+	bin/pylint --rcfile pylintrc $(MODULE)
 
 
 ## Local Setup ##
