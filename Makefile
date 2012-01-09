@@ -3,6 +3,11 @@
 #
 PACKAGE = @@baseservice@@
 
+##
+## NOTE: Anything changed below this line should be changed in base_service.git
+## and then propogated to individual projects.  This prevents conflicts and
+## maintains consistency between projects.
+##
 COVERAGE = bin/coverage
 COVERAGE_ARGS = --with-coverage --cover-package=$(PACKAGE) --cover-tests --cover-erase
 DEVELOPMENT_ENV = source bin/activate; $(shell echo $(PACKAGE) | tr 'a-z' 'A-Z')_CONF=configuration/development.conf
