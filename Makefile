@@ -56,7 +56,7 @@ coverage-html:
 
 ## Documentation ##
 .PHONY: doc
-doc:
+doc: RELEASE-VERSION
 	$(PYTHON) setup.py build_sphinx
 
 
@@ -89,10 +89,13 @@ foreman:
 
 
 ## Packaging ##
+.PHONY: RELEASE-VERSION
+RELEASE-VERSION:
+	echo $(VERSION) > $@
+
 .PHONY: dist upload $(DIST_FILE)
 dist: $(DIST_FILE)
-$(DIST_FILE):
-	echo $(VERSION) > RELEASE-VERSION
+$(DIST_FILE): RELEASE-VERSION
 	$(PYTHON) setup.py sdist
 
 upload: dist
