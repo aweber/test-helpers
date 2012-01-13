@@ -35,6 +35,7 @@ def provision():
     sudo('chef-client')
 
 
+@task
 def deploy_docs():
     put('{0}_docs.tar.gz'.format(PROJECT_NAME), '/tmp/', mode=0666)
     run('rm -rf {0}'.format(DOC_DIR))
