@@ -8,7 +8,7 @@ import sys, os
 
 project = '@@baseservice@@'
 intersphinx_mapping = {
-    'http://docs.python.org/': None,
+    'python': ('http://docs.python.org/', None),
 }
 
 ##
