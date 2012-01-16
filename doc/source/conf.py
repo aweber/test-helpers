@@ -42,5 +42,6 @@ html_theme = 'nature'
 
 master_doc = 'index'
 todo_include_todos = True
+version = release = open('../../RELEASE-VERSION').readline().strip()
 
 source_suffix = '.rst'
