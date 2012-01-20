@@ -27,7 +27,7 @@ setup(
     dependency_links=['https://nebula.ofc.lair/python-dist/'],
     version = read_release_version(),
     author = 'AWeber Communications',
-    author_email = '@aweber.com',
+    author_email = 'packages@aweber.com',
     entry_points = {
         'console_scripts': [
         ],
