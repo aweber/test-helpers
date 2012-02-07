@@ -18,6 +18,7 @@
 .nose-stopwatch-times
 .svn
 /build
+/reports
 /share
 /tmp
 /uml
@@ -60,7 +61,6 @@ worker_entry_points.txt
 *.log
 *.sql
 *.sqlite
-nosetests.xml
 man/man1/nosetests.1
 
 # OS generated files #
