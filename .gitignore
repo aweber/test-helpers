@@ -20,6 +20,7 @@
 /build
 /reports
 /share
+/tests.pylintrc
 /tmp
 /uml
 bin

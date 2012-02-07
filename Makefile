@@ -74,8 +74,12 @@ endif
 
 ## Static analysis ##
 .PHONY: lint uml metrics
-lint: reports
-	bin/pylint --rcfile pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
+lint: reports tests.pylintrc
+	-bin/pylint --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
+	-bin/pylint --reports=y --output-format=parseable --rcfile=tests.pylintrc tests | tee reports/tests_lint.txt
+
+tests.pylintrc: pylintrc pylintrc-tests-overrides
+	cat $^ > $@
 
 
 ## Local Setup ##
