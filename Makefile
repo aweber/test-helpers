@@ -2,7 +2,7 @@
 # Basic makefile for general targets
 #
 PACKAGE = @@project_name@@
-MODULE = $(PACKAGE)
+MODULE = @@python_module@@
 
 ##
 ## NOTE: Anything changed below this line should be changed in base_service.git
