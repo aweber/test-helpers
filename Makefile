@@ -73,13 +73,20 @@ endif
 
 
 ## Static analysis ##
-.PHONY: lint uml metrics
-lint: reports tests.pylintrc
+.PHONY: lint uml metrics pep8 pylint
+lint: pylint pep8
+pylint: reports tests.pylintrc
 	-bin/pylint --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
 	-bin/pylint --reports=y --output-format=parseable --rcfile=tests.pylintrc tests | tee reports/tests_lint.txt
 
 tests.pylintrc: pylintrc pylintrc-tests-overrides
 	cat $^ > $@
+
+pep8: reports
+	# Strip out warnings about long lines in tests. We loosen the
+	# limitation for long lines in tests and PyLint already checks line
+	# length for us.
+	-bin/pep8 --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee reports/pep8.txt
 
 
 ## Local Setup ##
