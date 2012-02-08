@@ -1,7 +1,7 @@
 #
 # Basic makefile for general targets
 #
-PACKAGE = @@baseservice@@
+PACKAGE = @@project_name@@
 MODULE = $(PACKAGE)
 
 ##

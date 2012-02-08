@@ -6,7 +6,7 @@ import sys, os
 ##
 ####
 
-project = '@@baseservice@@'
+project = '@@project_name@@'
 intersphinx_mapping = {
     'python': ('http://docs.python.org/', None),
 }

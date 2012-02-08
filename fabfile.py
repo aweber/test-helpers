@@ -2,7 +2,7 @@ from fabric.api import *
 from chef import autoconfigure, Node, Search
 
 
-PROJECT_NAME = '@@baseservice@@'
+PROJECT_NAME = '@@project_name@@'
 DOC_DIR = '/var/www/secure/sphinx/{0}'.format(PROJECT_NAME)
 
 @task

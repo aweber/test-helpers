@@ -16,7 +16,7 @@ def read_release_version():
 
 
 setup(
-    name = '@@baseservice@@',
+    name = '@@project_name@@',
     description = 'A git repo scaffold for new projects',
     packages = find_packages(),
     include_package_data = True,
