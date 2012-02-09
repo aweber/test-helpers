@@ -18,7 +18,9 @@
 .nose-stopwatch-times
 .svn
 /build
+/reports
 /share
+/tests.pylintrc
 /tmp
 /uml
 bin
@@ -60,7 +62,6 @@ worker_entry_points.txt
 *.log
 *.sql
 *.sqlite
-nosetests.xml
 man/man1/nosetests.1
 
 # OS generated files #

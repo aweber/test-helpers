@@ -30,29 +30,34 @@ VERSION = $(shell git status >/dev/null 2>/dev/null && git describe --abbrev=4 -
 ## Testing ##
 .PHONY: test unit-test integration-test system-test acceptance-test tdd coverage coverage-html
 test: unit-test integration-test system-test acceptance-test
-unit-test:
-	$(DEVELOPMENT_ENV) $(NOSE) tests/unit
+unit-test: reports
+	$(DEVELOPMENT_ENV) $(NOSE) tests/unit --with-xunit --xunit-file=reports/unit-xunit.xml
 
-integration-test:
-	$(DEVELOPMENT_ENV) $(NOSE) tests/integration
+integration-test: reports
+	$(DEVELOPMENT_ENV) $(NOSE) tests/integration --with-xunit --xunit-file=reports/integration-xunit.xml
 
-system-test:
-	$(DEVELOPMENT_ENV) $(NOSE) tests/system
+system-test: reports
+	$(DEVELOPMENT_ENV) $(NOSE) tests/system --with-xunit --xunit-file=reports/system-xunit.xml
 
-acceptance-test:
-	$(DEVELOPMENT_ENV) $(NOSE) tests/acceptance
+acceptance-test: reports
+	$(DEVELOPMENT_ENV) $(NOSE) tests/acceptance --with-xunit --xunit-file=reports/acceptance-xunit.xml
 
 tdd:
 	$(DEVELOPMENT_ENV) $(NOSYD)
 
-coverage:
+coverage: reports
 	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
+	$(COVERAGE) xml -o reports/unit-coverage.xml --include="*.py"
 
-integration-coverage:
+integration-coverage: reports
 	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.integration tests/integration
+	$(COVERAGE) xml -o reports/integration-coverage.xml --include="*.py"
 
 coverage-html:
 	$(COVERAGE) html
+
+reports:
+	mkdir -p $@
 
 
 ## Documentation ##
@@ -68,9 +73,20 @@ endif
 
 
 ## Static analysis ##
-.PHONY: lint uml metrics
-lint:
-	bin/pylint --rcfile pylintrc $(MODULE)
+.PHONY: lint uml metrics pep8 pylint
+lint: pylint pep8
+pylint: reports tests.pylintrc
+	-bin/pylint --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
+	-bin/pylint --reports=y --output-format=parseable --rcfile=tests.pylintrc tests | tee reports/tests_lint.txt
+
+tests.pylintrc: pylintrc pylintrc-tests-overrides
+	cat $^ > $@
+
+pep8: reports
+	# Strip out warnings about long lines in tests. We loosen the
+	# limitation for long lines in tests and PyLint already checks line
+	# length for us.
+	-bin/pep8 --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee reports/pep8.txt
 
 
 ## Local Setup ##
@@ -123,9 +139,9 @@ $(PACKAGE)_docs.tar.gz: doc
 clean:
 	# clean python bytecode files
 	-find . -type f -name '*.pyc' -o -name '*.tar.gz' | xargs rm -f
-	-rm -f nosetests.xml
 	-rm -f pip-log.txt
 	-rm -f .nose-stopwatch-times .coverage
+	-rm -rf reports
 	#
 	-rm -rf build dist tmp uml/* *.egg-info RELEASE-VERSION htmlcov
 
