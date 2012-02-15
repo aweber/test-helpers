@@ -3,11 +3,11 @@ from chef import autoconfigure, Node, Search
 
 
 PROJECT_NAME = '@@project_name@@'
-DOC_DIR = '/var/www/secure/sphinx/{0}'.format(PROJECT_NAME)
+DOC_DIR = '/var/www/docs/{0}'.format(PROJECT_NAME)
 
 @task
 def set_documentation_host():
-    env.hosts = ['nebula.ofc.lair']
+    env.hosts = ['docs.colo.lair']
 
 
 @task
