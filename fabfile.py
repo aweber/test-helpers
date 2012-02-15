@@ -5,6 +5,12 @@ from chef import autoconfigure, Node, Search
 PROJECT_NAME = '@@project_name@@'
 DOC_DIR = '/var/www/docs/{0}'.format(PROJECT_NAME)
 
+
+def _set_username_password():
+    """Sets the username and password in the fabric env."""
+    # Override username/password here, if necessary
+
+
 @task
 def set_documentation_host():
     env.hosts = ['docs.colo.lair']
@@ -25,6 +31,7 @@ def set_hosts(stage, role):
 @task
 def deploy_api(dist_file):
     """Deploy the api package"""
+    _set_username_password()
     provision()
     _deploy_python_package(dist_file)
 
