@@ -129,7 +129,7 @@ upload: dist
 	$(SCP) $(DIST_FILE) $(PYTHON_DIST_SITE)
 
 deploy-docs: $(PACKAGE)_docs.tar.gz
-	fab set_documentation_host deploy_docs
+	fab set_documentation_host deploy_docs:$(PACKAGE),`cat RELEASE-VERSION`
 
 $(PACKAGE)_docs.tar.gz: doc
 	tar zcf $@ doc/html
