@@ -3,11 +3,17 @@ from chef import autoconfigure, Node, Search
 
 
 PROJECT_NAME = '@@project_name@@'
-DOC_DIR = '/var/www/secure/sphinx/{0}'.format(PROJECT_NAME)
+DOC_DIR = '/var/www/docs/{0}'.format(PROJECT_NAME)
+
+
+def _set_username_password():
+    """Sets the username and password in the fabric env."""
+    # Override username/password here, if necessary
+
 
 @task
 def set_documentation_host():
-    env.hosts = ['nebula.ofc.lair']
+    env.hosts = ['docs.colo.lair']
 
 
 @task
@@ -25,6 +31,7 @@ def set_hosts(stage, role):
 @task
 def deploy_api(dist_file):
     """Deploy the api package"""
+    _set_username_password()
     provision()
     _deploy_python_package(dist_file)
 
@@ -36,13 +43,27 @@ def provision():
 
 
 @task
-def deploy_docs():
-    put('{0}_docs.tar.gz'.format(PROJECT_NAME), '/tmp/', mode=0666)
-    run('rm -rf {0}'.format(DOC_DIR))
-    run('mkdir -p {0}'.format(DOC_DIR))
-    run('tar zxf /tmp/{0}_docs.tar.gz -C {1}'.format(PROJECT_NAME, DOC_DIR))
-    run('chown -R :developers {0}'.format(DOC_DIR))
-    run('chmod -R g+rwX {0}'.format(DOC_DIR))
+def deploy_docs(project_name, version):
+    """Deploy the documentation"""
+
+    docs_base = '{0}/{1}'
+    docs_path = docs_base.format(DOC_DIR, version)
+    tar = '{0}_docs.tar.gz'.format(project_name)
+
+    put(tar, '/tmp/', mode=0666)
+    run('rm -rf {0}'.format(docs_path))
+    run('mkdir -p {0}'.format(docs_path))
+    run('tar zxf /tmp/{0} -C {1}'.format(tar, docs_path))
+
+    if not version.find('-'):
+        docs_link = docs_base.format(DOC_DIR, 'production')
+    else:
+        docs_link = docs_base.format(DOC_DIR, 'staging')
+
+    run('rm -rf {0}'.format(docs_link))
+    run('chown -R :www-data {0}'.format(docs_path))
+    run('chmod -R 775 {0}'.format(docs_path))
+    run('ln -s {0} {1}'.format(docs_path, docs_link))
 
 
 def _deploy_python_package(dist_file):
