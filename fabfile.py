@@ -49,6 +49,7 @@ def deploy_docs(project_name, version):
     docs_base = '{0}/{1}'
     docs_path = docs_base.format(DOC_DIR, version)
     tar = '{0}_docs.tar.gz'.format(project_name)
+    link_to_latest = False
 
     put(tar, '/tmp/', mode=0666)
     run('rm -rf {0}'.format(docs_path))
@@ -56,6 +57,7 @@ def deploy_docs(project_name, version):
     run('tar zxf /tmp/{0} -C {1}'.format(tar, docs_path))
 
     if not version.find('-'):
+        link_to_latest = True
         docs_link = docs_base.format(DOC_DIR, 'production')
     else:
         docs_link = docs_base.format(DOC_DIR, 'staging')
@@ -64,6 +66,9 @@ def deploy_docs(project_name, version):
     run('chown -R :www-data {0}'.format(docs_path))
     run('chmod -R 775 {0}'.format(docs_path))
     run('ln -s {0} {1}'.format(docs_path, docs_link))
+    if link_to_latest:
+        latest_link = docs_base.format(DOC_DIR, 'latest')
+        run('ln -s {0} {1}'.format(docs_path, latest_link))
 
 
 def _deploy_python_package(dist_file):
