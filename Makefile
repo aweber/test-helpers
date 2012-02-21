@@ -21,7 +21,6 @@ NOSYD = bin/nosyd -1
 PIP = bin/pip
 PYREVERSE = pyreverse -o png -p
 PYTHON = bin/python
-PYTHON_DIST_SITE = nebula.ofc.lair:/var/www/secure/python-dist/
 PYTHON_DOCTEST = $(PYTHON) -m doctest
 SCP = scp
 # Work around a bug in git describe: http://comments.gmane.org/gmane.comp.version-control.git/178169
@@ -126,7 +125,7 @@ upload: dist
 	    echo "Stubbornly refusing to upload a dirty package! Tag a proper release!" >&2; \
 	    exit 1; \
 	fi
-	$(SCP) $(DIST_FILE) $(PYTHON_DIST_SITE)
+	$(PYTHON) setup.py register --repository aweber sdist upload --repository aweber
 
 deploy-docs: $(PACKAGE)_docs.tar.gz
 	fab set_documentation_host deploy_docs:$(PACKAGE),`cat RELEASE-VERSION`
