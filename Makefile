@@ -93,7 +93,7 @@ pep8: reports
 requirements: virtualenv clean-requirements
 	$(EASY_INSTALL) -U distribute
 	# need ports libevent and libevent1 for mac_dev
-	C_INCLUDE_PATH="/opt/local/include:/usr/local/include" $(PIP) install --find-links=https://nebula.ofc.lair/python-dist -r requirements.pip
+	C_INCLUDE_PATH="/opt/local/include:/usr/local/include" $(PIP) install -r requirements.pip
 	-rm README.txt
 	# These libs don't work when installed via pip.
 	$(EASY_INSTALL) nose_machineout
