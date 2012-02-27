@@ -142,6 +142,7 @@ clean:
 	-rm -f pip-log.txt
 	-rm -f .nose-stopwatch-times .coverage
 	-rm -rf reports
+	-rm -f nosetests.xml
 	#
 	-rm -rf build dist tmp uml/* *.egg-info RELEASE-VERSION htmlcov
 
