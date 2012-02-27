@@ -17,6 +17,7 @@
 .mr.developer.cfg
 .nose-stopwatch-times
 .svn
+nosetests.xml
 /build
 /reports
 /share
