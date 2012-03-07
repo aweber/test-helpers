@@ -77,11 +77,7 @@ def _deploy_python_package(dist_file):
     sudo('rm -f {0}'.format(remote_path))
     put(dist_file, remote_path)
 
-    pip_arguments = (
-        ' --timeout=2 --use-mirrors'
-        ' --find-links=https://nebula.ofc.lair/python-dist'
-        ' --find-links=https://nebula.ofc.lair/python-dist/pypi'
-    )
+    pip_arguments = (' --timeout=2 --use-mirrors')
 
     # Install all the deps first.
     sudo(
