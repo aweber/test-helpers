@@ -24,7 +24,7 @@ setup(
     install_requires = [
     ],
     long_description = '''A git repo scaffold for new projects''',
-    dependency_links=['https://nebula.ofc.lair/python-dist/'],
+    dependency_links=['http://pypi.colo.lair/simple/'],
     version = read_release_version(),
     author = 'AWeber Communications',
     author_email = 'packages@aweber.com',
