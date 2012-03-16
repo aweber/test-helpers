@@ -18,7 +18,7 @@ FLASKAPI_DOCS = PYTHONPATH=. bin/flaskapi-docs
 IPYTHON = bin/ipython
 NOSE = bin/nosetests
 NOSYD = bin/nosyd -1
-PIP = bin/pip
+PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" bin/pip
 PYREVERSE = pyreverse -o png -p
 PYTHON = bin/python
 PYTHON_DOCTEST = $(PYTHON) -m doctest
@@ -92,7 +92,8 @@ pep8: reports
 requirements: virtualenv clean-requirements
 	$(EASY_INSTALL) -U distribute
 	# need ports libevent and libevent1 for mac_dev
-	C_INCLUDE_PATH="/opt/local/include:/usr/local/include" $(PIP) install -r requirements.pip
+	-test -e $(HOME)/.requirements.pip && $(PIP) install -r $(HOME)/.requirements.pip
+	$(PIP) install -r requirements.pip
 	-rm README.txt
 	# These libs don't work when installed via pip.
 	$(EASY_INSTALL) nose_machineout
