@@ -108,7 +108,7 @@ clean-requirements:
 
 .PHONY: foreman
 foreman:
-	$(DEVELOPMENT_ENV) foreman start
+	$(DEVELOPMENT_ENV) PYTHON_LOGCONFIG_LOG_TO_STDOUT=1 foreman start
 
 
 ## Packaging ##
