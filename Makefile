@@ -96,7 +96,6 @@ requirements: virtualenv clean-requirements
 	$(PIP) install -r requirements.pip
 	-rm README.txt
 	# These libs don't work when installed via pip.
-	$(EASY_INSTALL) nose_machineout
 	$(EASY_INSTALL) readline
 
 virtualenv:

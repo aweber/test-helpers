@@ -1,7 +1,8 @@
 coverage
 deterministic_dingus
 nose
+nose_machineout
 pep8
 pylint
 sphinx
--e git+https://github.com/lacostej/nosyd.git@c6bba03669084ac41d7a#egg=nosyd
+Nosyd
