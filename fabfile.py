@@ -1,5 +1,8 @@
-from fabric.api import *
+import urllib2
+
 from chef import autoconfigure, Node, Search
+from fabric.api import *
+import fabric.utils
 
 
 PROJECT_NAME = '@@project_name@@'
@@ -35,6 +38,16 @@ def deploy_api(dist_file):
     provision()
     _deploy_python_package(dist_file)
     _sighup_api()
+    _verify_api_heartbeat()
+
+
+def _verify_api_heartbeat():
+    """Tests the host /heartbeat and aborts if it is not a 200"""
+    url = 'http://{0}/heartbeat'.format(env.host_string)
+    resp = urllib2.urlopen(url)
+    if not resp.getcode() == 200:
+        fabric.utils.abort('Host: {0} API is not functioning properly')
+    print '[{0}] API Test Succesful!'.format(env.host_string)
 
 
 @task
