@@ -37,6 +37,14 @@ def deploy_api(dist_file):
 
 
 @task
+def deploy_worker(dist_file):
+    """Deploy the worker package"""
+    _set_username_password()
+    provision()
+    _deploy_python_package(dist_file)
+
+
+@task
 def provision():
     """Provision the node with Chef"""
     sudo('chef-client')
