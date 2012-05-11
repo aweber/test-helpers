@@ -34,6 +34,7 @@ def deploy_api(dist_file):
     _set_username_password()
     provision()
     _deploy_python_package(dist_file)
+    _sighup_api()
 
 
 @task
@@ -42,6 +43,7 @@ def deploy_worker(dist_file):
     _set_username_password()
     provision()
     _deploy_python_package(dist_file)
+    _reload_supervisor()
 
 
 @task
@@ -101,5 +103,12 @@ def _deploy_python_package(dist_file):
         'pip install -U {0} --no-deps {1}'.format(
             remote_path, pip_arguments)
     )
-    sudo('supervisorctl reload')
     sudo('rm -f {0}'.format(remote_path))
+
+
+def _reload_supervisor():
+    sudo('supervisorctl reload')
+
+
+def _sighup_api():
+    sudo('kill -HUP `supervisorctl pid api`')
