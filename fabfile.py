@@ -124,4 +124,11 @@ def _reload_supervisor():
 
 
 def _sighup_api():
-    sudo('kill -HUP `supervisorctl pid api`')
+    pid = sudo('supervisorctl status api | awk \'/RUNNING.*pid/ { sub(/,/, " ", $4); print $4 }\'')
+    if pid:
+        # There is an API running, we have the right PID
+        pid = int(pid)
+        sudo('kill -HUP {0}'.format(pid))
+    else:
+        # There is no API started
+        sudo('supervisorctl start api')
