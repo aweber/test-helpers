@@ -1,5 +1,8 @@
-from fabric.api import *
+import urllib2
+
 from chef import autoconfigure, Node, Search
+from fabric.api import *
+import fabric.utils
 
 
 PROJECT_NAME = '@@project_name@@'
@@ -34,6 +37,26 @@ def deploy_api(dist_file):
     _set_username_password()
     provision()
     _deploy_python_package(dist_file)
+    _sighup_api()
+    _verify_api_heartbeat()
+
+
+def _verify_api_heartbeat():
+    """Tests the host /heartbeat and aborts if it is not a 200"""
+    url = 'http://{0}/heartbeat'.format(env.host_string)
+    resp = urllib2.urlopen(url)
+    if not resp.getcode() == 200:
+        fabric.utils.abort('Host: {0} API is not functioning properly')
+    print '[{0}] API Test Succesful!'.format(env.host_string)
+
+
+@task
+def deploy_worker(dist_file):
+    """Deploy the worker package"""
+    _set_username_password()
+    provision()
+    _deploy_python_package(dist_file)
+    _reload_supervisor()
 
 
 @task
@@ -93,5 +116,12 @@ def _deploy_python_package(dist_file):
         'pip install -U {0} --no-deps {1}'.format(
             remote_path, pip_arguments)
     )
-    sudo('supervisorctl reload')
     sudo('rm -f {0}'.format(remote_path))
+
+
+def _reload_supervisor():
+    sudo('supervisorctl reload')
+
+
+def _sighup_api():
+    sudo('kill -HUP `supervisorctl pid api`')
