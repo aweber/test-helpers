@@ -22,7 +22,7 @@ def set_documentation_host():
 @task
 def set_hosts(stage, role):
     api = autoconfigure()
-    query = 'roles:{project_name}-python-{role}-node AND environment:{stage}'.format(
+    query = 'roles:{project_name}-python-{role}-node AND chef_environment:{stage}'.format(
         project_name=PROJECT_NAME,
         stage=stage,
         role=role,
