@@ -19,6 +19,7 @@ IPYTHON = bin/ipython
 NOSE = bin/nosetests
 NOSYD = bin/nosyd -1
 PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" bin/pip
+PIP_OPTIONS = --index-url=http://pypi.colo.lair/simple/
 PYREVERSE = pyreverse -o png -p
 PYTHON = bin/python
 PYTHON_DOCTEST = $(PYTHON) -m doctest
@@ -92,8 +93,8 @@ pep8: reports
 requirements: virtualenv clean-requirements
 	$(EASY_INSTALL) -U distribute
 	# need ports libevent and libevent1 for mac_dev
-	-test -e $(HOME)/.requirements.pip && $(PIP) install -r $(HOME)/.requirements.pip
-	$(PIP) install -r requirements.pip
+	-test -e $(HOME)/.requirements.pip && $(PIP) install $(PIP_OPTIONS) -r $(HOME)/.requirements.pip
+	$(PIP) install $(PIP_OPTIONS) -r requirements.pip
 	-rm README.txt
 	# These libs don't work when installed via pip.
 	$(EASY_INSTALL) readline
