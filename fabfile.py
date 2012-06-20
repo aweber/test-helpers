@@ -1,3 +1,4 @@
+import time
 import urllib2
 
 from chef import autoconfigure, Search
@@ -41,8 +42,15 @@ def deploy_api(dist_file):
     _verify_api_heartbeat()
 
 
-def _verify_api_heartbeat():
-    """Tests the host /heartbeat and aborts if it is not a 200"""
+def _verify_api_heartbeat(retry=True):
+    """Tests the host /heartbeat and aborts on failure.
+
+    Only a status of 200 returned by the heartbeat is considered a success.
+    If the heartbeat fails and `retry` is ``True``, the heartbeat will be
+    tried again after a sleep of 2 seconds. If the heartbeat fails and `retry`
+    is ``False``, the task is aborted.
+
+    """
     url = 'http://{0}/heartbeat'.format(env.host_string)
     try:
         resp = urllib2.urlopen(url)
@@ -52,9 +60,16 @@ def _verify_api_heartbeat():
         print '[{0}] \t Received: {1}'.format(env.host_string, error.read())
         status_code = error.getcode()
 
-    if not status_code == 200:
+    if status_code == 200:
+        print '[{0}] API Test Succesful!'.format(env.host_string)
+        return
+
+    if not retry:
         fabric.utils.abort('Host: {0} API is not functioning properly')
-    print '[{0}] API Test Succesful!'.format(env.host_string)
+    else:
+        print '[{0}] Retrying heartbeat in 2 seconds...'.format(env.host_string)
+        time.sleep(2)
+        _verify_api_heartbeat(retry=False)
 
 
 @task
