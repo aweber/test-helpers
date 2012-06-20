@@ -1,6 +1,6 @@
 import urllib2
 
-from chef import autoconfigure, Node, Search
+from chef import autoconfigure, Search
 from fabric.api import *
 import fabric.utils
 
