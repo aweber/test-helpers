@@ -44,8 +44,15 @@ def deploy_api(dist_file):
 def _verify_api_heartbeat():
     """Tests the host /heartbeat and aborts if it is not a 200"""
     url = 'http://{0}/heartbeat'.format(env.host_string)
-    resp = urllib2.urlopen(url)
-    if not resp.getcode() == 200:
+    try:
+        resp = urllib2.urlopen(url)
+        status_code = resp.getcode()
+    except urllib2.HTTPError as error:
+        print '[{0}] Error while testing API: {1}'.format(env.host_string, error)
+        print '[{0}] \t Received: {1}'.format(env.host_string, error.read())
+        status_code = error.getcode()
+
+    if not status_code == 200:
         fabric.utils.abort('Host: {0} API is not functioning properly')
     print '[{0}] API Test Succesful!'.format(env.host_string)
 
