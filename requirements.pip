@@ -4,5 +4,5 @@ nose
 nose_machineout
 pep8
 pylint
-sphinx
+Sphinx
 Nosyd
