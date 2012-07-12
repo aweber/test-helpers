@@ -10,9 +10,11 @@ PROJECT_NAME = '@@project_name@@'
 DOC_DIR = '/var/www/docs/{0}'.format(PROJECT_NAME)
 
 
-def _set_username_password():
-    """Sets the username and password in the fabric env."""
-    # Override username/password here, if necessary
+def _set_credentials():
+    """Sets the credentials in the fabric env."""
+    # Override credentials here if necessary
+    env.user = 'ubuntu'
+    env.key_filename = ['~/.ssh/ubuntu-id_dsa']
 
 
 @task
@@ -35,7 +37,7 @@ def set_hosts(stage, role):
 @task
 def deploy_api(dist_file):
     """Deploy the api package"""
-    _set_username_password()
+    _set_credentials()
     provision()
     _deploy_python_package(dist_file)
     _sighup_api()
@@ -75,7 +77,7 @@ def _verify_api_heartbeat(retry=True):
 @task
 def deploy_worker(dist_file):
     """Deploy the worker package"""
-    _set_username_password()
+    _set_credentials()
     provision()
     _deploy_python_package(dist_file)
     _reload_supervisor()
@@ -91,6 +93,7 @@ def provision():
 def deploy_docs(project_name, version):
     """Deploy the documentation"""
 
+    _set_credentials()
     docs_base = '{0}/{1}'
     docs_path = docs_base.format(DOC_DIR, version)
     tar = '{0}_docs.tar.gz'.format(project_name)
