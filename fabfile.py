@@ -1,3 +1,4 @@
+import os.path
 import time
 import urllib2
 
@@ -14,7 +15,8 @@ def _set_credentials():
     """Sets the credentials in the fabric env."""
     # Override credentials here if necessary
     env.user = 'ubuntu'
-    env.key_filename = ['~/.ssh/ubuntu-id_dsa']
+    env.key_filename = [
+        os.path.expanduser('~/.ssh/ubuntu-id_dsa')]
 
 
 @task
