@@ -103,8 +103,8 @@ def deploy_docs(project_name, version):
 
     put(tar, '/tmp/', mode=0666)
     run('rm -rf {0}'.format(docs_path))
-    run('mkdir -p {0}'.format(docs_path))
-    run('tar zxf /tmp/{0} -C {1}'.format(tar, docs_path))
+    sudo('mkdir -p {0}'.format(docs_path), user='www-data')
+    sudo('tar zxf /tmp/{0} -C {1}'.format(tar, docs_path), user='www-data')
 
     if '-' not in version:
         link_to_latest = True
