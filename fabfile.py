@@ -101,7 +101,7 @@ def deploy_docs(project_name, version):
     run('mkdir -p {0}'.format(docs_path))
     run('tar zxf /tmp/{0} -C {1}'.format(tar, docs_path))
 
-    if not version.find('-'):
+    if '-' not in version:
         link_to_latest = True
         docs_link = docs_base.format(DOC_DIR, 'production')
     else:
