@@ -3,7 +3,7 @@ import time
 import urllib2
 
 from chef import autoconfigure, Search
-from fabric.api import *
+from fabric.api import env, put, run, sudo, task
 import fabric.utils
 
 
