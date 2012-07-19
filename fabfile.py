@@ -17,6 +17,8 @@ def _set_credentials():
     env.user = 'ubuntu'
     env.key_filename = [
         os.path.expanduser('~/.ssh/ubuntu-id_dsa')]
+    env.abort_on_prompts = True
+    env.disable_known_hosts = True
 
 
 @task
