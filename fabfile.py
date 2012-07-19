@@ -1,8 +1,9 @@
+import os.path
 import time
 import urllib2
 
 from chef import autoconfigure, Search
-from fabric.api import *
+from fabric.api import env, put, run, sudo, task
 import fabric.utils
 
 
@@ -10,9 +11,14 @@ PROJECT_NAME = '@@project_name@@'
 DOC_DIR = '/var/www/docs/{0}'.format(PROJECT_NAME)
 
 
-def _set_username_password():
-    """Sets the username and password in the fabric env."""
-    # Override username/password here, if necessary
+def _set_credentials():
+    """Sets the credentials in the fabric env."""
+    # Override credentials here if necessary
+    env.user = 'ubuntu'
+    env.key_filename = [
+        os.path.expanduser('~/.ssh/ubuntu-id_dsa')]
+    env.abort_on_prompts = True
+    env.disable_known_hosts = True
 
 
 @task
@@ -35,7 +41,7 @@ def set_hosts(stage, role):
 @task
 def deploy_api(dist_file):
     """Deploy the api package"""
-    _set_username_password()
+    _set_credentials()
     provision()
     _deploy_python_package(dist_file)
     _sighup_api()
@@ -75,7 +81,7 @@ def _verify_api_heartbeat(retry=True):
 @task
 def deploy_worker(dist_file):
     """Deploy the worker package"""
-    _set_username_password()
+    _set_credentials()
     provision()
     _deploy_python_package(dist_file)
     _reload_supervisor()
@@ -91,6 +97,7 @@ def provision():
 def deploy_docs(project_name, version):
     """Deploy the documentation"""
 
+    _set_credentials()
     docs_base = '{0}/{1}'
     docs_path = docs_base.format(DOC_DIR, version)
     tar = '{0}_docs.tar.gz'.format(project_name)
@@ -98,8 +105,8 @@ def deploy_docs(project_name, version):
 
     put(tar, '/tmp/', mode=0666)
     run('rm -rf {0}'.format(docs_path))
-    run('mkdir -p {0}'.format(docs_path))
-    run('tar zxf /tmp/{0} -C {1}'.format(tar, docs_path))
+    sudo('mkdir -p {0}'.format(docs_path), user='www-data')
+    sudo('tar zxf /tmp/{0} -C {1}'.format(tar, docs_path), user='www-data')
 
     if '-' not in version:
         link_to_latest = True
@@ -107,13 +114,12 @@ def deploy_docs(project_name, version):
     else:
         docs_link = docs_base.format(DOC_DIR, 'staging')
 
-    run('rm -rf {0}'.format(docs_link))
-    run('chown -R :www-data {0}'.format(docs_path))
-    run('chmod -R 775 {0}'.format(docs_path))
-    run('ln -s {0} {1}'.format(docs_path, docs_link))
+    sudo('rm -rf {0}'.format(docs_link), user='www-data')
+    sudo('chmod -R 775 {0}'.format(docs_path), user='www-data')
+    sudo('ln -s {0} {1}'.format(docs_path, docs_link), user='www-data')
     if link_to_latest:
         latest_link = docs_base.format(DOC_DIR, 'latest')
-        run('ln -s {0} {1}'.format(docs_path, latest_link))
+        sudo('ln -s {0} {1}'.format(docs_path, latest_link), user='www-data')
 
 
 def _deploy_python_package(dist_file):
