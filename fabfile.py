@@ -71,7 +71,8 @@ def _verify_api_heartbeat(retry=True):
         return
 
     if not retry:
-        fabric.utils.abort('Host: {0} API is not functioning properly')
+        fabric.utils.abort(
+            'Host: {0} API is not functioning properly'.format(env.host_string))
     else:
         print '[{0}] Retrying heartbeat in 2 seconds...'.format(env.host_string)
         time.sleep(2)
