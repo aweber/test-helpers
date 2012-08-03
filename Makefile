@@ -31,26 +31,26 @@ VERSION = $(shell git status >/dev/null 2>/dev/null && git describe --abbrev=6 -
 .PHONY: test unit-test integration-test system-test acceptance-test tdd coverage coverage-html
 test: unit-test integration-test system-test acceptance-test
 unit-test: reports
-	$(DEVELOPMENT_ENV) $(NOSE) tests/unit --with-xunit --xunit-file=reports/unit-xunit.xml
+	$(DEVELOPMENT_ENV) $(NOSE) unit --with-xunit --xunit-file=reports/unit-xunit.xml
 
 integration-test: reports
-	$(DEVELOPMENT_ENV) $(NOSE) tests/integration --with-xunit --xunit-file=reports/integration-xunit.xml
+	$(DEVELOPMENT_ENV) $(NOSE) integration --with-xunit --xunit-file=reports/integration-xunit.xml
 
 system-test: reports
-	$(DEVELOPMENT_ENV) $(NOSE) tests/system --with-xunit --xunit-file=reports/system-xunit.xml
+	$(DEVELOPMENT_ENV) $(NOSE) system --with-xunit --xunit-file=reports/system-xunit.xml
 
 acceptance-test: reports
-	$(DEVELOPMENT_ENV) $(NOSE) tests/acceptance --with-xunit --xunit-file=reports/acceptance-xunit.xml
+	$(DEVELOPMENT_ENV) $(NOSE) acceptance --with-xunit --xunit-file=reports/acceptance-xunit.xml
 
 tdd:
 	$(DEVELOPMENT_ENV) $(NOSYD)
 
 coverage: reports
-	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.unit tests/unit
+	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.unit unit
 	$(COVERAGE) xml -o reports/unit-coverage.xml --include="*.py"
 
 integration-coverage: reports
-	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.integration tests/integration
+	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.integration integration
 	$(COVERAGE) xml -o reports/integration-coverage.xml --include="*.py"
 
 coverage-html:
