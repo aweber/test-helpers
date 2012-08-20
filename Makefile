@@ -161,3 +161,6 @@ deploy-production: dist Procfile
 
 deploy-vagrant: dist
 	fab set_hosts:'vagrant','api' deploy_api:$(DIST_FILE) -u vagrant -p vagrant
+
+create-vagrant-env: Procfile
+	caterer vagrant $(PACKAGE) Procfile > chef_script; sh chef_script
