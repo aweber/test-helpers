@@ -4,6 +4,11 @@
 PACKAGE = @@project_name@@
 MODULE = @@python_module@@
 
+# Each test module you wish to exclude from running on staging must be separated
+# by a vertical bar character.  eg: test1|test2|test3|...|testN
+# If ACCEPTANCE_TEST_EXCLUDES is left empty then all acceptance tests will run
+# on the staging environemnt
+ACCEPTANCE_TEST_EXCLUDES =
 ##
 ## NOTE: Anything changed below this line should be changed in base_service.git
 ## and then merged into individual projects.  This prevents conflicts and
@@ -41,6 +46,13 @@ system-test: reports
 
 acceptance-test: reports
 	$(DEVELOPMENT_ENV) $(NOSE) tests/acceptance --with-xunit --xunit-file=reports/acceptance-xunit.xml
+
+staging-acceptance-test: reports
+ifneq "$(strip $(ACCEPTANCE_TEST_EXCLUDES))" ""
+	$(DEVELOPMENT_ENV) $(NOSE) tests/acceptance --with-xunit --xunit-file=reports/acceptance-xunit.xml --exclude="(${ACCEPTANCE_TEST_EXCLUDES})"
+else
+	$(DEVELOPMENT_ENV) $(NOSE) tests/acceptance --with-xunit --xunit-file=reports/acceptance-xunit.xml
+endif
 
 tdd:
 	$(DEVELOPMENT_ENV) $(NOSYD)
