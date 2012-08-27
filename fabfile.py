@@ -14,9 +14,9 @@ DOC_DIR = '/var/www/docs/{0}'.format(PROJECT_NAME)
 def _set_credentials():
     """Sets the credentials in the fabric env."""
     # Override credentials here if necessary
-    env.user = 'ubuntu'
-    env.key_filename = [
-        os.path.expanduser('~/.ssh/ubuntu-id_dsa')]
+    if env.user == 'ubuntu':
+        env.key_filename = [
+            os.path.expanduser('~/.ssh/ubuntu-id_dsa')]
     env.abort_on_prompts = True
     env.disable_known_hosts = True
 

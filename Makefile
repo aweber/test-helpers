@@ -153,8 +153,14 @@ maintainer-clean: clean
 .PHONY: deploy-staging deploy-production
 deploy-staging: dist Procfile
 	caterer staging $(PACKAGE) Procfile > chef_script; sh chef_script
-	fab set_hosts:'staging','api' deploy_api:$(DIST_FILE)
+	fab set_hosts:'staging','api' deploy_api:$(DIST_FILE) -u ubuntu
 
 deploy-production: dist Procfile
 	caterer production $(PACKAGE) Procfile > chef_script; sh chef_script
-	fab set_hosts:'production','api' deploy_api:$(DIST_FILE)
+	fab set_hosts:'production','api' deploy_api:$(DIST_FILE) -u ubuntu
+
+deploy-vagrant: dist
+	fab set_hosts:'vagrant','api' deploy_api:$(DIST_FILE) -u vagrant -p vagrant
+
+create-vagrant-env: Procfile
+	caterer vagrant $(PACKAGE) Procfile > chef_script; sh chef_script
