@@ -129,7 +129,7 @@ upload: dist
 	$(PYTHON) setup.py register --repository aweber sdist upload --repository aweber
 
 deploy-docs: $(PACKAGE)_docs.tar.gz
-	fab set_documentation_host deploy_docs:$(PACKAGE),`cat RELEASE-VERSION`
+	fab set_documentation_host deploy_docs:$(PACKAGE),`cat RELEASE-VERSION` -u ubuntu
 
 $(PACKAGE)_docs.tar.gz: doc
 	cd doc/html; tar czf ../../$@ *
