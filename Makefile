@@ -164,3 +164,6 @@ deploy-vagrant: dist
 
 create-vagrant-env: Procfile
 	caterer vagrant $(PACKAGE) Procfile > chef_script; sh chef_script
+
+chef-roles: Procfile
+	caterer production $(PACKAGE) Procfile > /dev/null
