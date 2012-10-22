@@ -1,8 +1,9 @@
 coverage
-deterministic_dingus
+mock
 nose
 nose_machineout
+Nosyd
 pep8
 pylint
 Sphinx
-Nosyd
+unittest2
