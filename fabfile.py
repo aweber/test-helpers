@@ -3,7 +3,7 @@ import time
 import urllib2
 
 from chef import autoconfigure, Search
-from fabric.api import env, put, run, sudo, task
+from fabric.api import env, put, sudo, task
 import fabric.utils
 
 
@@ -29,11 +29,9 @@ def set_documentation_host():
 @task
 def set_hosts(stage, role):
     api = autoconfigure()
-    query = 'roles:{project_name}-python-{role}-node AND chef_environment:{stage}'.format(
-        project_name=PROJECT_NAME,
-        stage=stage,
-        role=role,
-    )
+    query = 'roles:{project_name}-python-{role}-node AND ' \
+        'chef_environment:{stage}'.format(project_name=PROJECT_NAME,
+                                          stage=stage, role=role)
     env.hosts = [row.object.attributes.get_dotted('fqdn') for
                  row in Search('node', query, api=api)]
 
@@ -62,7 +60,8 @@ def _verify_api_heartbeat(retry=True):
         resp = urllib2.urlopen(url)
         status_code = resp.getcode()
     except urllib2.HTTPError as error:
-        print '[{0}] Error while testing API: {1}'.format(env.host_string, error)
+        print '[{0}] Error while testing API: {1}'.format(env.host_string,
+                                                          error)
         print '[{0}] \t Received: {1}'.format(env.host_string, error.read())
         status_code = error.getcode()
 
@@ -71,10 +70,11 @@ def _verify_api_heartbeat(retry=True):
         return
 
     if not retry:
-        fabric.utils.abort(
-            'Host: {0} API is not functioning properly'.format(env.host_string))
+        fabric.utils.abort('Host: {0} API is not functioning properly'
+                           .format(env.host_string))
     else:
-        print '[{0}] Retrying heartbeat in 2 seconds...'.format(env.host_string)
+        print '[{0}] Retrying heartbeat in 2 seconds...' \
+            .format(env.host_string)
         time.sleep(2)
         _verify_api_heartbeat(retry=False)
 
@@ -133,18 +133,13 @@ def _deploy_python_package(dist_file):
                      ' --index-url=http://pypi.colo.lair/simple/')
 
     # Install all the deps first.
-    sudo(
-        'pip install {0} {1}'.format(remote_path, pip_arguments)
-    )
+    sudo('pip install {0} {1}'.format(remote_path, pip_arguments))
 
     # Install the package even if it's an update with the same name. Pip will
     # not upgrade the package if the version matches the installed version.
     # Forcing an upgrade with dependencies will re-download and install all
     # dependencies.
-    sudo(
-        'pip install -U {0} --no-deps {1}'.format(
-            remote_path, pip_arguments)
-    )
+    sudo('pip install -U {0} --no-deps {1}'.format(remote_path, pip_arguments))
     sudo('rm -f {0}'.format(remote_path))
 
 
@@ -153,7 +148,8 @@ def _reload_supervisor():
 
 
 def _sighup_api():
-    pid = sudo('supervisorctl status api | awk \'/RUNNING.*pid/ { sub(/,/, " ", $4); print $4 }\'')
+    pid = sudo('supervisorctl status api | '
+               'awk \'/RUNNING.*pid/ { sub(/,/, " ", $4); print $4 }\'')
     if pid:
         # There is an API running, we have the right PID
         pid = int(pid)
