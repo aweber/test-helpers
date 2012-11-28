@@ -17,6 +17,7 @@ ACCEPTANCE_TEST_EXCLUDES =
 COVERAGE = bin/coverage
 COVERAGE_ARGS = --with-coverage --cover-package=$(MODULE) --cover-tests --cover-erase
 DEVELOPMENT_ENV = source bin/activate; $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
+APT_REQ_FILE = requirements.apt
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = bin/easy_install
 FLASKAPI_DOCS = PYTHONPATH=. bin/flaskapi-docs
@@ -165,14 +166,14 @@ maintainer-clean: clean
 .PHONY: deploy-staging deploy-production
 deploy-staging: dist Procfile
 	caterer staging $(PACKAGE) Procfile > chef_script; sh chef_script
-	fab set_hosts:'staging','api' deploy_api:$(DIST_FILE) -u ubuntu
+	fab set_hosts:'staging','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
 
 deploy-production: dist Procfile
 	caterer production $(PACKAGE) Procfile > chef_script; sh chef_script
-	fab set_hosts:'production','api' deploy_api:$(DIST_FILE) -u ubuntu
+	fab set_hosts:'production','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
 
 deploy-vagrant: dist
-	fab set_hosts:'vagrant','api' deploy_api:$(DIST_FILE) -u vagrant -p vagrant
+	fab set_hosts:'vagrant','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u vagrant -p vagrant
 
 create-vagrant-env: Procfile
 	caterer vagrant $(PACKAGE) Procfile > chef_script; sh chef_script

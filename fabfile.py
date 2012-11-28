@@ -37,10 +37,11 @@ def set_hosts(stage, role):
 
 
 @task
-def deploy_api(dist_file):
+def deploy_api(dist_file, apt_req_file):
     """Deploy the api package"""
     _set_credentials()
     provision()
+    _deploy_apt_requirements(apt_req_file)
     _deploy_python_package(dist_file)
     _sighup_api()
     _verify_api_heartbeat()
