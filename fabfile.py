@@ -116,12 +116,11 @@ def deploy_docs(project_name, version):
     else:
         docs_link = docs_base.format(DOC_DIR, 'staging')
 
-    sudo('rm -rf {0}'.format(docs_link), user='www-data')
     sudo('chmod -R 775 {0}'.format(docs_path), user='www-data')
-    sudo('ln -s {0} {1}'.format(docs_path, docs_link), user='www-data')
+    sudo('ln -snf {0} {1}'.format(docs_path, docs_link), user='www-data')
     if link_to_latest:
         latest_link = docs_base.format(DOC_DIR, 'latest')
-        sudo('ln -s {0} {1}'.format(docs_path, latest_link), user='www-data')
+        sudo('ln -snf {0} {1}'.format(docs_path, latest_link), user='www-data')
 
 def _deploy_apt_requirements(apt_req_file):
     apt_requirements = open(apt_req_file).readlines()
