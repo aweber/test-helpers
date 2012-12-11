@@ -10,22 +10,28 @@ max-line-length=100
 # Disable the message(s) with the given id(s).
 # In addition to regularly disabled messages, also
 # disable the following:
-#	:C0111: *Missing docstring*
-#		Reason: We don't want to document test files. When the
-#		tests are run, the docstring will be displayed instead of
-#		the name of the test.
-#	:R0201: *Method could be a function*
-#		Reason: Tests that use `mod.some_function.calls()` to
-#		assert that a function call was made will trigger this
-#		message, but are valid tests.
-#	:W0212: *Access to a protected member %s of a client class*
-#		Reason: It is often necessary to access protected
-#		members in tests.
-#	:E1120: *No value passed for parameter %s in function call*
-#		Reason: When using Dingus, we often reference the
-#		result of a function call as `self.module.some_function()`
-#		which is valid, but causes this message to appear.
-disable=W0142,E0611,E1103,W0105,E1101,W0201,C0111,R0201,W0212,E1120
+#   :C0111: *Missing docstring*
+#       Reason: We don't want to document test files. When the
+#       tests are run, the docstring will be displayed instead of
+#       the name of the test.
+#   :R0201: *Method could be a function*
+#       Reason: Tests that use `mod.some_function.calls()` to
+#       assert that a function call was made will trigger this
+#       message, but are valid tests.
+#   :W0212: *Access to a protected member %s of a client class*
+#       Reason: It is often necessary to access protected
+#       members in tests.
+#   :E1120: *No value passed for parameter %s in function call*
+#       Reason: When using Dingus, we often reference the
+#       result of a function call as `self.module.some_function()`
+#       which is valid, but causes this message to appear.
+#   :W0703: *Catch "Exception" Used when an except catches Exception instances*
+#       Reason: Within our unit tests we often catch a general exception
+#       then check various aspects about that error.
+#   :R0904: *Too many public methods (%s/%s)*
+#       Reason: Inheriting from unittest2.TestCase will trigger this message.
+#
+disable=W0142,E0611,E1103,W0105,E1101,W0201,C0111,R0201,W0212,E1120,R0904,W0703
 
 [BASIC]
 # Regular expression which should only match correct function names
