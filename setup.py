@@ -16,19 +16,19 @@ def read_release_version():
 
 
 setup(
-    name = '@@project_name@@',
-    description = 'A git repo scaffold for new projects',
-    packages = find_packages(),
-    include_package_data = True,
-    zip_safe = False,
-    install_requires = [
+    name='@@project_name@@',
+    description='A git repo scaffold for new projects',
+    packages=find_packages(),
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=[
     ],
-    long_description = '''A git repo scaffold for new projects''',
+    long_description='''A git repo scaffold for new projects''',
     dependency_links=['http://pypi.colo.lair/simple/'],
-    version = read_release_version(),
-    author = 'AWeber Communications',
-    author_email = 'packages@aweber.com',
-    entry_points = {
+    version=read_release_version(),
+    author='AWeber Communications',
+    author_email='packages@aweber.com',
+    entry_points={
         'console_scripts': [
         ],
     }
