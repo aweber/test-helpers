@@ -1,6 +1,7 @@
 import os.path
 import time
 import urllib2
+import socket
 
 from chef import autoconfigure, Search
 from fabric.api import env, put, sudo, task
@@ -32,6 +33,7 @@ def set_hosts(stage, role):
     query = 'roles:{project_name}-python-{role}-node AND ' \
         'chef_environment:{stage}'.format(project_name=PROJECT_NAME,
                                           stage=stage, role=role)
+    env.stage = stage
     env.hosts = [row.object.attributes.get_dotted('fqdn') for
                  row in Search('node', query, api=api)]
 
@@ -45,6 +47,7 @@ def deploy_api(dist_file, apt_req_file):
     _deploy_python_package(dist_file)
     _sighup_api()
     _verify_api_heartbeat()
+    send_build_stat(PROJECT_NAME, env.stage)
 
 
 def _verify_api_heartbeat(retry=True):
@@ -162,3 +165,45 @@ def _sighup_api():
     else:
         # There is no API started
         sudo('supervisorctl start api')
+
+
+def send_build_stat(project_name, environment):
+    """Send a metric to graphite that indicates a succesful build
+
+    :param str project_name:
+        The name of the project we deployed
+
+    :param str environment:
+        The stage where `project_name` was deployed. [staging, production]
+
+    """
+    timestamp = int(time.time())
+
+    # In graphite we can draw a non-zero value as an vertical asymptote
+    # The packet looks like: <metric> <value> <unix_timestamp>
+    metric = 'applications.{0}.build 1 {1}\n'.format(project_name, timestamp)
+
+    port = 2003
+    for host in get_graphite_hosts(environment):
+        try:
+            sock = socket.create_connection((host, port), timeout=0.5)
+            print 'Sending metric to {0}: "{1}"'.format(host, metric)
+            sock.sendall(metric)
+            sock.close()
+            return
+        except socket.error as error:
+            print "ERROR: Unable to send metric to {0}: {1}".format(host, error)
+            continue
+
+
+def get_graphite_hosts(environment):
+    """Retrieve the hostname for graphite.
+
+    :param str environment:
+        The environment in which to locate the graphite server
+
+    """
+    api = autoconfigure()
+    query = 'roles:graphite-server AND chef_environment:{0}'.format(environment)
+    result = Search('node', query, api=api)
+    return [row.object.attributes.get_dotted('fqdn') for row in result]
