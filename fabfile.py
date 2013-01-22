@@ -125,11 +125,13 @@ def deploy_docs(project_name, version):
         latest_link = docs_base.format(DOC_DIR, 'latest')
         sudo('ln -snf {0} {1}'.format(docs_path, latest_link), user='www-data')
 
+
 def _deploy_apt_requirements(apt_req_file):
     apt_requirements = open(apt_req_file).readlines()
 
     for apt_req in apt_requirements:
-        sudo ('apt-get -y install {0}'.format(apt_req))
+        sudo('apt-get -y install {0}'.format(apt_req))
+
 
 def _deploy_python_package(dist_file):
     remote_path = '/tmp/{0}-latest.tar.gz'.format(PROJECT_NAME)
