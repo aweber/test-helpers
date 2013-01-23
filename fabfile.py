@@ -1,7 +1,7 @@
 import os.path
+import socket
 import time
 import urllib2
-import socket
 
 from chef import autoconfigure, Search
 from fabric.api import env, put, sudo, task
