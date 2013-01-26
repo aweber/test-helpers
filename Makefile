@@ -52,7 +52,6 @@ coverage-html:
 reports:
 	mkdir -p $@
 
-
 ## Documentation ##
 .PHONY: doc
 doc: RELEASE-VERSION
@@ -73,7 +72,6 @@ pep8: reports
 	# limitation for long lines in tests and PyLint already checks line
 	# length for us.
 	-bin/pep8 --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee reports/pep8.txt
-
 
 ## Local Setup ##
 requirements: virtualenv clean-requirements
@@ -114,7 +112,6 @@ deploy-docs: $(PACKAGE)_docs.tar.gz
 $(PACKAGE)_docs.tar.gz: doc
 	cd doc/html; tar czf ../../$@ *
 
-
 ## Housekeeping ##
 clean:
 	# clean python bytecode files
@@ -123,7 +120,6 @@ clean:
 	-rm -f .nose-stopwatch-times .coverage
 	-rm -rf reports
 	-rm -f nosetests.xml
-	#
 	-rm -rf build dist tmp uml/* *.egg-info RELEASE-VERSION htmlcov
 
 maintainer-clean: clean
