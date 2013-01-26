@@ -15,7 +15,6 @@ DEVELOPMENT_ENV = source bin/activate; $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z
 APT_REQ_FILE = requirements.apt
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = bin/easy_install
-FLASKAPI_DOCS = PYTHONPATH=. bin/flaskapi-docs
 IPYTHON = bin/ipython
 NOSE = bin/nosetests
 NOSYD = bin/nosyd -1
@@ -62,16 +61,9 @@ reports:
 
 
 ## Documentation ##
-.PHONY: doc generated_api_doc
-doc: RELEASE-VERSION generated_api_doc
+.PHONY: doc
+doc: RELEASE-VERSION
 	$(PYTHON) setup.py build_sphinx
-
-generated_api_doc:
-	# Generate the docs for API views if the appropriate module is present.
-ifneq "$(strip $(wildcard $(MODULE)/api/views))" ""
-	$(FLASKAPI_DOCS) $(MODULE).api.views > ./doc/source/generated_api_doc.rst
-endif
-
 
 ## Static analysis ##
 .PHONY: lint uml metrics pep8 pylint
