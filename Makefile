@@ -15,13 +15,10 @@ DEVELOPMENT_ENV = source bin/activate; $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z
 APT_REQ_FILE = requirements.apt
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = bin/easy_install
-IPYTHON = bin/ipython
 NOSE = bin/nosetests
 PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" bin/pip
 PIP_OPTIONS = --index-url=http://pypi.colo.lair/simple/
-PYREVERSE = pyreverse -o png -p
 PYTHON = bin/python
-PYTHON_DOCTEST = $(PYTHON) -m doctest
 SCP = scp
 # Work around a bug in git describe: http://comments.gmane.org/gmane.comp.version-control.git/178169
 VERSION = $(shell git status >/dev/null 2>/dev/null && git describe --abbrev=6 --tags --dirty --match="v*" | cut -c 2-)
