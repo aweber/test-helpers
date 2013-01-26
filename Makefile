@@ -17,7 +17,6 @@ DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = bin/easy_install
 IPYTHON = bin/ipython
 NOSE = bin/nosetests
-NOSYD = bin/nosyd -1
 PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" bin/pip
 PIP_OPTIONS = --index-url=http://pypi.colo.lair/simple/
 PYREVERSE = pyreverse -o png -p
@@ -41,9 +40,6 @@ system-test: reports
 
 acceptance-test: reports
 	$(DEVELOPMENT_ENV) $(NOSE) acceptance --with-xunit --xunit-file=reports/acceptance-xunit.xml
-
-tdd:
-	$(DEVELOPMENT_ENV) $(NOSYD)
 
 coverage: reports
 	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.unit unit
@@ -97,12 +93,6 @@ virtualenv:
 
 clean-requirements:
 	-rm -rf src
-
-
-.PHONY: foreman
-foreman:
-	$(DEVELOPMENT_ENV) PYTHON_LOGCONFIG_LOG_TO_STDOUT=1 foreman start
-
 
 ## Packaging ##
 .PHONY: RELEASE-VERSION
