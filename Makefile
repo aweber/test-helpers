@@ -55,7 +55,7 @@ doc: RELEASE-VERSION
 	$(PYTHON) setup.py build_sphinx
 
 ## Static analysis ##
-.PHONY: lint uml metrics pep8 pylint
+.PHONY: lint pep8 pylint
 lint: pylint pep8
 pylint: reports tests.pylintrc
 	-bin/pylint --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
@@ -76,7 +76,6 @@ requirements: virtualenv clean-requirements
 	# need ports libevent and libevent1 for mac_dev
 	-test -e $(HOME)/.requirements.pip && $(PIP) install $(PIP_OPTIONS) -r $(HOME)/.requirements.pip
 	$(PIP) install $(PIP_OPTIONS) -r requirements.pip
-	-rm README.txt
 	# These libs don't work when installed via pip.
 	$(EASY_INSTALL) readline
 
@@ -117,7 +116,7 @@ clean:
 	-rm -f .nose-stopwatch-times .coverage
 	-rm -rf reports
 	-rm -f nosetests.xml
-	-rm -rf build dist tmp uml/* *.egg-info RELEASE-VERSION htmlcov
+	-rm -rf build dist *.egg-info RELEASE-VERSION htmlcov
 
 maintainer-clean: clean
 	rm -rf bin include lib man share src doc/doctrees doc/html
