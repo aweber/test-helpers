@@ -27,16 +27,13 @@ SCP = scp
 VERSION = $(shell git status >/dev/null 2>/dev/null && git describe --abbrev=6 --tags --dirty --match="v*" | cut -c 2-)
 
 ## Testing ##
-.PHONY: test unit-test integration-test system-test acceptance-test tdd coverage coverage-html
-test: unit-test integration-test system-test acceptance-test
+.PHONY: test unit-test integration-test acceptance-test coverage coverage-html
+test: unit-test integration-test acceptance-test
 unit-test: reports
 	$(DEVELOPMENT_ENV) $(NOSE) unit --with-xunit --xunit-file=reports/unit-xunit.xml
 
 integration-test: reports
 	$(DEVELOPMENT_ENV) $(NOSE) integration --with-xunit --xunit-file=reports/integration-xunit.xml
-
-system-test: reports
-	$(DEVELOPMENT_ENV) $(NOSE) system --with-xunit --xunit-file=reports/system-xunit.xml
 
 acceptance-test: reports
 	$(DEVELOPMENT_ENV) $(NOSE) acceptance --with-xunit --xunit-file=reports/acceptance-xunit.xml
