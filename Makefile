@@ -13,40 +13,41 @@ ENVDIR = ./env
 SHELL = BASH_ENV=$(ENVDIR)/bin/activate /bin/bash
 
 COVERAGE = coverage
-COVERAGE_ARGS = --with-coverage --cover-package=$(MODULE) --cover-branches --cover-tests --cover-erase
+COVERAGE_ARGS = --with-coverage --cover-erase --cover-package=$(MODULE) --cover-branches --cover-tests
 DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
-APT_REQ_FILE = requirements.apt
-DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EASY_INSTALL = easy_install
-NOSE = nosetests
 PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" pip
 PIP_OPTIONS = --index-url=http://pypi.colo.lair/simple/
 PYTHON = python
 PYTHON_VERSION = python2.6
 SCP = scp
+SETUP := $(PYTHON) setup.py
 # Work around a bug in git describe: http://comments.gmane.org/gmane.comp.version-control.git/178169
 VERSION = $(shell git status >/dev/null 2>/dev/null && git describe --abbrev=6 --tags --dirty --match="v*" | cut -c 2-)
 VIRTUALENV = virtualenv
 VIRTUALENVOPTS = --distribute --python=$(PYTHON_VERSION) --no-site-packages
 
+APT_REQ_FILE = requirements.apt
+DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
+
 ## Testing ##
 .PHONY: test unit-test integration-test acceptance-test coverage coverage-html
 test: unit-test integration-test acceptance-test
 unit-test: reports
-	$(DEVELOPMENT_ENV) $(NOSE) unit --with-xunit --xunit-file=reports/unit-xunit.xml
+	$(DEVELOPMENT_ENV) $(SETUP) test unit --with-xunit --xunit-file=reports/unit-xunit.xml
 
 integration-test: reports
-	$(DEVELOPMENT_ENV) $(NOSE) integration --with-xunit --xunit-file=reports/integration-xunit.xml
+	$(DEVELOPMENT_ENV) $(SETUP) test integration --with-xunit --xunit-file=reports/integration-xunit.xml
 
 acceptance-test: reports
-	$(DEVELOPMENT_ENV) $(NOSE) acceptance --with-xunit --xunit-file=reports/acceptance-xunit.xml
+	$(DEVELOPMENT_ENV) $(SETUP) test acceptance --with-xunit --xunit-file=reports/acceptance-xunit.xml
 
 coverage: reports
-	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.unit unit
+	$(DEVELOPMENT_ENV) $(SETUP) test $(COVERAGE_ARGS) --cover-package=tests.unit unit
 	$(COVERAGE) xml -o reports/unit-coverage.xml --include="*.py"
 
 integration-coverage: reports
-	$(DEVELOPMENT_ENV) $(NOSE) $(COVERAGE_ARGS) --cover-package=tests.integration integration
+	$(DEVELOPMENT_ENV) $(SETUP) test $(COVERAGE_ARGS) --cover-package=tests.integration integration
 	$(COVERAGE) xml -o reports/integration-coverage.xml --include="*.py"
 
 coverage-html:
@@ -58,7 +59,7 @@ reports:
 ## Documentation ##
 .PHONY: doc
 doc: RELEASE-VERSION
-	$(PYTHON) setup.py build_sphinx
+	$(SETUP) build_sphinx
 
 ## Static analysis ##
 .PHONY: lint pep8 pylint
@@ -101,14 +102,14 @@ RELEASE-VERSION:
 .PHONY: dist upload $(DIST_FILE)
 dist: $(DIST_FILE)
 $(DIST_FILE): RELEASE-VERSION
-	$(PYTHON) setup.py sdist
+	$(SETUP) sdist
 
 upload: dist
 	@if echo $(VERSION) | grep -q dirty; then \
 	    echo "Stubbornly refusing to upload a dirty package! Tag a proper release!" >&2; \
 	    exit 1; \
 	fi
-	$(PYTHON) setup.py register --repository aweber sdist upload --repository aweber
+	$(SETUP) register --repository aweber sdist upload --repository aweber
 
 deploy-docs: $(PACKAGE)_docs.tar.gz
 	fab set_documentation_host deploy_docs:$(PACKAGE),`cat RELEASE-VERSION` -u ubuntu
