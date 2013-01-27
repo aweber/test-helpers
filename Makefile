@@ -13,7 +13,7 @@ ENVDIR = ./env
 SHELL = BASH_ENV=$(ENVDIR)/bin/activate /bin/bash
 
 COVERAGE = coverage
-COVERAGE_ARGS = --with-coverage --cover-package=$(MODULE) --cover-tests --cover-erase
+COVERAGE_ARGS = --with-coverage --cover-package=$(MODULE) --cover-branches --cover-tests --cover-erase
 DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
 APT_REQ_FILE = requirements.apt
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
