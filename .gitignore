@@ -9,7 +9,6 @@
 *.pyd
 *.pyo
 *.tmp*
-.Python
 .bzr
 .coverage
 .hg
@@ -18,14 +17,9 @@
 .nose-stopwatch-times
 .svn
 nosetests.xml
-/build
 /reports
-/share
 /tests.pylintrc
-/tmp
 /uml
-bin
-/lib
 develop-eggs
 dist
 doc/doctrees
@@ -34,7 +28,6 @@ downloads
 eggs
 fake-eggs
 htmlcov
-include
 parts
 pip-log.txt
 
@@ -55,7 +48,6 @@ pip-log.txt
 /RELEASE-VERSION
 evo/evo_version.py
 deb_dist
-/src
 worker_entry_points.txt
 
 # Logs and databases #
@@ -63,7 +55,6 @@ worker_entry_points.txt
 *.log
 *.sql
 *.sqlite
-man/man1/nosetests.1
 
 # OS generated files #
 ######################

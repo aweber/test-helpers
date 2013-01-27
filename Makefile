@@ -9,19 +9,25 @@ MODULE = @@python_module@@
 ## and then merged into individual projects.  This prevents conflicts and
 ## maintains consistency between projects.
 ##
-COVERAGE = bin/coverage
+ENVDIR = ./env
+SHELL = BASH_ENV=$(ENVDIR)/bin/activate /bin/bash
+
+COVERAGE = coverage
 COVERAGE_ARGS = --with-coverage --cover-package=$(MODULE) --cover-tests --cover-erase
-DEVELOPMENT_ENV = source bin/activate; $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
+DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
 APT_REQ_FILE = requirements.apt
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
-EASY_INSTALL = bin/easy_install
-NOSE = bin/nosetests
-PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" bin/pip
+EASY_INSTALL = easy_install
+NOSE = nosetests
+PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" pip
 PIP_OPTIONS = --index-url=http://pypi.colo.lair/simple/
-PYTHON = bin/python
+PYTHON = python
+PYTHON_VERSION = python2.6
 SCP = scp
 # Work around a bug in git describe: http://comments.gmane.org/gmane.comp.version-control.git/178169
 VERSION = $(shell git status >/dev/null 2>/dev/null && git describe --abbrev=6 --tags --dirty --match="v*" | cut -c 2-)
+VIRTUALENV = virtualenv
+VIRTUALENVOPTS = --distribute --python=$(PYTHON_VERSION) --no-site-packages
 
 ## Testing ##
 .PHONY: test unit-test integration-test acceptance-test coverage coverage-html
@@ -58,8 +64,8 @@ doc: RELEASE-VERSION
 .PHONY: lint pep8 pylint
 lint: pylint pep8
 pylint: reports tests.pylintrc
-	-bin/pylint --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
-	-bin/pylint --reports=y --output-format=parseable --rcfile=tests.pylintrc tests | tee reports/tests_lint.txt
+	-pylint --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
+	-pylint --reports=y --output-format=parseable --rcfile=tests.pylintrc tests | tee reports/tests_lint.txt
 
 tests.pylintrc: pylintrc pylintrc-tests-overrides
 	cat $^ > $@
@@ -68,9 +74,10 @@ pep8: reports
 	# Strip out warnings about long lines in tests. We loosen the
 	# limitation for long lines in tests and PyLint already checks line
 	# length for us.
-	-bin/pep8 --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee reports/pep8.txt
+	-pep8 --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee reports/pep8.txt
 
 ## Local Setup ##
+.PHONY: virtualenv
 requirements: virtualenv clean-requirements
 	$(EASY_INSTALL) -U distribute
 	# need ports libevent and libevent1 for mac_dev
@@ -79,8 +86,9 @@ requirements: virtualenv clean-requirements
 	# These libs don't work when installed via pip.
 	$(EASY_INSTALL) readline
 
-virtualenv:
-	virtualenv --distribute --no-site-packages --python=python2.6 .
+virtualenv: RELEASE-VERSION $(ENVDIR)
+$(ENVDIR):
+	$(VIRTUALENV) $(VIRTUALENVOPTS) $(ENVDIR)
 
 clean-requirements:
 	-rm -rf src
@@ -116,10 +124,10 @@ clean:
 	-rm -f .nose-stopwatch-times .coverage
 	-rm -rf reports
 	-rm -f nosetests.xml
-	-rm -rf build dist *.egg-info RELEASE-VERSION htmlcov
+	-rm -rf $(ENVDIR) dist *.egg-info RELEASE-VERSION htmlcov
 
 maintainer-clean: clean
-	rm -rf bin include lib man share src doc/doctrees doc/html
+	rm -rf doc/doctrees doc/html
 
 ## Service Deployment ##
 .PHONY: deploy-staging deploy-production
