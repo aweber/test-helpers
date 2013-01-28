@@ -17,7 +17,7 @@ COVERAGE_ARGS = --with-coverage --cover-erase --cover-package=$(MODULE) --cover-
 DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
 EASY_INSTALL = easy_install
 PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" pip
-PIP_OPTIONS = --index-url=http://pypi.colo.lair/simple/
+PIPOPTS=$(patsubst %,-r %,$(wildcard $(HOME)/.requirements.pip requirements.pip)) --index-url=http://pypi.colo.lair/simple/
 PYTHON = python
 PYTHON_VERSION = python2.6
 SCP = scp
@@ -29,6 +29,10 @@ VIRTUALENVOPTS = --distribute --python=$(PYTHON_VERSION) --no-site-packages
 
 APT_REQ_FILE = requirements.apt
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
+
+# Requirements that cannot be installed via pip (packages
+# listed here will be installed via easy_install)
+ADDTLREQS = nose_machineout readline
 
 ## Testing ##
 .PHONY: test unit-test integration-test acceptance-test coverage coverage-html
@@ -78,21 +82,22 @@ pep8: reports
 	-pep8 --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee reports/pep8.txt
 
 ## Local Setup ##
-.PHONY: virtualenv
-requirements: virtualenv clean-requirements
+.PHONY: requirements req virtualenv
+requirements: virtualenv
+	@rm -f .req
+	$(MAKE) .req
+req: .req
+.req: $(ENVDIR) requirements.pip
 	$(EASY_INSTALL) -U distribute
 	# need ports libevent and libevent1 for mac_dev
-	-test -e $(HOME)/.requirements.pip && $(PIP) install $(PIP_OPTIONS) -r $(HOME)/.requirements.pip
-	$(PIP) install $(PIP_OPTIONS) -r requirements.pip
-	# These libs don't work when installed via pip.
-	$(EASY_INSTALL) readline
+	$(PIP) install $(PIPOPTS)
+	$(EASY_INSTALL) -U $(ADDTLREQS)
+	@touch .req
 
 virtualenv: RELEASE-VERSION $(ENVDIR)
 $(ENVDIR):
 	$(VIRTUALENV) $(VIRTUALENVOPTS) $(ENVDIR)
 
-clean-requirements:
-	-rm -rf src
 
 ## Packaging ##
 .PHONY: RELEASE-VERSION
@@ -121,7 +126,7 @@ $(PACKAGE)_docs.tar.gz: doc
 clean:
 	# clean python bytecode files
 	-find . -type f -name '*.pyc' -o -name '*.tar.gz' | xargs rm -f
-	-rm -f pip-log.txt
+	-rm -f pip-log.txt .req
 	-rm -f .nose-stopwatch-times .coverage
 	-rm -rf reports
 	-rm -f nosetests.xml
