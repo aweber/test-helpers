@@ -29,6 +29,7 @@ VIRTUALENVOPTS = --distribute --python=$(PYTHON_VERSION) --no-site-packages
 
 APT_REQ_FILE = requirements.apt
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
+EGG_LINK := $(ENVDIR)/lib/$(PYTHON_VERSION)/site-packages/$(PACKAGE).egg-link
 
 # Requirements that cannot be installed via pip (packages
 # listed here will be installed via easy_install)
@@ -82,7 +83,7 @@ pep8: reports
 	-pep8 --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee reports/pep8.txt
 
 ## Local Setup ##
-.PHONY: requirements req virtualenv
+.PHONY: requirements req virtualenv dev
 requirements: virtualenv
 	@rm -f .req
 	$(MAKE) .req
@@ -98,6 +99,9 @@ virtualenv: RELEASE-VERSION $(ENVDIR)
 $(ENVDIR):
 	$(VIRTUALENV) $(VIRTUALENVOPTS) $(ENVDIR)
 
+dev: RELEASE-VERSION $(EGG_LINK)
+$(EGG_LINK): setup.py .req
+	$(SETUP) develop
 
 ## Packaging ##
 .PHONY: RELEASE-VERSION
