@@ -58,12 +58,12 @@ integration-coverage: reports
 coverage-html:
 	$(COVERAGE) html
 
-reports:
+reports: dev
 	mkdir -p $@
 
 ## Documentation ##
 .PHONY: doc
-doc: RELEASE-VERSION
+doc: dev
 	$(SETUP) build_sphinx
 
 ## Static analysis ##
