@@ -127,14 +127,11 @@ $(PACKAGE)_docs.tar.gz: doc
 	cd doc/html; tar czf ../../$@ *
 
 ## Housekeeping ##
+.PHONY: clean maintainer-clean
 clean:
-	# clean python bytecode files
-	-find . -type f -name '*.pyc' -o -name '*.tar.gz' | xargs rm -f
-	-rm -f pip-log.txt .req
-	-rm -f .nose-stopwatch-times .coverage
-	-rm -rf reports
-	-rm -f nosetests.xml
-	-rm -rf $(ENVDIR) dist *.egg-info RELEASE-VERSION htmlcov
+	rm -rf $(ENVDIR) RELEASE-VERSION dist htmlcov reports *.egg *.egg-info
+	rm -f .coverage .nose-stopwatch-times .req nosetests.xml pip-log.txt
+	find . -type f -name '*.pyc' -delete
 
 maintainer-clean: clean
 	rm -rf doc/doctrees doc/html
