@@ -130,14 +130,23 @@ $(PACKAGE)_docs.tar.gz: doc
 .PHONY: clean maintainer-clean
 clean:
 	rm -rf $(ENVDIR) RELEASE-VERSION dist htmlcov reports *.egg *.egg-info
-	rm -f .coverage .nose-stopwatch-times .req nosetests.xml pip-log.txt
+	rm -f .coverage .nose-stopwatch-times .req chef_script nosetests.xml pip-log.txt
 	find . -type f -name '*.pyc' -delete
 
 maintainer-clean: clean
 	rm -rf doc/doctrees doc/html
 
 ## Service Deployment ##
-.PHONY: deploy-staging deploy-production
+.PHONY: vagrant-env chef-roles deploy-vagrant deploy-staging deploy-production
+vagrant-env: Procfile
+	caterer vagrant $(PACKAGE) Procfile > chef_script; sh chef_script
+
+chef-roles: Procfile
+	caterer production $(PACKAGE) Procfile > /dev/null
+
+deploy-vagrant: dist
+	fab set_hosts:'vagrant','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u vagrant -p vagrant
+
 deploy-staging: dist Procfile
 	caterer staging $(PACKAGE) Procfile > chef_script; sh chef_script
 	fab set_hosts:'staging','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
@@ -145,12 +154,3 @@ deploy-staging: dist Procfile
 deploy-production: dist Procfile
 	caterer production $(PACKAGE) Procfile > chef_script; sh chef_script
 	fab set_hosts:'production','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
-
-deploy-vagrant: dist
-	fab set_hosts:'vagrant','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u vagrant -p vagrant
-
-create-vagrant-env: Procfile
-	caterer vagrant $(PACKAGE) Procfile > chef_script; sh chef_script
-
-chef-roles: Procfile
-	caterer production $(PACKAGE) Procfile > /dev/null
