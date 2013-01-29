@@ -146,10 +146,7 @@ chef-roles: Procfile
 deploy-vagrant: dist
 	fab set_hosts:'vagrant','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u vagrant -p vagrant
 
-deploy-staging: dist Procfile
-	caterer staging $(PACKAGE) Procfile > chef_script; sh chef_script
-	fab set_hosts:'staging','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
-
-deploy-production: dist Procfile
-	caterer production $(PACKAGE) Procfile > chef_script; sh chef_script
-	fab set_hosts:'production','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
+deploy-staging deploy-production:ENV = $(word 2,$(subst -, ,$@))
+deploy-staging deploy-production: Procfile dist
+	caterer $(ENV) $(PACKAGE) Procfile > chef_script; sh chef_script
+	fab set_hosts:'$(ENV)','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
