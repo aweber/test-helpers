@@ -59,6 +59,7 @@ reports: dev
 ## Documentation ##
 .PHONY: doc
 doc: dev
+	mkdir -p $(CURDIR)/doc/source/_static
 	$(SETUP) build_sphinx
 
 ## Static Analysis ##
