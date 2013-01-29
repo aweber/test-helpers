@@ -16,8 +16,10 @@ COVERAGE = coverage
 COVERAGE_ARGS = --with-coverage --cover-erase --cover-package=$(MODULE) --cover-branches --cover-tests
 DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
 EASY_INSTALL = easy_install
+PEP8 = pep8
 PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" pip
 PIPOPTS=$(patsubst %,-r %,$(wildcard $(HOME)/.requirements.pip requirements.pip)) --index-url=http://pypi.colo.lair/simple/
+PYLINT = pylint
 PYTHON = python
 PYTHON_VERSION = python2.6
 SCP = scp
@@ -59,21 +61,21 @@ reports: dev
 doc: dev
 	$(SETUP) build_sphinx
 
-## Static analysis ##
+## Static Analysis ##
 .PHONY: lint pep8 pylint
-lint: pylint pep8
-pylint: reports tests.pylintrc
-	-pylint --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
-	-pylint --reports=y --output-format=parseable --rcfile=tests.pylintrc tests | tee reports/tests_lint.txt
+lint: pep8 pylint
+pylint: reports .tests.pylintrc
+	-$(PYLINT) --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
+	-$(PYLINT) --reports=y --output-format=parseable --rcfile=.tests.pylintrc tests | tee reports/tests_pylint.txt
 
-tests.pylintrc: pylintrc pylintrc-tests-overrides
+.tests.pylintrc: pylintrc pylintrc-tests-overrides
 	cat $^ > $@
 
 pep8: reports
 	# Strip out warnings about long lines in tests. We loosen the
-	# limitation for long lines in tests and PyLint already checks line
+	# limitation for long lines in tests and Pylint already checks line
 	# length for us.
-	-pep8 --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee reports/pep8.txt
+	-$(PEP8) --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee reports/pep8.txt
 
 ## Local Setup ##
 .PHONY: requirements req virtualenv dev
@@ -122,8 +124,8 @@ $(PACKAGE)_docs.tar.gz: doc
 ## Housekeeping ##
 .PHONY: clean maintainer-clean
 clean:
-	rm -f .coverage .nose-stopwatch-times .req chef_script nosetests.xml pip-log.txt
 	rm -rf $(ENVDIR) RELEASE-VERSION dist reports *.egg *.egg-info
+	rm -f .coverage .nose-stopwatch-times .req .tests.pylintrc chef_script nosetests.xml pip-log.txt
 	find . -type f -name '*.pyc' -delete
 
 maintainer-clean: clean
