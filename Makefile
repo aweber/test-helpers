@@ -36,27 +36,20 @@ EGG_LINK := $(ENVDIR)/lib/$(PYTHON_VERSION)/site-packages/$(PACKAGE).egg-link
 ADDTLREQS = nose_machineout readline
 
 ## Testing ##
-.PHONY: test unit-test integration-test acceptance-test coverage coverage-html
-test: unit-test integration-test acceptance-test
-unit-test: reports
-	$(DEVELOPMENT_ENV) $(SETUP) test unit --with-xunit --xunit-file=reports/unit-xunit.xml
+TEST_TARGETS := $(foreach scope, unit integration acceptance, $(scope)-test)
+COVERAGE_TARGETS := $(foreach scope, unit integration, $(scope)-coverage)
+SCOPED_TARGETS := $(TEST_TARGETS) $(COVERAGE_TARGETS)
 
-integration-test: reports
-	$(DEVELOPMENT_ENV) $(SETUP) test integration --with-xunit --xunit-file=reports/integration-xunit.xml
+.PHONY: test coverage $(SCOPED_TARGETS)
+test: $(TEST_TARGETS)
+coverage: unit-coverage
 
-acceptance-test: reports
-	$(DEVELOPMENT_ENV) $(SETUP) test acceptance --with-xunit --xunit-file=reports/acceptance-xunit.xml
-
-coverage: reports
-	$(DEVELOPMENT_ENV) $(SETUP) test $(COVERAGE_ARGS) --cover-package=tests.unit unit
-	$(COVERAGE) xml -o reports/unit-coverage.xml --include="*.py"
-
-integration-coverage: reports
-	$(DEVELOPMENT_ENV) $(SETUP) test $(COVERAGE_ARGS) --cover-package=tests.integration integration
-	$(COVERAGE) xml -o reports/integration-coverage.xml --include="*.py"
-
-coverage-html:
-	$(COVERAGE) html
+$(SCOPED_TARGETS):SCOPE = $(word 1,$(subst -, ,$@))
+$(TEST_TARGETS): reports
+	$(DEVELOPMENT_ENV) $(SETUP) test $(SCOPE) --with-xunit --xunit-file=reports/$(SCOPE)-xunit.xml
+$(COVERAGE_TARGETS): reports
+	$(DEVELOPMENT_ENV) $(SETUP) test $(COVERAGE_ARGS) $(SCOPE)
+	$(COVERAGE) xml -o  --include="*.py" reports/$(SCOPE)-coverage.xml
 
 reports: dev
 	mkdir -p $@
@@ -129,8 +122,8 @@ $(PACKAGE)_docs.tar.gz: doc
 ## Housekeeping ##
 .PHONY: clean maintainer-clean
 clean:
-	rm -rf $(ENVDIR) RELEASE-VERSION dist htmlcov reports *.egg *.egg-info
 	rm -f .coverage .nose-stopwatch-times .req chef_script nosetests.xml pip-log.txt
+	rm -rf $(ENVDIR) RELEASE-VERSION dist reports *.egg *.egg-info
 	find . -type f -name '*.pyc' -delete
 
 maintainer-clean: clean
