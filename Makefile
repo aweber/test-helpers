@@ -44,6 +44,7 @@ SCOPED_TARGETS := $(TEST_TARGETS) $(COVERAGE_TARGETS)
 
 .PHONY: test coverage $(SCOPED_TARGETS)
 test: $(TEST_TARGETS)
+
 coverage: unit-coverage
 
 $(SCOPED_TARGETS):SCOPE = $(word 1,$(subst -, ,$@))
@@ -65,6 +66,7 @@ doc: dev
 ## Static Analysis ##
 .PHONY: lint pep8 pylint
 lint: pep8 pylint
+
 pylint: reports .tests.pylintrc
 	-$(PYLINT) --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
 	-$(PYLINT) --reports=y --output-format=parseable --rcfile=.tests.pylintrc tests | tee reports/tests_pylint.txt
@@ -83,6 +85,7 @@ pep8: reports
 requirements: virtualenv
 	@rm -f .req
 	$(MAKE) .req
+
 req: .req
 .req: $(ENVDIR) requirements.pip
 	$(EASY_INSTALL) -U distribute
@@ -138,7 +141,7 @@ vagrant-env: Procfile
 	caterer vagrant $(PACKAGE) Procfile > chef_script; sh chef_script
 
 chef-roles: Procfile
-	caterer production $(PACKAGE) Procfile > /dev/null
+	caterer production $(PACKAGE) Procfile >/dev/null
 
 deploy-vagrant: dist
 	fab set_hosts:'vagrant','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u vagrant -p vagrant
