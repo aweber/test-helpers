@@ -65,13 +65,15 @@ TAGS
 #############################
 /.coverage
 /.nose-stopwatch-times
+/.req
 /RELEASE-VERSION
 /chef_script
-/dist
+/dist/
 /doc/doctrees
 /doc/html
+/env/
 /htmlcov
 /nosetests.xml
 /pip-log.txt
-/reports
+/reports/
 /tests.pylintrc
