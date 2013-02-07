@@ -48,20 +48,29 @@ test: $(TEST_TARGETS)
 coverage: unit-coverage
 
 $(SCOPED_TARGETS):SCOPE = $(word 1,$(subst -, ,$@))
+$(SCOPED_TARGETS):RUN_SCOPED_TESTS = $(DEVELOPMENT_ENV) $(SETUP) -q test --tests=$(SCOPE)
 $(TEST_TARGETS): reports
-	$(DEVELOPMENT_ENV) $(SETUP) test $(SCOPE) --with-xunit --xunit-file=reports/$(SCOPE)-xunit.xml
+	@echo Running $(SCOPE) tests
+	@$(RUN_SCOPED_TESTS) --with-xunit --xunit-file=reports/$(SCOPE)-xunit.xml
 $(COVERAGE_TARGETS): reports
-	$(DEVELOPMENT_ENV) $(SETUP) test $(COVERAGE_ARGS) $(SCOPE)
+	$(RUN_SCOPED_TESTS) $(COVERAGE_ARGS)
 	$(COVERAGE) xml -o  --include="*.py" reports/$(SCOPE)-coverage.xml
 
-reports: dev
+reports: $(EGG_LINK)
 	mkdir -p $@
 
 ## Documentation ##
-.PHONY: doc
-doc: dev
+.PHONY: doc deploy-docs
+doc: $(EGG_LINK)
+	$(MAKE) --always-make RELEASE-VERSION
 	mkdir -p $(CURDIR)/doc/source/_static
 	$(SETUP) build_sphinx
+
+$(PACKAGE)_docs.tar.gz: doc
+	cd doc/html; tar czf ../../$@ *
+
+deploy-docs: $(PACKAGE)_docs.tar.gz
+	fab set_documentation_host deploy_docs:$(PACKAGE),`cat RELEASE-VERSION` -u ubuntu
 
 ## Static Analysis ##
 .PHONY: lint pep8 pylint
@@ -82,48 +91,45 @@ pep8: reports
 
 ## Local Setup ##
 .PHONY: requirements req virtualenv dev
-requirements: virtualenv
+requirements:
 	@rm -f .req
 	$(MAKE) .req
 
 req: .req
 .req: $(ENVDIR) requirements.pip
 	$(EASY_INSTALL) -U distribute
-	# need ports libevent and libevent1 for mac_dev
 	$(PIP) install $(PIPOPTS)
 	$(EASY_INSTALL) -U $(ADDTLREQS)
 	@touch .req
 
-virtualenv: RELEASE-VERSION $(ENVDIR)
-$(ENVDIR):
-	$(VIRTUALENV) $(VIRTUALENVOPTS) $(ENVDIR)
+setup.py: RELEASE-VERSION
+RELEASE-VERSION:
+	@echo Updating $@ "($(VERSION))"
+	@echo $(VERSION) > $@
 
-dev: RELEASE-VERSION $(EGG_LINK)
+dev: $(EGG_LINK)
 $(EGG_LINK): setup.py .req
 	$(SETUP) develop
 
-## Packaging ##
-.PHONY: RELEASE-VERSION
-RELEASE-VERSION:
-	echo $(VERSION) > $@
+virtualenv: $(ENVDIR)
+$(ENVDIR):
+	$(VIRTUALENV) $(VIRTUALENVOPTS) $(ENVDIR)
 
+## Packaging ##
 .PHONY: dist upload $(DIST_FILE)
-dist: $(DIST_FILE)
-$(DIST_FILE): RELEASE-VERSION
+dist: test sdist
+sdist: $(DIST_FILE)
+$(DIST_FILE):MAKEFLAGS=--always-make
+$(DIST_FILE): setup.py
 	$(SETUP) sdist
 
-upload: dist
+upload:
 	@if echo $(VERSION) | grep -q dirty; then \
 	    echo "Stubbornly refusing to upload a dirty package! Tag a proper release!" >&2; \
 	    exit 1; \
 	fi
+	$(MAKE) dist
 	$(SETUP) register --repository aweber sdist upload --repository aweber
-
-deploy-docs: $(PACKAGE)_docs.tar.gz
-	fab set_documentation_host deploy_docs:$(PACKAGE),`cat RELEASE-VERSION` -u ubuntu
-
-$(PACKAGE)_docs.tar.gz: doc
-	cd doc/html; tar czf ../../$@ *
 
 ## Housekeeping ##
 .PHONY: clean maintainer-clean
@@ -137,16 +143,16 @@ maintainer-clean: clean
 
 ## Service Deployment ##
 .PHONY: vagrant-env chef-roles deploy-vagrant deploy-staging deploy-production
-vagrant-env: Procfile
+vagrant-env:
 	caterer vagrant $(PACKAGE) Procfile > chef_script; sh chef_script
 
-chef-roles: Procfile
+chef-roles:
 	caterer production $(PACKAGE) Procfile >/dev/null
 
 deploy-vagrant: dist
 	fab set_hosts:'vagrant','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u vagrant -p vagrant
 
 deploy-staging deploy-production:ENV = $(word 2,$(subst -, ,$@))
-deploy-staging deploy-production: Procfile dist
+deploy-staging deploy-production: dist
 	caterer $(ENV) $(PACKAGE) Procfile > chef_script; sh chef_script
 	fab set_hosts:'$(ENV)','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
