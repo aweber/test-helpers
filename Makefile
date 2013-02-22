@@ -23,6 +23,7 @@ PIPOPTS=$(patsubst %,-r %,$(wildcard $(HOME)/.requirements.pip requirements.pip)
 PYLINT = pylint
 PYTHON = python
 PYTHON_VERSION = python2.6
+REPORTDIR = reports
 RUN_TEST_SUITE_SUBSET = $(DEVELOPMENT_ENV) $(SETUP) -q test --tests=$(SCOPE)
 SCP = scp
 SETUP := $(PYTHON) setup.py
@@ -44,19 +45,19 @@ TESTS = unit-test integration-test acceptance-test
 .PHONY: test $(TESTS)
 test: $(TESTS)
 $(TESTS):SCOPE = $(word 1,$(subst -, ,$@))
-$(TESTS): reports
+$(TESTS): $(REPORTDIR)
 	@echo Running $(SCOPE) tests
-	@$(RUN_TEST_SUITE_SUBSET) --with-xunit --xunit-file=reports/$(SCOPE)-xunit.xml
+	@$(RUN_TEST_SUITE_SUBSET) --with-xunit --xunit-file=$(REPORTDIR)/$(SCOPE)-xunit.xml
 
 .PHONY: coverage unit-coverage integration-coverage
 coverage: unit-coverage
 unit-coverage integration-coverage:SCOPE = $(word 1,$(subst -, ,$@))
-unit-coverage integration-coverage: reports
+unit-coverage integration-coverage: $(REPORTDIR)
 	$(RUN_TEST_SUITE_SUBSET) $(COVERAGE_ARGS)
-	$(COVERAGE) html -d reports/htmlcov-$(SCOPE)
-	$(COVERAGE) xml -o reports/$(SCOPE)-coverage.xml
+	$(COVERAGE) html -d $(REPORTDIR)/htmlcov-$(SCOPE)
+	$(COVERAGE) xml -o $(REPORTDIR)/$(SCOPE)-coverage.xml
 
-reports: $(EGG_LINK)
+$(REPORTDIR): $(EGG_LINK)
 	mkdir -p $@
 
 ## Documentation ##
@@ -76,18 +77,18 @@ deploy-docs: $(PACKAGE)_docs.tar.gz
 .PHONY: lint pep8 pylint
 lint: pep8 pylint
 
-pylint: reports .tests.pylintrc
-	$(PYLINT) --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
-	$(PYLINT) --reports=y --output-format=parseable --rcfile=.tests.pylintrc tests | tee reports/tests_pylint.txt
+pylint: $(REPORTDIR) .tests.pylintrc
+	$(PYLINT) --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee $(REPORTDIR)/$(MODULE)_pylint.txt
+	$(PYLINT) --reports=y --output-format=parseable --rcfile=.tests.pylintrc tests | tee $(REPORTDIR)/tests_pylint.txt
 
 .tests.pylintrc: pylintrc pylintrc-tests-overrides
 	cat $^ > $@
 
-pep8: reports
+pep8: $(REPORTDIR)
 	# Strip out warnings about long lines in tests. We loosen the
 	# limitation for long lines in tests and Pylint already checks line
 	# length for us.
-	$(PEP8) --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee reports/pep8.txt
+	$(PEP8) --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee $(REPORTDIR)/pep8.txt
 
 ## Local Setup ##
 .PHONY: requirements req virtualenv dev
@@ -134,7 +135,7 @@ upload:
 ## Housekeeping ##
 .PHONY: clean maintainer-clean
 clean:
-	rm -rf $(ENVDIR) RELEASE-VERSION dist reports *.egg *.egg-info
+	rm -rf $(ENVDIR) RELEASE-VERSION dist $(REPORTDIR) *.egg *.egg-info
 	rm -f .coverage .nose-stopwatch-times .req .tests.pylintrc chef_script pip-log.txt
 	find . -type f -name '*.pyc' -delete
 
