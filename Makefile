@@ -13,7 +13,8 @@ ENVDIR = ./env
 SHELL = BASH_ENV=$(ENVDIR)/bin/activate /bin/bash
 
 COVERAGE = coverage
-COVERAGE_ARGS = --with-coverage --cover-erase --cover-package=$(MODULE) --cover-branches --cover-tests
+COVERAGE_ARGS = --with-coverage --cover-erase --cover-package=$(MODULE) \
+				--cover-branches --cover-tests --cover-inclusive
 DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
 EASY_INSTALL = easy_install
 PEP8 = pep8
@@ -22,6 +23,7 @@ PIPOPTS=$(patsubst %,-r %,$(wildcard $(HOME)/.requirements.pip requirements.pip)
 PYLINT = pylint
 PYTHON = python
 PYTHON_VERSION = python2.6
+RUN_TEST_SUITE_SUBSET = $(DEVELOPMENT_ENV) $(SETUP) -q test --tests=$(SCOPE)
 SCP = scp
 SETUP := $(PYTHON) setup.py
 # Work around a bug in git describe: http://comments.gmane.org/gmane.comp.version-control.git/178169
@@ -38,23 +40,21 @@ EGG_LINK := $(ENVDIR)/lib/$(PYTHON_VERSION)/site-packages/$(PACKAGE).egg-link
 ADDTLREQS = nose_machineout readline
 
 ## Testing ##
-TEST_TARGETS := $(foreach scope, unit integration acceptance, $(scope)-test)
-COVERAGE_TARGETS := $(foreach scope, unit integration, $(scope)-coverage)
-SCOPED_TARGETS := $(TEST_TARGETS) $(COVERAGE_TARGETS)
-
-.PHONY: test coverage $(SCOPED_TARGETS)
-test: $(TEST_TARGETS)
-
-coverage: unit-coverage
-
-$(SCOPED_TARGETS):SCOPE = $(word 1,$(subst -, ,$@))
-$(SCOPED_TARGETS):RUN_SCOPED_TESTS = $(DEVELOPMENT_ENV) $(SETUP) -q test --tests=$(SCOPE)
-$(TEST_TARGETS): reports
+TESTS = unit-test integration-test acceptance-test
+.PHONY: test $(TESTS)
+test: $(TESTS)
+$(TESTS):SCOPE = $(word 1,$(subst -, ,$@))
+$(TESTS): reports
 	@echo Running $(SCOPE) tests
-	@$(RUN_SCOPED_TESTS) --with-xunit --xunit-file=reports/$(SCOPE)-xunit.xml
-$(COVERAGE_TARGETS): reports
-	$(RUN_SCOPED_TESTS) $(COVERAGE_ARGS)
-	$(COVERAGE) xml -o  --include="*.py" reports/$(SCOPE)-coverage.xml
+	@$(RUN_TEST_SUITE_SUBSET) --with-xunit --xunit-file=reports/$(SCOPE)-xunit.xml
+
+.PHONY: coverage unit-coverage integration-coverage
+coverage: unit-coverage
+unit-coverage integration-coverage:SCOPE = $(word 1,$(subst -, ,$@))
+unit-coverage integration-coverage: reports
+	$(RUN_TEST_SUITE_SUBSET) $(COVERAGE_ARGS)
+	$(COVERAGE) html -d reports/htmlcov-$(SCOPE)
+	$(COVERAGE) xml -o reports/$(SCOPE)-coverage.xml
 
 reports: $(EGG_LINK)
 	mkdir -p $@
