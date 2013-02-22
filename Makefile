@@ -135,7 +135,7 @@ upload:
 .PHONY: clean maintainer-clean
 clean:
 	rm -rf $(ENVDIR) RELEASE-VERSION dist reports *.egg *.egg-info
-	rm -f .coverage .nose-stopwatch-times .req .tests.pylintrc chef_script nosetests.xml pip-log.txt
+	rm -f .coverage .nose-stopwatch-times .req .tests.pylintrc chef_script pip-log.txt
 	find . -type f -name '*.pyc' -delete
 
 maintainer-clean: clean
