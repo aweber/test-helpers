@@ -77,8 +77,8 @@ deploy-docs: $(PACKAGE)_docs.tar.gz
 lint: pep8 pylint
 
 pylint: reports .tests.pylintrc
-	-$(PYLINT) --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
-	-$(PYLINT) --reports=y --output-format=parseable --rcfile=.tests.pylintrc tests | tee reports/tests_pylint.txt
+	$(PYLINT) --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee reports/$(MODULE)_pylint.txt
+	$(PYLINT) --reports=y --output-format=parseable --rcfile=.tests.pylintrc tests | tee reports/tests_pylint.txt
 
 .tests.pylintrc: pylintrc pylintrc-tests-overrides
 	cat $^ > $@
@@ -87,7 +87,7 @@ pep8: reports
 	# Strip out warnings about long lines in tests. We loosen the
 	# limitation for long lines in tests and Pylint already checks line
 	# length for us.
-	-$(PEP8) --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee reports/pep8.txt
+	$(PEP8) --filename="*.py" --repeat $(MODULE) tests | grep -v '^tests/.*E501' | tee reports/pep8.txt
 
 ## Local Setup ##
 .PHONY: requirements req virtualenv dev
