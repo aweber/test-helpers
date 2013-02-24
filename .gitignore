@@ -73,7 +73,6 @@ TAGS
 /doc/html
 /env/
 /htmlcov
-/nosetests.xml
 /pip-log.txt
 /reports/
 /tests.pylintrc
