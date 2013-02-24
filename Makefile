@@ -13,8 +13,7 @@ ENVDIR = ./env
 SHELL = BASH_ENV=$(ENVDIR)/bin/activate /bin/bash
 
 COVERAGE = coverage
-COVERAGE_ARGS = --with-coverage --cover-erase --cover-package=$(MODULE) \
-				--cover-branches --cover-tests --cover-inclusive
+COVERAGE_ARGS := --with-coverage --cover-erase --cover-package=$(MODULE) --cover-branches
 DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
 EASY_INSTALL = easy_install
 PEP8 = pep8
@@ -24,7 +23,7 @@ PYLINT = pylint
 PYTHON = python
 PYTHON_VERSION = python2.6
 REPORTDIR = reports
-RUN_TEST_SUITE_SUBSET = $(DEVELOPMENT_ENV) $(SETUP) -q test --tests=$(SCOPE)
+RUN_TEST_SUITE_SUBSET = $(DEVELOPMENT_ENV) $(SETUP) -q test --where=tests/$(SCOPE)
 SCP = scp
 SETUP := $(PYTHON) setup.py
 # Work around a bug in git describe: http://comments.gmane.org/gmane.comp.version-control.git/178169
@@ -52,10 +51,11 @@ $(TESTS): $(REPORTDIR)
 .PHONY: coverage unit-coverage integration-coverage
 coverage: unit-coverage
 unit-coverage integration-coverage:SCOPE = $(word 1,$(subst -, ,$@))
+unit-coverage integration-coverage:COVERAGE_ARGS += $(if $(shell $(PIP) freeze | grep '^rednose'),--no-color)
 unit-coverage integration-coverage: $(REPORTDIR)
 	$(RUN_TEST_SUITE_SUBSET) $(COVERAGE_ARGS)
-	$(COVERAGE) html -d $(REPORTDIR)/htmlcov-$(SCOPE)
-	$(COVERAGE) xml -o $(REPORTDIR)/$(SCOPE)-coverage.xml
+	$(COVERAGE) html -d $(REPORTDIR)/htmlcov-$(SCOPE) --omit=$(ENVDIR)/*
+	$(COVERAGE) xml -o $(REPORTDIR)/$(SCOPE)-coverage.xml --omit=$(ENVDIR)/*
 
 $(REPORTDIR): $(EGG_LINK)
 	mkdir -p $@
