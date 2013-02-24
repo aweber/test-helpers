@@ -16,6 +16,7 @@ setup(
     name='@@project_name@@',
     description='A git repo scaffold for new projects',
     packages=find_packages(),
+    test_suite='nose.collector',
     include_package_data=True,
     zip_safe=False,
     install_requires=[
