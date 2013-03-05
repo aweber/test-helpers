@@ -58,7 +58,7 @@ unit-coverage integration-coverage: $(REPORTDIR)
 	$(COVERAGE) xml -o $(REPORTDIR)/$(SCOPE)-coverage.xml --omit=$(ENVDIR)/*
 
 $(REPORTDIR): $(EGG_LINK)
-	mkdir -p $@
+	[[ -d $@ ]] && touch $@ || mkdir -p $@
 
 ## Documentation ##
 .PHONY: doc deploy-docs
