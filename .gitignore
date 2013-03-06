@@ -75,4 +75,4 @@ TAGS
 /htmlcov
 /pip-log.txt
 /reports/
-/tests.pylintrc
+/.tests.pylintrc
