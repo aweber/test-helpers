@@ -160,3 +160,12 @@ deploy-staging: dist
 deploy-production: dist
 	caterer production $(PACKAGE) Procfile > chef_script; sh chef_script
 	fab set_hosts:'production','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
+
+## Development
+.PHONY: tdd
+tdd:
+	$(DEVELOPMENT_ENV) nosyd -1
+
+.PHONY: foreman
+foreman:
+	$(DEVELOPMENT_ENV) PYTHON_LOGCONFIG_LOG_TO_STDOUT=1 foreman start
