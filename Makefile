@@ -150,14 +150,14 @@ vagrant-env:
 chef-roles:
 	caterer production $(PACKAGE) Procfile >/dev/null
 
-deploy-vagrant: dist
+deploy-vagrant: sdist
 	fab set_hosts:'vagrant','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u vagrant -p vagrant
 
-deploy-staging: dist
+deploy-staging: Procfile sdist
 	caterer staging $(PACKAGE) Procfile > chef_script; sh chef_script
 	fab set_hosts:'staging','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
 
-deploy-production: dist
+deploy-production: Procfile sdist
 	caterer production $(PACKAGE) Procfile > chef_script; sh chef_script
 	fab set_hosts:'production','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
 
