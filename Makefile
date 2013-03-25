@@ -40,11 +40,10 @@ EGG_LINK := $(ENVDIR)/lib/$(PYTHON_VERSION)/site-packages/$(PACKAGE).egg-link
 ADDTLREQS = nose_machineout readline
 
 ## Testing ##
-TESTS = unit-test integration-test acceptance-test
-.PHONY: test $(TESTS)
-test: $(TESTS)
-$(TESTS):SCOPE = $(word 1,$(subst -, ,$@))
-$(TESTS): $(REPORTDIR)
+.PHONY: test unit-test integration-test acceptance-test
+test: unit-test integration-test acceptance-test
+unit-test integration-test acceptance-test:SCOPE = $(word 1,$(subst -, ,$@))
+unit-test integration-test acceptance-test: $(REPORTDIR)
 	@echo Running $(SCOPE) tests
 	@$(RUN_TEST_SUITE_SUBSET) --with-xunit --xunit-file=$(REPORTDIR)/$(SCOPE)-xunit.xml
 
