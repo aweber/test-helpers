@@ -1,9 +1,6 @@
+Sphinx
 coverage==3.5.3
-mock
 nose
-nose_machineout
-Nosyd
 pep8
 pylint
-Sphinx
 unittest2
