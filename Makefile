@@ -23,7 +23,7 @@ PYLINT = pylint
 PYTHON = python
 PYTHON_VERSION = python2.6
 REPORTDIR = reports
-RUN_TEST_SUITE_SUBSET = $(DEVELOPMENT_ENV) $(SETUP) -q test --where=tests/$(SCOPE)
+RUN_TEST_SUITE_SUBSET = $(DEVELOPMENT_ENV) $(SETUP) -q test --tests=tests/$(SCOPE)
 SCP = scp
 SETUP := $(PYTHON) setup.py
 # Work around a bug in git describe: http://comments.gmane.org/gmane.comp.version-control.git/178169
