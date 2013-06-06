@@ -194,7 +194,8 @@ def send_build_stat(project_name, environment):
             sock.close()
             return
         except socket.error as error:
-            print "ERROR: Unable to send metric to {0}: {1}".format(host, error)
+            print "ERROR: Unable to send metric to {host}: {error}" \
+                .format(host, error)
             continue
 
 
@@ -206,6 +207,7 @@ def get_graphite_hosts(environment):
 
     """
     api = autoconfigure()
-    query = 'roles:graphite-server AND chef_environment:{0}'.format(environment)
+    query = 'roles:graphite-server AND ' \
+            'chef_environment:{0}'.format(environment)
     result = Search('node', query, api=api)
     return [row.object.attributes.get_dotted('fqdn') for row in result]
