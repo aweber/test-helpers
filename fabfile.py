@@ -195,7 +195,7 @@ def send_build_stat(project_name, environment):
             return
         except socket.error as error:
             print "ERROR: Unable to send metric to {host}: {error}" \
-                .format(host, error)
+                .format(host=host, error=error)
             continue
 
 
