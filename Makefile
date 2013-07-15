@@ -29,7 +29,7 @@ SETUP := $(PYTHON) setup.py
 # Work around a bug in git describe: http://comments.gmane.org/gmane.comp.version-control.git/178169
 VERSION = $(shell git status >/dev/null 2>/dev/null && git describe --abbrev=6 --tags --dirty --match="[0-9]*")
 VIRTUALENV = virtualenv
-VIRTUALENVOPTS = --distribute --python=$(PYTHON_VERSION) --no-site-packages
+VIRTUALENVOPTS = --python=$(PYTHON_VERSION) --no-site-packages
 
 APT_REQ_FILE = requirements.apt
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
@@ -97,7 +97,6 @@ requirements:
 
 req: .req
 .req: $(ENVDIR) requirements.pip
-	$(EASY_INSTALL) -U distribute
 	$(PIP) install $(PIPOPTS)
 	$(EASY_INSTALL) -U $(ADDTLREQS)
 	@touch .req
