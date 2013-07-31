@@ -20,6 +20,7 @@ def _set_credentials():
             os.path.expanduser('~/.ssh/ubuntu-id_dsa')]
     env.abort_on_prompts = True
     env.disable_known_hosts = True
+    env.use_shell = False
 
 
 @task
