@@ -67,6 +67,7 @@ TAGS
 /.nose-stopwatch-times
 /.req
 /RELEASE-VERSION
+/build
 /chef_script
 /dist/
 /doc/doctrees
