@@ -70,7 +70,7 @@ $(PACKAGE)_docs.tar.gz: doc
 	cd doc/html; tar czf ../../$@ *
 
 deploy-docs: $(PACKAGE)_docs.tar.gz
-	fab set_documentation_host deploy_docs:$(PACKAGE),`cat RELEASE-VERSION` -u ubuntu
+	fab base.set_documentation_host base.deploy_docs:$(PACKAGE),`cat RELEASE-VERSION` -u ubuntu
 
 ## Static Analysis ##
 .PHONY: lint pep8 pylint
@@ -147,15 +147,15 @@ chef-roles:
 	caterer production $(PACKAGE) Procfile >/dev/null
 
 deploy-vagrant: sdist
-	fab set_hosts:'vagrant','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u vagrant -p vagrant
+	fab base.set_hosts:'vagrant','api' base.deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u vagrant -p vagrant
 
 deploy-staging: Procfile sdist
 	caterer staging $(PACKAGE) Procfile > chef_script; sh chef_script
-	fab set_hosts:'staging','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
+	fab base.set_hosts:'staging','api' base.deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
 
 deploy-production: Procfile sdist
 	caterer production $(PACKAGE) Procfile > chef_script; sh chef_script
-	fab set_hosts:'production','api' deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
+	fab base.set_hosts:'production','api' base.deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
 
 ## Development
 .PHONY: tdd
