@@ -12,10 +12,10 @@ MODULE = @@python_module@@
 ENVDIR = ./env
 CATERER = $(ENVDIR)/bin/caterer
 COVERAGE = $(ENVDIR)/bin/coverage
-COVERAGE_ARGS := --with-coverage --cover-erase --cover-package=$(MODULE) --cover-branches
 DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
 EASY_INSTALL = $(ENVDIR)/bin/easy_install
 FABRIC = $(ENVDIR)/bin/fab
+NOSE = $(ENVDIR)/bin/nosetests
 PEP8 = $(ENVDIR)/bin/pep8
 PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" $(ENVDIR)/bin/pip
 PIPOPTS=$(patsubst %,-r %,$(wildcard $(HOME)/.requirements.pip requirements.pip)) --index-url=http://pypi.colo.lair/simple/
@@ -23,7 +23,6 @@ PYLINT = $(ENVDIR)/bin/pylint
 PYTHON = $(ENVDIR)/bin/python
 PYTHON_VERSION = python2.6
 REPORTDIR = reports
-RUN_TEST_SUITE_SUBSET = $(DEVELOPMENT_ENV) $(SETUP) -q test --tests=tests/$(SCOPE)
 SCP = scp
 SETUP := . $(ENVDIR)/bin/activate; $(PYTHON) setup.py
 # Work around a bug in git describe: http://comments.gmane.org/gmane.comp.version-control.git/178169
@@ -40,21 +39,19 @@ EGG_LINK := $(ENVDIR)/lib/$(PYTHON_VERSION)/site-packages/$(PACKAGE).egg-link
 ADDTLREQS = nose_machineout readline
 
 ## Testing ##
-.PHONY: test unit-test integration-test acceptance-test
-test: unit-test integration-test acceptance-test
-unit-test integration-test acceptance-test:SCOPE = $(word 1,$(subst -, ,$@))
-unit-test integration-test acceptance-test: $(REPORTDIR)
-	@echo Running $(SCOPE) tests
-	@$(RUN_TEST_SUITE_SUBSET) --with-xunit --xunit-file=$(REPORTDIR)/$(SCOPE)-xunit.xml
+.PHONY: test coverage
 
-.PHONY: coverage unit-coverage integration-coverage
+test: unit-test integration-test acceptance-test
 coverage: unit-coverage
-unit-coverage integration-coverage:SCOPE = $(word 1,$(subst -, ,$@))
-unit-coverage integration-coverage:COVERAGE_ARGS += $(if $(shell $(PIP) freeze | grep '^rednose'),--no-color)
-unit-coverage integration-coverage: $(REPORTDIR)
-	$(RUN_TEST_SUITE_SUBSET) $(COVERAGE_ARGS)
-	$(COVERAGE) html -d $(REPORTDIR)/htmlcov-$(SCOPE) --omit=$(ENVDIR)/*
-	$(COVERAGE) xml -o $(REPORTDIR)/$(SCOPE)-coverage.xml --omit=$(ENVDIR)/*
+
+%-test: $(REPORTDIR)
+	@echo Running $* tests
+	$(DEVELOPMENT_ENV) $(NOSE) --cover-package=$(MODULE),tests --tests=tests/$* --with-xunit --xunit-file=$(REPORTDIR)/$*-xunit.xml
+
+%-coverage: %-test
+	@echo Generating $* coverage reports
+	$(COVERAGE) html -d $(REPORTDIR)/htmlcov-$* --omit=$(ENVDIR)/*
+	$(COVERAGE) xml  -o $(REPORTDIR)/$*-coverage.xml --omit=$(ENVDIR)/*
 
 $(REPORTDIR): $(EGG_LINK)
 	test -d "$@" || mkdir -p "$@"
@@ -165,3 +162,7 @@ tdd:
 .PHONY: foreman
 foreman:
 	$(DEVELOPMENT_ENV) PYTHON_LOGCONFIG_LOG_TO_STDOUT=1 foreman start
+
+
+-include Makefile.inc
+
