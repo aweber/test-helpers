@@ -10,22 +10,22 @@ MODULE = @@python_module@@
 ## maintains consistency between projects.
 ##
 ENVDIR = ./env
-SHELL = BASH_ENV=$(ENVDIR)/bin/activate /bin/bash
-
-COVERAGE = coverage
+CATERER = $(ENVDIR)/bin/caterer
+COVERAGE = $(ENVDIR)/bin/coverage
 COVERAGE_ARGS := --with-coverage --cover-erase --cover-package=$(MODULE) --cover-branches
 DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
-EASY_INSTALL = easy_install
-PEP8 = pep8
-PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" pip
+EASY_INSTALL = $(ENVDIR)/bin/easy_install
+FABRIC = $(ENVDIR)/bin/fab
+PEP8 = $(ENVDIR)/bin/pep8
+PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" $(ENVDIR)/bin/pip
 PIPOPTS=$(patsubst %,-r %,$(wildcard $(HOME)/.requirements.pip requirements.pip)) --index-url=http://pypi.colo.lair/simple/
-PYLINT = pylint
-PYTHON = python
+PYLINT = $(ENVDIR)/bin/pylint
+PYTHON = $(ENVDIR)/bin/python
 PYTHON_VERSION = python2.6
 REPORTDIR = reports
 RUN_TEST_SUITE_SUBSET = $(DEVELOPMENT_ENV) $(SETUP) -q test --tests=tests/$(SCOPE)
 SCP = scp
-SETUP := $(PYTHON) setup.py
+SETUP := . $(ENVDIR)/bin/activate; $(PYTHON) setup.py
 # Work around a bug in git describe: http://comments.gmane.org/gmane.comp.version-control.git/178169
 VERSION = $(shell git status >/dev/null 2>/dev/null && git describe --abbrev=6 --tags --dirty --match="[0-9]*")
 VIRTUALENV = virtualenv
@@ -57,7 +57,8 @@ unit-coverage integration-coverage: $(REPORTDIR)
 	$(COVERAGE) xml -o $(REPORTDIR)/$(SCOPE)-coverage.xml --omit=$(ENVDIR)/*
 
 $(REPORTDIR): $(EGG_LINK)
-	[[ -d $@ ]] && touch $@ || mkdir -p $@
+	test -d "$@" || mkdir -p "$@"
+	touch "$@"
 
 ## Documentation ##
 .PHONY: doc deploy-docs
@@ -70,7 +71,7 @@ $(PACKAGE)_docs.tar.gz: doc
 	cd doc/html; tar czf ../../$@ *
 
 deploy-docs: $(PACKAGE)_docs.tar.gz
-	fab base.set_documentation_host base.deploy_docs:$(PACKAGE),`cat RELEASE-VERSION` -u ubuntu
+	$(FABRIC) base.set_documentation_host base.deploy_docs:$(PACKAGE),`cat RELEASE-VERSION` -u ubuntu
 
 ## Static Analysis ##
 .PHONY: lint pep8 pylint
@@ -140,21 +141,21 @@ maintainer-clean: clean
 ## Service Deployment ##
 .PHONY: vagrant-env chef-roles deploy-vagrant deploy-staging deploy-production
 vagrant-env:
-	caterer vagrant $(PACKAGE) Procfile > chef_script; sh chef_script
+	$(CATERER) vagrant $(PACKAGE) Procfile > chef_script; sh chef_script
 
 chef-roles:
-	caterer production $(PACKAGE) Procfile >/dev/null
+	$(CATERER) production $(PACKAGE) Procfile >/dev/null
 
 deploy-vagrant: sdist
-	fab base.set_hosts:'vagrant','api' base.deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u vagrant -p vagrant
+	$(FABRIC) base.set_hosts:'vagrant','api' base.deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u vagrant -p vagrant
 
 deploy-staging: Procfile sdist
-	caterer staging $(PACKAGE) Procfile > chef_script; sh chef_script
-	fab base.set_hosts:'staging','api' base.deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
+	$(CATERER) staging $(PACKAGE) Procfile > chef_script; sh chef_script
+	$(FABRIC) base.set_hosts:'staging','api' base.deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
 
 deploy-production: Procfile sdist
-	caterer production $(PACKAGE) Procfile > chef_script; sh chef_script
-	fab base.set_hosts:'production','api' base.deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
+	$(CATERER) production $(PACKAGE) Procfile > chef_script; sh chef_script
+	$(FABRIC) base.set_hosts:'production','api' base.deploy_api:'$(DIST_FILE)','$(APT_REQ_FILE)' -u ubuntu
 
 ## Development
 .PHONY: tdd
