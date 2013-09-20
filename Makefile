@@ -162,3 +162,7 @@ tdd:
 .PHONY: foreman
 foreman:
 	$(DEVELOPMENT_ENV) PYTHON_LOGCONFIG_LOG_TO_STDOUT=1 foreman start
+
+
+-include Makefile.inc
+
