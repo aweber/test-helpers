@@ -9,6 +9,7 @@ MODULE = @@python_module@@
 ## and then merged into individual projects.  This prevents conflicts and
 ## maintains consistency between projects.
 ##
+ACTIVATE = $(ENVDIR)/bin/activate
 ENVDIR = ./env
 CATERER = $(ENVDIR)/bin/caterer
 COVERAGE = $(ENVDIR)/bin/coverage
@@ -24,7 +25,7 @@ PYTHON = $(ENVDIR)/bin/python
 PYTHON_VERSION = python2.6
 REPORTDIR = reports
 SCP = scp
-SETUP := . $(ENVDIR)/bin/activate; $(PYTHON) setup.py
+SETUP = . $(ACTIVATE); $(PYTHON) setup.py
 # Work around a bug in git describe: http://comments.gmane.org/gmane.comp.version-control.git/178169
 VERSION = $(shell git status >/dev/null 2>/dev/null && git describe --abbrev=6 --tags --dirty --match="[0-9]*")
 VIRTUALENV = virtualenv
@@ -32,7 +33,7 @@ VIRTUALENVOPTS = --python=$(PYTHON_VERSION)
 
 APT_REQ_FILE = requirements.apt
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
-EGG_LINK := $(ENVDIR)/lib/$(PYTHON_VERSION)/site-packages/$(PACKAGE).egg-link
+EGG_LINK = $(ENVDIR)/lib/$(PYTHON_VERSION)/site-packages/$(PACKAGE).egg-link
 
 # Requirements that cannot be installed via pip (packages
 # listed here will be installed via easy_install)
@@ -114,7 +115,7 @@ $(ENVDIR):
 
 ## Packaging ##
 .PHONY: dist upload $(DIST_FILE)
-dist: test sdist
+dist: sdist
 sdist: $(DIST_FILE)
 $(DIST_FILE):MAKEFLAGS=--always-make
 $(DIST_FILE): setup.py
@@ -128,12 +129,12 @@ upload:
 ## Housekeeping ##
 .PHONY: clean maintainer-clean
 clean:
-	rm -rf $(ENVDIR) RELEASE-VERSION dist $(REPORTDIR) *.egg *.egg-info
+	rm -rf RELEASE-VERSION dist $(REPORTDIR) *.egg *.egg-info
 	rm -f .coverage .nose-stopwatch-times .req .tests.pylintrc chef_script pip-log.txt
 	find . -type f -name '*.pyc' -delete
 
 maintainer-clean: clean
-	rm -rf doc/doctrees doc/html
+	rm -rf $(ENVDIR) doc/doctrees doc/html
 
 ## Service Deployment ##
 .PHONY: vagrant-env chef-roles deploy-vagrant deploy-staging deploy-production
@@ -160,8 +161,8 @@ tdd:
 	$(DEVELOPMENT_ENV) nosyd -1
 
 .PHONY: foreman
-foreman:
-	$(DEVELOPMENT_ENV) PYTHON_LOGCONFIG_LOG_TO_STDOUT=1 foreman start
+foreman: dev
+	. $(ACTIVATE); $(DEVELOPMENT_ENV) PYTHON_LOGCONFIG_LOG_TO_STDOUT=1 foreman start
 
 
 -include Makefile.inc
