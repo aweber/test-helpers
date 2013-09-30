@@ -129,12 +129,12 @@ upload:
 ## Housekeeping ##
 .PHONY: clean maintainer-clean
 clean:
-	rm -rf $(ENVDIR) RELEASE-VERSION dist $(REPORTDIR) *.egg *.egg-info
+	rm -rf RELEASE-VERSION dist $(REPORTDIR) *.egg *.egg-info
 	rm -f .coverage .nose-stopwatch-times .req .tests.pylintrc chef_script pip-log.txt
 	find . -type f -name '*.pyc' -delete
 
 maintainer-clean: clean
-	rm -rf doc/doctrees doc/html
+	rm -rf $(ENVDIR) doc/doctrees doc/html
 
 ## Service Deployment ##
 .PHONY: vagrant-env chef-roles deploy-vagrant deploy-staging deploy-production
