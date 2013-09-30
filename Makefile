@@ -115,7 +115,7 @@ $(ENVDIR):
 
 ## Packaging ##
 .PHONY: dist upload $(DIST_FILE)
-dist: test sdist
+dist: sdist
 sdist: $(DIST_FILE)
 $(DIST_FILE):MAKEFLAGS=--always-make
 $(DIST_FILE): setup.py
