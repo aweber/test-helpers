@@ -121,11 +121,8 @@ $(DIST_FILE):MAKEFLAGS=--always-make
 $(DIST_FILE): setup.py
 	$(SETUP) sdist
 
-upload:
-	rm -rf dist RELEASE-VERSION
-	$(MAKE) RELEASE-VERSION sdist
+upload: clean RELEASE-VERSION sdist
 	@if (echo $(VERSION) | grep -q dirty); then echo "Cannot upload a dirty package! Tag a proper release!" >&2 && exit 1; fi
-	$(MAKE) sdist
 	$(SETUP) register --repository aweber sdist upload --repository aweber
 
 ## Housekeeping ##
