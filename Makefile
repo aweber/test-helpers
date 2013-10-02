@@ -122,7 +122,7 @@ $(DIST_FILE): setup.py
 	$(SETUP) sdist
 
 upload: clean RELEASE-VERSION sdist
-	@if (echo $(VERSION) | grep -q dirty); then echo "Cannot upload a dirty package! Tag a proper release!" >&2 && exit 1; fi
+	@if (grep -q dirty RELEASE-VERSION); then echo "\\nCannot upload a dirty package! Commit unstaged changes and tag a proper release!\\n" >&2 && exit 1; fi
 	$(SETUP) register --repository aweber sdist upload --repository aweber
 
 ## Housekeeping ##
