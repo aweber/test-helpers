@@ -1,8 +1,8 @@
 #
 # Basic makefile for general targets
 #
-PACKAGE = @@project_name@@
-MODULE = @@python_module@@
+PACKAGE = foo
+MODULE = foo
 
 ##
 ## NOTE: Anything changed below this line should be changed in base_service.git
@@ -114,12 +114,20 @@ $(ENVDIR):
 	$(VIRTUALENV) $(VIRTUALENVOPTS) $(ENVDIR)
 
 ## Packaging ##
-.PHONY: dist upload $(DIST_FILE)
+.PHONY: dist upload dist-test
 dist: sdist
 sdist: $(DIST_FILE)
 $(DIST_FILE):MAKEFLAGS=--always-make
 $(DIST_FILE): setup.py
 	$(SETUP) sdist
+
+dist-test: $(DIST_FILE)
+	$(VIRTUALENV) $(VIRTUALENVOPTS) -q disttest >/dev/null
+	./disttest/bin/pip install -q $(DIST_FILE)
+	test ! -d disttest/lib/$(PYTHON_VERSION)/site-packages/tests || (echo "*** tests should not be installed." ; false)
+	test -f disttest/lib/$(PYTHON_VERSION)/site-packages/$(PACKAGE)/__init__.py || (echo "*** package should be installed." ; false)
+	@echo "INFO: All distribution tests have passed."
+	@$(RM) -r disttest
 
 upload: clean RELEASE-VERSION sdist
 	@if (grep -q dirty RELEASE-VERSION); then echo "\\nCannot upload a dirty package! Commit unstaged changes and tag a proper release!\\n" >&2 && exit 1; fi
@@ -128,7 +136,7 @@ upload: clean RELEASE-VERSION sdist
 ## Housekeeping ##
 .PHONY: clean maintainer-clean
 clean:
-	rm -rf RELEASE-VERSION dist $(REPORTDIR) *.egg *.egg-info
+	rm -rf RELEASE-VERSION dist disttest $(REPORTDIR) *.egg *.egg-info
 	rm -f .coverage .nose-stopwatch-times .req .tests.pylintrc chef_script pip-log.txt
 	find . -type f -name '*.pyc' -delete
 
