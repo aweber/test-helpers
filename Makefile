@@ -14,7 +14,6 @@ ENVDIR = ./env
 CATERER = $(ENVDIR)/bin/caterer
 COVERAGE = $(ENVDIR)/bin/coverage
 DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
-EASY_INSTALL = $(ENVDIR)/bin/easy_install
 FABRIC = $(ENVDIR)/bin/fab
 NOSE = $(ENVDIR)/bin/nosetests
 PEP8 = $(ENVDIR)/bin/pep8
@@ -34,10 +33,6 @@ VIRTUALENVOPTS = --python=$(PYTHON_VERSION)
 APT_REQ_FILE = requirements.apt
 DIST_FILE = dist/$(PACKAGE)-$(VERSION).tar.gz
 EGG_LINK = $(ENVDIR)/lib/$(PYTHON_VERSION)/site-packages/$(PACKAGE).egg-link
-
-# Requirements that cannot be installed via pip (packages
-# listed here will be installed via easy_install)
-ADDTLREQS = nose_machineout readline
 
 ## Testing ##
 .PHONY: test coverage
@@ -97,7 +92,6 @@ requirements:
 req: .req
 .req: $(ENVDIR) requirements.pip
 	$(PIP) install $(PIPOPTS)
-	$(EASY_INSTALL) -U $(ADDTLREQS)
 	@touch .req
 
 setup.py: RELEASE-VERSION
