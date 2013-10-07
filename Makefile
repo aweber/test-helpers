@@ -37,7 +37,7 @@ EGG_LINK = $(ENVDIR)/lib/$(PYTHON_VERSION)/site-packages/$(PACKAGE).egg-link
 
 # Requirements that cannot be installed via pip (packages
 # listed here will be installed via easy_install)
-ADDTLREQS = nose_machineout readline
+ADDTLREQS = nose_machineout
 
 ## Testing ##
 .PHONY: test coverage
