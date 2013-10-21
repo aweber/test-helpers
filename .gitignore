@@ -77,3 +77,4 @@ TAGS
 /pip-log.txt
 /reports/
 /.tests.pylintrc
+nosetests.xml
