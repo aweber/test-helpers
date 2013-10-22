@@ -159,7 +159,7 @@ deploy-production: Procfile sdist
 ## Development
 .PHONY: tdd
 tdd:
-	$(DEVELOPMENT_ENV) nosyd -1
+	. $(ACTIVATE); $(DEVELOPMENT_ENV) nosy
 
 .PHONY: foreman
 foreman: dev
