@@ -13,7 +13,7 @@ ACTIVATE = $(ENVDIR)/bin/activate
 ENVDIR = ./env
 CATERER = $(ENVDIR)/bin/caterer
 COVERAGE = $(ENVDIR)/bin/coverage
-DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.conf
+DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuration/development.json
 FABRIC = $(ENVDIR)/bin/fab
 NOSE = $(ENVDIR)/bin/nosetests
 PEP8 = $(ENVDIR)/bin/pep8
