@@ -21,7 +21,7 @@ PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" $(ENVDIR)/bin/pip
 PIPOPTS=$(patsubst %,-r %,$(wildcard $(HOME)/.requirements.pip requirements.pip)) --index-url=http://pypi.colo.lair/simple/
 PYLINT = $(ENVDIR)/bin/pylint
 PYTHON = $(ENVDIR)/bin/python
-PYTHON_VERSION = python2.6
+PYTHON_VERSION = python2.7
 REPORTDIR = reports
 SCP = scp
 SETUP = . $(ACTIVATE); $(PYTHON) setup.py
