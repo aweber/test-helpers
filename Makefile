@@ -18,9 +18,10 @@ FABRIC = $(ENVDIR)/bin/fab
 NOSE = $(ENVDIR)/bin/nosetests
 PEP8 = $(ENVDIR)/bin/pep8
 PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" $(ENVDIR)/bin/pip
-PIPOPTS=$(patsubst %,-r %,$(wildcard $(HOME)/.requirements.pip requirements.pip)) --index-url=http://pypi.colo.lair/simple/
+PIPOPTS=$(patsubst %,-r %,$(wildcard $(HOME)/.requirements.pip requirements.pip)) --index-url=$(PYTHON_INDEX_URL)
 PYLINT = $(ENVDIR)/bin/pylint
 PYTHON = $(ENVDIR)/bin/python
+PYTHON_INDEX_URL = http://pypi.colo.lair/simple/
 PYTHON_VERSION = python2.7
 REPORTDIR = reports
 SCP = scp
@@ -101,7 +102,7 @@ RELEASE-VERSION:
 
 dev: $(EGG_LINK)
 $(EGG_LINK): setup.py .req
-	$(SETUP) develop
+	$(SETUP) develop --index-url=$(PYTHON_INDEX_URL)
 
 virtualenv: $(ENVDIR)
 $(ENVDIR):
