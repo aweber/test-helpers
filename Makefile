@@ -124,14 +124,17 @@ dist-test: $(DIST_FILE)
 	@echo "INFO: All distribution tests have passed."
 	@$(RM) -r disttest
 
-upload: clean RELEASE-VERSION sdist
+upload: mostlyclean RELEASE-VERSION sdist
 	@if (grep -q dirty RELEASE-VERSION); then echo "\\nCannot upload a dirty package! Commit unstaged changes and tag a proper release!\\n" >&2 && exit 1; fi
 	$(SETUP) register --repository aweber sdist upload --repository aweber
 
 ## Housekeeping ##
-.PHONY: clean maintainer-clean
-clean:
-	rm -rf RELEASE-VERSION dist disttest $(REPORTDIR) *.egg *.egg-info
+.PHONY: mostlyclean clean maintainer-clean
+
+mostlyclean:
+	rm -rf RELEASE-VERSION dist disttest *.egg *.egg-info
+
+clean: mostlyclean
 	rm -f .coverage .nose-stopwatch-times .req .tests.pylintrc chef_script pip-log.txt
 	find . -type f -name '*.pyc' -delete
 
