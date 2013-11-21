@@ -134,7 +134,7 @@ mostlyclean:
 	@echo "Removing intermediate files"
 	$(RM) RELEASE-VERSION .nose-stopwatch-times .tests.pylintrc pip-log.txt
 	$(RM) -r dist disttest *.egg *.egg-info
-	- find . -type f -name '*.pyc' -delete
+	find . -type f -name '*.pyc' -delete
 
 clean: mostlyclean
 	@echo "Removing output files"
