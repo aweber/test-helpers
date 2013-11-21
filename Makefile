@@ -132,22 +132,22 @@ upload: mostlyclean RELEASE-VERSION sdist
 .PHONY: mostlyclean clean distclean maintainer-clean
 mostlyclean:
 	@echo "Removing intermediate files"
-	- $(RM) RELEASE-VERSION .nose-stopwatch-times .tests.pylintrc pip-log.txt
-	- $(RM) -r dist disttest *.egg *.egg-info
+	$(RM) RELEASE-VERSION .nose-stopwatch-times .tests.pylintrc pip-log.txt
+	$(RM) -r dist disttest *.egg *.egg-info
 	- find . -type f -name '*.pyc' -delete
 
 clean: mostlyclean
 	@echo "Removing output files"
-	- $(RM) -r $(REPORTDIR) build
-	- $(RM) .coverage chef_script .req
+	$(RM) -r $(REPORTDIR) build
+	$(RM) .coverage chef_script .req
 
 distclean: clean
 	@echo "Removing generated build artifacts"
-	- $(RM) -r doc/doctrees doc/html
+	$(RM) -r doc/doctrees doc/html
 
 maintainer-clean: distclean
 	@echo "Removing all generated and downloaded files"
-	- $(RM) -r $(ENVDIR)
+	$(RM) -r $(ENVDIR)
 
 ## Service Deployment ##
 .PHONY: vagrant-env chef-roles deploy-vagrant deploy-staging deploy-production
