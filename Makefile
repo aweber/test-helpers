@@ -129,17 +129,25 @@ upload: mostlyclean RELEASE-VERSION sdist
 	$(SETUP) register --repository aweber sdist upload --repository aweber
 
 ## Housekeeping ##
-.PHONY: mostlyclean clean maintainer-clean
-
+.PHONY: mostlyclean clean distclean maintainer-clean
 mostlyclean:
-	rm -rf RELEASE-VERSION dist disttest *.egg *.egg-info
-
-clean: mostlyclean
-	rm -f .coverage .nose-stopwatch-times .req .tests.pylintrc chef_script pip-log.txt
+	@echo "Removing intermediate files"
+	$(RM) RELEASE-VERSION .nose-stopwatch-times .tests.pylintrc pip-log.txt
+	$(RM) -r dist disttest *.egg *.egg-info
 	find . -type f -name '*.pyc' -delete
 
-maintainer-clean: clean
-	rm -rf $(ENVDIR) doc/doctrees doc/html
+clean: mostlyclean
+	@echo "Removing output files"
+	$(RM) -r $(REPORTDIR) build
+	$(RM) .coverage chef_script .req
+
+distclean: clean
+	@echo "Removing generated build artifacts"
+	$(RM) -r doc/doctrees doc/html
+
+maintainer-clean: distclean
+	@echo "Removing all generated and downloaded files"
+	$(RM) -r $(ENVDIR)
 
 ## Service Deployment ##
 .PHONY: vagrant-env chef-roles deploy-vagrant deploy-staging deploy-production
