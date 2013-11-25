@@ -2,10 +2,6 @@
 # This needs to be appended to the usual pylintrc in order to include
 # all of the customizations from that as well.
 
-[FORMAT]
-# Maximum number of characters on a single line.
-max-line-length=100
-
 [MESSAGES CONTROL]
 # Disable the message(s) with the given id(s).
 # In addition to regularly disabled messages, also
