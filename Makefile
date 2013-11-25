@@ -72,8 +72,8 @@ deploy-docs: $(PACKAGE)_docs.tar.gz
 lint: pep8 pylint
 
 pylint: $(REPORTDIR) .tests.pylintrc
-	$(PYLINT) --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee $(REPORTDIR)/$(MODULE)_pylint.txt
-	$(PYLINT) --reports=y --output-format=parseable --rcfile=.tests.pylintrc tests | tee $(REPORTDIR)/tests_pylint.txt
+	$(PYLINT) --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee $(REPORTDIR)/$(MODULE)_lint.txt
+	$(PYLINT) --reports=y --output-format=parseable --rcfile=.tests.pylintrc tests | tee $(REPORTDIR)/tests_lint.txt
 
 .tests.pylintrc: pylintrc pylintrc-tests-overrides
 	cat $^ > $@
