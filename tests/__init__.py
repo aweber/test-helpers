@@ -1,8 +1,8 @@
 import sys
 
-try:
+if sys.version_info >= (2, 7):
     import unittest
-except ImportError:
+else:
     import unittest2 as unittest
 
 try:
