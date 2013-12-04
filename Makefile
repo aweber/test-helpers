@@ -17,6 +17,7 @@ DEVELOPMENT_ENV = $(shell echo $(PACKAGE) | tr 'a-z\-' 'A-Z_')_CONF=configuratio
 FABRIC = $(ENVDIR)/bin/fab
 NOSE = $(ENVDIR)/bin/nosetests
 PEP8 = $(ENVDIR)/bin/pep8
+PEP257 = $(ENVDIR)/bin/pep257
 PIP = C_INCLUDE_PATH="/opt/local/include:/usr/local/include" $(ENVDIR)/bin/pip
 PIPOPTS=$(patsubst %,-r %,$(wildcard $(HOME)/.requirements.pip requirements.pip)) --index-url=$(PYTHON_INDEX_URL)
 PYLINT = $(ENVDIR)/bin/pylint
@@ -68,8 +69,8 @@ deploy-docs: $(PACKAGE)_docs.tar.gz
 	$(FABRIC) base.set_documentation_host base.deploy_docs:$(PACKAGE),`cat RELEASE-VERSION` -u ubuntu
 
 ## Static Analysis ##
-.PHONY: lint pep8 pylint
-lint: pep8 pylint
+.PHONY: lint pep257 pep8 pylint
+lint: pep257 pep8 pylint
 
 pylint: $(REPORTDIR) .tests.pylintrc
 	$(PYLINT) --reports=y --output-format=parseable --rcfile=pylintrc $(MODULE) | tee $(REPORTDIR)/$(MODULE)_lint.txt
@@ -80,6 +81,9 @@ pylint: $(REPORTDIR) .tests.pylintrc
 
 pep8: $(REPORTDIR)
 	$(PEP8) --filename="*.py" --repeat $(MODULE) tests | tee $(REPORTDIR)/pep8.txt
+
+pep257:
+	$(PEP257) $(PACKAGE) 2>&1 | egrep -v '0: (First line should end with a period|Blank line missing after one-line summary)'
 
 ## Local Setup ##
 .PHONY: requirements req virtualenv dev
