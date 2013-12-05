@@ -1,2 +1,2 @@
 [run]
-omit=*mock.*
+omit=*mock.*, *unittest*
