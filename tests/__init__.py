@@ -17,15 +17,15 @@ this module to reap these benefits.  For example:
 
 import sys
 
-if sys.version_info >= (2, 7):
-    import unittest  # pragma: no cover
+if sys.version_info >= (2, 7):  # pragma: no cover
+    import unittest
 else:
-    import unittest2 as unittest  # pragma: no cover
+    import unittest2 as unittest
 
 try:
-    from unittest import mock  # pragma: no cover
+    from unittest import mock
 except ImportError:
-    import mock  # pragma: no cover
+    import mock
 
 sys.modules[__package__ + '.mock'] = mock
 sys.modules[__package__ + '.unittest'] = unittest
