@@ -83,7 +83,7 @@ pep8: $(REPORTDIR)
 	$(PEP8) --filename="*.py" --repeat $(MODULE) tests | tee $(REPORTDIR)/pep8.txt
 
 pep257:
-	$(PEP257) $(PACKAGE) 2>&1 | egrep -v '0: (First line should end with a period|Blank line missing after one-line summary)'
+	$(PEP257) $(MODULE) 2>&1 | egrep -v '0: (First line should end with a period|Blank line missing after one-line summary)'
 
 ## Local Setup ##
 .PHONY: requirements req virtualenv dev
