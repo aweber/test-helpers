@@ -140,8 +140,7 @@ def _deploy_python_package(dist_file):
     sudo('rm -f {0}'.format(remote_path))
     put(dist_file, remote_path)
 
-    pip_arguments = (' --timeout=2 --use-mirrors'
-                     ' --index-url=http://pypi.colo.lair/simple/')
+    pip_arguments = ' --timeout=2 --index-url=http://pypi.colo.lair/simple/'
 
     # Install all the deps first.
     sudo('pip install {0} {1}'.format(remote_path, pip_arguments))
