@@ -8,7 +8,7 @@ from fabric.api import env, put, sudo, task
 import fabric.utils
 
 
-PROJECT_NAME = '@@project_name@@'
+PROJECT_NAME = 'yslow'
 DOC_DIR = '/var/www/docs/{0}'.format(PROJECT_NAME)
 
 

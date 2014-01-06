@@ -13,7 +13,7 @@ def read_release_version():
         return f.readline().strip()
 
 setup(
-    name='@@project_name@@',
+    name='yslow',
     description='A git repo scaffold for new projects',
     packages=find_packages(
         exclude=['fabfile', 'fabfile.*', 'tests', 'tests.*'],
