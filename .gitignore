@@ -51,6 +51,7 @@ ehthumbs.db
 *.swp
 *~
 .ropeproject
+*.sublime-*
 
 # Chef #
 ########
