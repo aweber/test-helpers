@@ -7,7 +7,7 @@ import sys
 ##
 ####
 
-project = '@@project_name@@'
+project = 'test_helpers'
 intersphinx_mapping = {
     'python': ('http://docs.python.org/', None),
 }

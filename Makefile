@@ -1,8 +1,8 @@
 #
 # Basic makefile for general targets
 #
-PACKAGE = @@project_name@@
-MODULE = @@python_module@@
+PACKAGE = test_helpers
+MODULE = test_helpers
 
 ##
 ## NOTE: Anything changed below this line should be changed in base_service.git
