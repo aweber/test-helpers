@@ -79,4 +79,4 @@ Clone the mongo backup repo and start hacking.
 
 Programming Standards
 ---------------------
-[We follow the Python Coding Standards... mostly](https://confluence.colo.lair/display/HAEW/Python+Coding+Standards)
+[We follow the Python Coding Standards](http://legacy.python.org/dev/peps/pep-0008/)
