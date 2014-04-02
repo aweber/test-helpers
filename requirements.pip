@@ -1,4 +1,6 @@
 # XXX Add your dependencies here.
+tox
+fake_servers
 
 ################################################
 # DO NOT remove/modify the dependencies below. #

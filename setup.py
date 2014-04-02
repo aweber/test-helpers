@@ -6,6 +6,14 @@ from setuptools import setup, find_packages
 if sys.version_info < (2, 6):
     raise Exception("This package requires Python 2.6 or higher.")
 
+install_requires = ['fake_servers', 'remembrall']
+
+if sys.version_info < (3, 2):
+    install_requires.append('mock')
+
+if sys.version_info < (2, 7):
+    install_requires.append('unittest2')
+
 
 def read_release_version():
     """Read the version from the file ``RELEASE-VERSION``."""
@@ -21,8 +29,7 @@ setup(
     test_suite='nose.collector',
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-    ],
+    install_requires=install_requires,
     long_description='''A git repo scaffold for new projects''',
     dependency_links=['http://pypi.colo.lair/simple/'],
     version=read_release_version(),
