@@ -79,3 +79,5 @@ TAGS
 /reports/
 /.tests.pylintrc
 nosetests.xml
+
+/.tox/
