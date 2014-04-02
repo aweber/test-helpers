@@ -24,7 +24,7 @@ class PatchMixin(object):
             @classmethod
             def configure(cls):
                 cls.foo_mock = cls.create_patch('foo')
-                cls.bar_mock = cls.create_patch('bar', reutrn_value=100)
+                cls.bar_mock = cls.create_patch('bar', return_value=100)
 
             @classmethod
             def execute(cls):
@@ -34,7 +34,7 @@ class PatchMixin(object):
                 self.foo_mock.assert_called_once_with()
 
             def should_return_100_from_bar(self):
-                self.assertEqual(100, self.bar_mock.reutrn_value)
+                self.assertEqual(100, self.bar_mock.return_value)
 
     """
 
