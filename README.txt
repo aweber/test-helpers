@@ -1,7 +1,7 @@
 Test Helpers
 ============
 
-The Test Helpers library help consolidates some of the common testing utilites
+The Test Helpers library help consolidates some of the common testing utilities
 that we have come up with across several project.  The helpers within this
 module aim to ease testing metrics collection, make patching easier, and
 enforce the common Arrange-Act-Assert type of tests that we write here at
