@@ -1,3 +1,16 @@
+"""
+===============
+Base Test Cases
+===============
+
+The base test cases module contains useful classes that inherit from the
+unit test standard library and optionally inherit from an arbitrary number of
+mixins.  The purpose of these classes is to provide an integration point for
+the mixins and to help promote the usage of the Arrange-Act-Assert testing
+methodology used here at AWeber.
+
+"""
+
 from test_helpers import mixins
 from test_helpers.compat import unittest
 

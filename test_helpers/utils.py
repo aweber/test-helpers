@@ -1,3 +1,17 @@
+"""
+Testing Utilities
+=================
+
+The testing utilities module contains standalone functionality for that might
+be useful for a select number of test cases.  These functions can be
+selectively applied to a small subset of tests so they might not warrant the
+full capacity of mixin behavior.
+
+The utilities within this module are typically simple functions or decorators
+that ease a specific testing task, such as creating patches.
+
+"""
+
 import functools
 
 from test_helpers.compat import mock
