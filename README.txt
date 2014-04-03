@@ -24,7 +24,7 @@ Creating Patches:
     ...
     ...     @classmethod
     ...     def configure(cls):
-    ...         cls.foo = cls.create_patch('foo', create=True)
+    ...         cls.foo = cls.create_patch('foo', return_value=True)
     ...
     ...     @classmethod
     ...     def execute(cls):
