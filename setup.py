@@ -22,7 +22,7 @@ def read_release_version():
 
 setup(
     name='test_helpers',
-    description='A git repo scaffold for new projects',
+    description='A collection of test helpers to consolidate common patterns',
     packages=find_packages(
         exclude=['fabfile', 'fabfile.*', 'tests', 'tests.*'],
     ),
@@ -30,7 +30,9 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=install_requires,
-    long_description='''A git repo scaffold for new projects''',
+    long_description='''
+        A collection of test helpers to consolidate common patterns.
+    ''',
     dependency_links=['http://pypi.colo.lair/simple/'],
     version=read_release_version(),
     author='AWeber Communications',

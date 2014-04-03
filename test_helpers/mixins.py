@@ -11,7 +11,16 @@ class PatchMixin(object):
     """A mixin to allow inline patching and automatic un-patching.
 
     This mixin adds one new method, ``create_patch`` that will create and
-    activate patch objects without having to use the decorator.  This results
+    activate patch objects without having to use the decorator.
+
+    In order to make use of the patching functionality you need to set
+    the ``patch_prefix`` class attribute.  This attribute should be the python
+    module path whose objects you want to patch.  For example, if you wanted
+    to patch the ``baz`` object in the ``foo.bar`` module your patch prefix
+    might look like ``foo.bar``.  When creating a patch you can now just refer
+    to the object name like ``cls.create_patch('baz')``.
+
+    This usage of this mixin as opposed to the patch decorator results
     in less pylint errors and not having to think about the order of decorator
     application.
 
@@ -43,18 +52,13 @@ class PatchMixin(object):
 
     @classmethod
     def setUpClass(cls):
-        cls.initalize_patches()
+        cls._active_patches = []
         super(PatchMixin, cls).setUpClass()
 
     @classmethod
     def tearDownClass(cls):
         cls.stop_patches()
         super(PatchMixin, cls).tearDownClass()
-
-    @classmethod
-    def initalize_patches(cls):
-        """Create the list that will contain the active patches."""
-        cls._active_patches = []
 
     @classmethod
     def stop_patches(cls):

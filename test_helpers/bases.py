@@ -29,10 +29,10 @@ class BaseTest(unittest.TestCase):
 
     @classmethod
     def configure(cls):
-        """Override to configure your test environment."""
+        """Extend to configure your test environment."""
         pass
 
     @classmethod
     def execute(cls):
         """Override to execute your test action."""
-        pass
+        raise NotImplementedError('The execute action was not defined!')
