@@ -21,7 +21,7 @@ def read_release_version():
         return f.readline().strip()
 
 setup(
-    name='test_helpers',
+    name='test-helpers',
     description='A collection of test helpers to consolidate common patterns',
     packages=find_packages(
         exclude=['fabfile', 'fabfile.*', 'tests', 'tests.*'],
