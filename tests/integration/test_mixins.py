@@ -7,9 +7,9 @@ from test_helpers import mixins
 
 
 #########
-##
-## mixins.PatchMixin
-##
+#
+# mixins.PatchMixin
+#
 #########
 
 
@@ -31,9 +31,9 @@ class WhenTestingPatchingMixin(mixins.PatchMixin, BaseTest):
 
 
 #########
-##
-## mixins.PatchMixin
-##
+#
+# mixins.PatchMixin
+#
 #########
 
 class WhenTestingMetricsCollection(mixins.MetricsTestMixin, BaseTest):
