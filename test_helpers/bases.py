@@ -10,8 +10,6 @@ the mixins and to help promote the usage of the Arrange-Act-Assert testing
 methodology used here at AWeber.
 
 """
-
-from test_helpers import mixins
 from test_helpers.compat import unittest
 
 

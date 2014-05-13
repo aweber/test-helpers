@@ -15,7 +15,6 @@ classes should ideally only inhert from ``object``.
 
 """
 import re
-import sys
 
 import fake_servers
 from remembrall import memoize

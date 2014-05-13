@@ -7,9 +7,9 @@ ppatch = utils.create_ppatch('tests.integration.test_helpers')
 
 
 #########
-##
-## mixins.PatchMixin
-##
+#
+# mixins.PatchMixin
+#
 #########
 
 
