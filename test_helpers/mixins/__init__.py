@@ -17,9 +17,11 @@ classes should ideally only inherit from ``object``.
 
 from . metrics_test_mixin import MetricsTestMixin
 from . patch_mixin import PatchMixin
+from . tornado import TornadoMixin
 
 
 __all__ = (
     'MetricsTestMixin',
     'PatchMixin',
+    'TornadoMixin',
 )
