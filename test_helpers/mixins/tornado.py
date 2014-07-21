@@ -229,3 +229,70 @@ class TornadoTest(TornadoMixin, bases.BaseTest):
         """Terminates the Tornado application."""
         super(TornadoTest, cls).annihilate()
         cls.stop_tornado()
+
+
+class JsonMixin(object):
+
+    """Mix in over :class:`TornadoMixin` to enable JSON handling.
+
+    This mix in extends :meth:`TornadoMixin.request` so that it will
+    automatically serialize request data and deserialize responses
+    as JSON.  It does honor the HTTP content type headers so it will
+    not accidentally deserialize a non-JSON response or serialize an
+    already serialized request.
+
+    """
+
+    @classmethod
+    def request(cls, *args, **kwargs):
+        """Send a request and process the response.
+
+        :param args: positional parameters to send to ``super().request``
+        :param kwargs: keyword parameters to send to ``super().request``
+
+        :returns: either a :class:`tornado.httpclient.HTTPResponse`
+            instance or :data:`None` if the request timed out.
+
+        """
+        headers = httputil.HTTPHeaders()
+        if 'headers' in kwargs:
+            headers.update(kwargs.pop('headers'))
+
+        if 'body' in kwargs:
+            header_val = headers.get('content-type', 'application/json')
+            content_type = header_val
+            if ';' in content_type:
+                content_type, _ = header_val.split(';', 1)
+            body = kwargs.get('body')
+            if (content_type.endswith('json')
+                    and not isinstance(body, text_type)):
+                kwargs['body'] = json.dumps(body, encoding='utf-8')
+                if 'content-type' not in headers:
+                    content_type = 'application/json; charset=utf-8'
+                    headers['Content-Type'] = content_type
+
+        if 'accept' not in headers:
+            headers['Accept'] = 'application/json'
+
+        if headers:
+            kwargs['headers'] = headers
+
+        response = super(JsonMixin, cls).request(*args, **kwargs)
+        response.json = None
+
+        header_val = response.headers.get(
+            'content-type', 'application/octet-stream')
+        content_type, params = header_val, ''
+        if ';' in content_type:
+            content_type, params = header_val.split(';', 1)
+        if content_type.endswith('json'):
+            encoding = 'utf-8'
+            for param in params.split(','):
+                if param.strip().startswith('charset='):
+                    encoding = param.split('=')[1]
+            try:
+                response.json = json.loads(response.body.decode(encoding))
+            except:
+                response.json = None
+
+        return response
