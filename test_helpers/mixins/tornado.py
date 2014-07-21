@@ -188,3 +188,44 @@ class TornadoMixin(object):
 
         assert cls._result is not cls._request_timeout_failure
         return cls._result
+
+
+class TornadoTest(TornadoMixin, bases.BaseTest):
+
+    """Tornado version of :class:`~.bases.BaseTest`.
+
+    This class acts as a replacement for :class:`~.bases.BaseTest`
+    with the Tornado magic pre-mixed.  All that you have to do
+    is:
+
+    1. set :attr:`tornado_application` as a top-level class
+       attribute *OR*
+    2. pass the ``application`` keyword to :meth:`configure`
+       and make sure that this class is the first one in the
+       ``__mro__``
+
+    In either case, the ``application`` is the Tornado *request
+    callback* that is being tested.  See
+    :class:`tornado.httpserver.HTTPServer` for a complete
+    description of what constitutes a *"request callback"*.
+
+    """
+
+    tornado_application = None
+    """The Tornado request handler callable."""
+
+    @classmethod
+    def configure(cls, application=None):
+        """Configures the Tornado IOLoop.
+
+        :param application: overrides :attr:`tornado_application`
+
+        """
+        cls.start_tornado(application or cls.tornado_application)
+        super(TornadoTest, cls).configure()
+
+    @classmethod
+    def annihilate(cls):
+        """Terminates the Tornado application."""
+        super(TornadoTest, cls).annihilate()
+        cls.stop_tornado()
