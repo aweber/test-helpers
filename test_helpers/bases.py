@@ -35,12 +35,33 @@ class BaseTest(unittest.TestCase):
 
         """
         super(BaseTest, cls).setUpClass()
-        cls.configure()
-        cls.execute()
+        try:
+            cls.configure()
+            cls.execute()
+        except:
+            cls.annihilate()
+            raise
+
+    @classmethod
+    def tearDownClass(cls):
+        super(BaseTest, cls).tearDownClass()
+        cls.annihilate()
 
     @classmethod
     def configure(cls):
         """Extend to configure your test environment."""
+        pass
+
+    @classmethod
+    def annihilate(cls):
+        """Clean up after a test.
+
+        Unlike :meth:`tearDownClass`, this method is guaranteed to
+        be called in all cases.  It will be called even if
+        :meth:`configure` fails so do not do anything that depends
+        on it having been successful without checking if it was.
+
+        """
         pass
 
     @classmethod

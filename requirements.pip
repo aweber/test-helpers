@@ -1,6 +1,7 @@
 # XXX Add your dependencies here.
-tox
 fake_servers
+tornado>=3.1
+tox
 
 ################################################
 # DO NOT remove/modify the dependencies below. #

@@ -9,3 +9,15 @@ try:
     from unittest import mock
 except ImportError:
     import mock
+
+try:
+    from urllib.parse import urljoin
+except ImportError:
+    from urlparse import urljoin
+
+
+__all__ = (
+    'mock',
+    'unittest',
+    'urljoin',
+)

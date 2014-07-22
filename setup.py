@@ -40,5 +40,8 @@ setup(
     entry_points={
         'console_scripts': [
         ],
+    },
+    extras_require={
+        'tornado': ['tornado>=3.1'],
     }
 )
