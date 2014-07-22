@@ -35,21 +35,17 @@ class BaseTest(unittest.TestCase):
 
         """
         super(BaseTest, cls).setUpClass()
-        cls.__annihilated = False
         try:
             cls.configure()
             cls.execute()
         except:
-            cls.__annihilated = True
             cls.annihilate()
             raise
 
     @classmethod
     def tearDownClass(cls):
         super(BaseTest, cls).tearDownClass()
-        if not cls.__annihilated:
-            cls.__annihilated = True
-            cls.annihilate()
+        cls.annihilate()
 
     @classmethod
     def configure(cls):
