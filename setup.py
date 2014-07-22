@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 if sys.version_info < (2, 6):
     raise Exception("This package requires Python 2.6 or higher.")
 
-install_requires = ['fake_servers', 'remembrall', 'tornado>=3.1']
+install_requires = ['fake_servers', 'remembrall']
 
 if sys.version_info < (3, 2):
     install_requires.append('mock')
@@ -40,5 +40,8 @@ setup(
     entry_points={
         'console_scripts': [
         ],
+    },
+    extras_require={
+        'tornado': ['tornado>=3.1'],
     }
 )

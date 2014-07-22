@@ -47,6 +47,16 @@ Testing metrics generation:
     ...         self.assert_metric_captured('my.metric.path:?|c')
 
 
+Tornado-related Extensions
+--------------------------
+
+The Test Helpers library includes a number of helpers specific to testing
+Tornado-based applications.  Before you can use any of the Tornado helpers,
+you must either:
+
+1. install Tornado as a dependency _OR_
+2. include a dependency on 'test_helpers[tornado]' in your pip requirements
+
 
 Supported Python Versions
 --------------------------
