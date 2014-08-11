@@ -1,5 +1,6 @@
 # XXX Add your dependencies here.
 fake_servers
+remembrall
 tornado>=3.1
 tox
 
