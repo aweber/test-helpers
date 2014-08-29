@@ -95,16 +95,9 @@ class TornadoMixin(object):
 
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
-        for port in range(32000, 32768):
-            try:
-                sock.setblocking(0)
-                sock.bind(('127.0.0.1', port))
-                sock.listen(128)
-                break
-            except IOError:
-                pass
-        else:
-            raise RuntimeError('failed to find open port')
+        sock.setblocking(0)
+        sock.bind(('127.0.0.1', 0))
+        sock.listen(128)
 
         cls.url_root = 'http://{0}:{1}'.format(*sock.getsockname())
         cls.io_loop = ioloop.IOLoop()
