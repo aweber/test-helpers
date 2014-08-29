@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import json
+import os
 import socket
 
 from six import text_type
@@ -75,7 +76,7 @@ class TornadoMixin(object):
 
     client = None
     io_loop = None
-    request_timeout = 20.0
+    request_timeout = float(os.environ.get('ASYNC_TEST_TIMEOUT', '20.0'))
     url_root = None
     _result = None
     _request_timeout_failure = object()
@@ -94,16 +95,9 @@ class TornadoMixin(object):
 
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
-        for port in range(32000, 32768):
-            try:
-                sock.setblocking(0)
-                sock.bind(('127.0.0.1', port))
-                sock.listen(128)
-                break
-            except IOError:
-                pass
-        else:
-            raise RuntimeError('failed to find open port')
+        sock.setblocking(0)
+        sock.bind(('127.0.0.1', 0))
+        sock.listen(128)
 
         cls.url_root = 'http://{0}:{1}'.format(*sock.getsockname())
         cls.io_loop = ioloop.IOLoop()
