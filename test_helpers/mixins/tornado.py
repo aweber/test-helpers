@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import json
+import os
 import socket
 
 from six import text_type
@@ -75,7 +76,7 @@ class TornadoMixin(object):
 
     client = None
     io_loop = None
-    request_timeout = 20.0
+    request_timeout = float(os.environ.get('ASYNC_TEST_TIMEOUT', '20.0'))
     url_root = None
     _result = None
     _request_timeout_failure = object()
