@@ -47,17 +47,12 @@ class WhenJsonMixinRequestsWithJsonBody(_JsonMixinTestCase):
     @classmethod
     def configure(cls):
         super(WhenJsonMixinRequestsWithJsonBody, cls).configure()
-        cls.json_dumps = cls.create_patch('json').dumps
-        cls.request_kwargs['body'] = mock.sentinel.body
-
-    def should_json_dumps_body(self):
-        self.json_dumps.assert_called_once_with(
-            mock.sentinel.body, encoding='utf-8')
+        cls.request_kwargs['body'] = {'foo': 'bar'}
 
     def should_use_jsonified_body_in_request(self):
         self.super_request.assert_called_once_with(
             mock.sentinel.method,
-            body=self.json_dumps.return_value,
+            body='{"foo": "bar"}'.encode('utf-8'),
             headers=mock.ANY,
         )
 
@@ -72,7 +67,8 @@ class WhenJsonMixinRequestsWithJsonBody(_JsonMixinTestCase):
         )
 
 
-class WhenJsonMixinRequestsWithJsonBodyAndCustomMimeType(WhenJsonMixinRequestsWithJsonBody):
+class WhenJsonMixinRequestsWithJsonBodyAndCustomMimeType(
+        WhenJsonMixinRequestsWithJsonBody):
 
     @classmethod
     def configure(cls):

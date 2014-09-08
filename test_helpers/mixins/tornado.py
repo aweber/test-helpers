@@ -23,10 +23,10 @@ class TornadoMixin(object):
     .. code-block:: python
 
        from unittest import TestCase
-       from test_helpers import mixins
+       import test_helpers.mixins.tornado
        import myproject
 
-       class WhenMyApplicationsGets(mixins.TornadoMixin, TestCase):
+       class WhenMyApplicationsGets(mixins.tornado.TornadoMixin, TestCase):
 
            @classmethod
            def setUpClass(cls):
@@ -260,7 +260,7 @@ class JsonMixin(object):
             body = kwargs.get('body')
             if (content_type.endswith('json')
                     and not isinstance(body, text_type)):
-                kwargs['body'] = json.dumps(body, encoding='utf-8')
+                kwargs['body'] = json.dumps(body).encode('utf-8')
                 if 'content-type' not in headers:
                     content_type = 'application/json; charset=utf-8'
                     headers['Content-Type'] = content_type

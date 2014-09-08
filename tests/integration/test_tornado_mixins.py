@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from tornado import web
 
 from test_helpers import bases, mixins
+from test_helpers.mixins import tornado
 
 
 class RecordingRequestHandler(web.RequestHandler):
@@ -37,7 +38,7 @@ class _TornadoMixinTestCase(mixins.PatchMixin, bases.BaseTest):
     def configure(cls):
         super(_TornadoMixinTestCase, cls).configure()
         cls.application = Recorder()
-        cls.test_instance = mixins.TornadoMixin
+        cls.test_instance = tornado.TornadoMixin
         cls.test_instance.start_tornado(cls.application)
 
     @classmethod
