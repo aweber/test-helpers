@@ -260,7 +260,7 @@ class JsonMixin(object):
             body = kwargs.get('body')
             if (content_type.endswith('json')
                     and not isinstance(body, text_type)):
-                kwargs['body'] = json.dumps(body, encoding='utf-8')
+                kwargs['body'] = json.dumps(body).encode('utf-8')
                 if 'content-type' not in headers:
                     content_type = 'application/json; charset=utf-8'
                     headers['Content-Type'] = content_type
