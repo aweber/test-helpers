@@ -35,19 +35,6 @@ Creating Patches:
     ...         self.foo.assert_called_once_with()
 
 
-Testing metrics generation:
-
-    >>> from test_helpers import mixins, bases
-    >>> class WhenGettingMetrics(mixins.MetricsTestMixin, bases.BaseTest):
-    ...
-    ...     @classmethod
-    ...     def execute(cls):
-    ...         function_under_test()
-    ...
-    ...     def should_have_generated_metric_baz(cls):
-    ...         self.assert_metric_captured('my.metric.path:?|c')
-
-
 Tornado-related Extensions
 --------------------------
 
