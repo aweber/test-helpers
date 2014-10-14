@@ -1,0 +1,6 @@
+# Add packages that are required to install your package.  These will
+# be passed into ``setup`` as the ``install_requires`` keyword.
+
+configuratron>=1.0.1
+tornado>=3.1
+six==1.7.2

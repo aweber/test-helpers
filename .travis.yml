@@ -1,0 +1,27 @@
+language: python
+python:
+- 2.6
+- 2.7
+- pypy
+- 3.2
+- 3.3
+- 3.4
+install:
+- if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install unittest2; fi
+- pip install -r test-requirements.txt
+- pip install -e .
+script: nosetests
+after_success:
+- coveralls
+deploy:
+  password:
+    secure: HmI26fKFhaM/FiT1NSdGBG3/FObTa1O6ud6Ex+1D1A7L+XjVLPvUFlDhQCpcwqpGQDy+nLU8Pb2Zn1XK7GVoItZPGI0QwJ/95U9efel4/wMD7cvdgRXHEOgkDyT8XmyMEe8kCc3xJo0xA7xPjslZ1NCU9M3UjPwLtmfaNWzGrlc=
+provider: pypi
+user: sprockets
+true:
+  tags: true
+password:
+  secure: iznyfbrIbZXOVWiGj
+env:
+  global:
+    secure: btAs1PRv5N8lR9JeVXE4XCF+aohIJTvWFpco5qDiKgAQoA3cZRO2mVt/CU7NMWIJcieESMrpnDENT782IsjQqG8MSTyeYp/fHoszW1Nl0UlmNF1SmyKWWMWwVbQI7sf0RuuvH6he6Do6sQJhyqIjpMqC33nnFJJK5HHRP7zA5DY=

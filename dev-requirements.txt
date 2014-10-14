@@ -1,0 +1,5 @@
+# Add packages that are required to test your package.  These will be
+# passed into ``setup`` as the ``tests_require`` keyword.
+coverage==3.5.3
+nose==1.3.0
+mock==1.0.1
