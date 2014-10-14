@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 from tornado import httpclient
 
-from .. import mock
+from test_helpers.compat import mock
 from test_helpers import bases, mixins
 from test_helpers.mixins import tornado
 

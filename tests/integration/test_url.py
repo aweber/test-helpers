@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from test_helpers import url
-from tests import unittest
+from test_helpers.compat import unittest
 
 
 #########
