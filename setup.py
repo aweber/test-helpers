@@ -20,7 +20,7 @@ setup(
     test_suite='nose.collector',
     include_package_data=True,
     zip_safe=False,
-    long_description=codecs.open('README.rst', encoding='utf-8').read(),
+    long_description=codecs.open('README.md', encoding='utf-8').read(),
     install_requires=read_requirements_file('requirements.txt'),
     tests_require=read_requirements_file('dev-requirements.txt'),
     version=VERSION,

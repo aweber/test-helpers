@@ -15,4 +15,3 @@ flake8
 pylint
 detox>=0.9.3
 tox>=1.6.0
-unittest2

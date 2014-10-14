@@ -1,6 +1,7 @@
 include *.py
 include dev-requirements.txt
 include requirements.txt
+include README.md
 graft tests
 global-exclude __pycache__
 global-exclude *.pyc
