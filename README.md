@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/aweber/test-helpers.svg)](https://travis-ci.org/aweber/test-helpers) [![Coverage Status](https://coveralls.io/repos/aweber/test-helpers/badge.png)](https://coveralls.io/r/aweber/test-helpers) [![Downloads](https://pypip.in/download/<PYPI_PKG_NAME>/badge.svg)](https://pypi.python.org/pypi/test-helpers/) [![License](https://pypip.in/license/<PYPI_PKG_NAME>/badge.svg)](https://pypi.python.org/pypi/test-helpers/)
+[![Build Status](https://travis-ci.org/aweber/test-helpers.svg)](https://travis-ci.org/aweber/test-helpers) [![Coverage Status](https://coveralls.io/repos/aweber/test-helpers/badge.png)](https://coveralls.io/r/aweber/test-helpers) [![Downloads](https://pypip.in/download/test-helpers/badge.svg)](https://pypi.python.org/pypi/test-helpers/) [![License](https://pypip.in/license/test-helpers/badge.svg)](https://pypi.python.org/pypi/test-helpers/)
 
 Test Helpers
 ============

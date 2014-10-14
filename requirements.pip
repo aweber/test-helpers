@@ -5,16 +5,13 @@
 # DO NOT remove/modify the dependencies below. #
 # They are requirements of the deploy process. #
 ################################################
-awfabfiles
 Pygments
 Sphinx
 docutils
-honcho
 logilab-astng
 logilab-common
 nosy
 flake8
-pep257
 pylint
 detox>=0.9.3
 tox>=1.6.0
