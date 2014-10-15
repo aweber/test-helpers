@@ -1,4 +1,4 @@
-import sphinx_rtd_theme
+import os
 
 project = 'test_helpers'
 intersphinx_mapping = {
@@ -23,7 +23,11 @@ exclude_trees = ['build']
 html_static_path = ['_static']
 
 
-html_theme = 'sphinx_rtd_theme'
+# Only import RTD theme locally, it's the default on readthedocs.org
+if not os.environ.get('READTHEDOCS', False):
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 master_doc = 'index'
