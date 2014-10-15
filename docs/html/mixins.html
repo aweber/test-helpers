@@ -1,0 +1,606 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Testing Mixins &mdash; test_helpers 1.5.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="test_helpers 1.5.0 documentation" href="index.html" />
+    <link rel="next" title="Testing Utilities" href="utils.html" />
+    <link rel="prev" title="Base Test Cases" href="bases.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="Testing Utilities"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="bases.html" title="Base Test Cases"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">test_helpers 1.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-test_helpers.mixins">
+<span id="testing-mixins"></span><h1>Testing Mixins<a class="headerlink" href="#module-test_helpers.mixins" title="Permalink to this headline">¶</a></h1>
+<p>Collection of functionality mix-ins.</p>
+<p>This module contains standalone classes that can be safely mixed
+into the <a class="reference internal" href="bases.html#test_helpers.bases.BaseTest" title="test_helpers.bases.BaseTest"><tt class="xref py py-class docutils literal"><span class="pre">BaseTest</span></tt></a> class.  Each mixin
+extends the functionality of the test case by adding behaviors,
+methods, and attributes - for example, patching well-understood
+functionality or automatically creating/destroying an in memory
+UDP server.</p>
+<p>When creating a mixin it is important to take not that you
+should strive to keep the Method Resolution Order (MRO) as clean
+as possible.  Each mixin class should ideally only inherit from
+<tt class="docutils literal"><span class="pre">object</span></tt>.</p>
+<dl class="class">
+<dt id="test_helpers.mixins.PatchMixin">
+<em class="property">class </em><tt class="descclassname">test_helpers.mixins.</tt><tt class="descname">PatchMixin</tt><a class="headerlink" href="#test_helpers.mixins.PatchMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mixin to allow inline patching and automatic un-patching.</p>
+<p>This mixin adds one new method, <tt class="docutils literal"><span class="pre">create_patch</span></tt> that will create and
+activate patch objects without having to use the decorator.</p>
+<p>In order to make use of the patching functionality you need to set
+the <tt class="docutils literal"><span class="pre">patch_prefix</span></tt> class attribute.  This attribute should be the python
+module path whose objects you want to patch.  For example, if you wanted
+to patch the <tt class="docutils literal"><span class="pre">baz</span></tt> object in the <tt class="docutils literal"><span class="pre">foo.bar</span></tt> module your patch prefix
+might look like <tt class="docutils literal"><span class="pre">foo.bar</span></tt>.  When creating a patch you can now just refer
+to the object name like <tt class="docutils literal"><span class="pre">cls.create_patch('baz')</span></tt>.</p>
+<p>This usage of this mixin as opposed to the patch decorator results
+in less pylint errors and not having to think about the order of decorator
+application.</p>
+<p>Example Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyTest</span><span class="p">(</span><span class="n">mixins</span><span class="o">.</span><span class="n">PatchMixin</span><span class="p">,</span> <span class="n">bases</span><span class="o">.</span><span class="n">BaseTest</span><span class="p">):</span>
+
+    <span class="n">patch_prefix</span> <span class="o">=</span> <span class="s">&#39;my_application.module.submodule&#39;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">foo_mock</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">create_patch</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">bar_mock</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">create_patch</span><span class="p">(</span><span class="s">&#39;bar&#39;</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="n">function_under_test</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">should_call_foo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foo_mock</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">should_return_100_from_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_mock</span><span class="o">.</span><span class="n">return_value</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="classmethod">
+<dt id="test_helpers.mixins.PatchMixin.create_patch">
+<em class="property">classmethod </em><tt class="descname">create_patch</tt><big>(</big><em>target</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.PatchMixin.create_patch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and apply a patch.</p>
+<p>This method calls <tt class="xref py py-func docutils literal"><span class="pre">mock.patch()</span></tt> with the keyword parameters
+and returns the running patch.  This approach has the benefit of
+applying a patch without scoping the patched code which, in turn,
+lets you apply patches without having to override <a class="reference internal" href="#test_helpers.mixins.PatchMixin.setUpClass" title="test_helpers.mixins.PatchMixin.setUpClass"><tt class="xref py py-meth docutils literal"><span class="pre">setUpClass()</span></tt></a>
+to do it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; the target of the patch.  This is passed as
+an argument to <tt class="docutils literal"><span class="pre">cls.patch_prefix.format()</span></tt> to create the
+fully-qualified patch target.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_helpers.mixins.PatchMixin.patch_prefix">
+<tt class="descname">patch_prefix</tt><em class="property"> = ''</em><a class="headerlink" href="#test_helpers.mixins.PatchMixin.patch_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.PatchMixin.setUpClass">
+<em class="property">classmethod </em><tt class="descname">setUpClass</tt><big>(</big><big>)</big><a class="headerlink" href="#test_helpers.mixins.PatchMixin.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.PatchMixin.stop_patches">
+<em class="property">classmethod </em><tt class="descname">stop_patches</tt><big>(</big><big>)</big><a class="headerlink" href="#test_helpers.mixins.PatchMixin.stop_patches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop any active patches when the class is finished.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.PatchMixin.tearDownClass">
+<em class="property">classmethod </em><tt class="descname">tearDownClass</tt><big>(</big><big>)</big><a class="headerlink" href="#test_helpers.mixins.PatchMixin.tearDownClass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_helpers.mixins.TornadoMixin">
+<em class="property">class </em><tt class="descclassname">test_helpers.mixins.</tt><tt class="descname">TornadoMixin</tt><a class="headerlink" href="#test_helpers.mixins.TornadoMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test tornado applications with AAA testing.</p>
+<p>Mix this class in over <a class="reference internal" href="bases.html#test_helpers.bases.BaseTest" title="test_helpers.bases.BaseTest"><tt class="xref py py-class docutils literal"><span class="pre">test_helpers.bases.BaseTest</span></tt></a> or
+similar classmethod-based testing class and you can directly
+test tornado-based applications.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">import</span> <span class="nn">test_helpers.mixins.tornado</span>
+<span class="kn">import</span> <span class="nn">myproject</span>
+
+<span class="k">class</span> <span class="nc">WhenMyApplicationsGets</span><span class="p">(</span><span class="n">mixins</span><span class="o">.</span><span class="n">tornado</span><span class="o">.</span><span class="n">TornadoMixin</span><span class="p">,</span> <span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WhenMyApplicationGets</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">setUpClass</span><span class="p">()</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">start_tornado</span><span class="p">(</span><span class="n">myproject</span><span class="o">.</span><span class="n">Application</span><span class="p">())</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">tearDownClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WhenMyApplicationGets</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">tearDownClass</span><span class="p">()</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">stop_tornado</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">response</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/index&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">should_return_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Attributes</strong></p>
+<p>This mix-in creates three useful attributes in addition to the
+methods.  Each of the attributes is initialized by <a class="reference internal" href="#test_helpers.mixins.TornadoMixin.start_tornado" title="test_helpers.mixins.TornadoMixin.start_tornado"><tt class="xref py py-meth docutils literal"><span class="pre">start_tornado()</span></tt></a>
+and will be <a class="reference external" href="http://docs.python.org/library/constants.html#None" title="(in Python v2.7)"><tt class="xref py py-data docutils literal"><span class="pre">None</span></tt></a> until that method is called.</p>
+<dl class="attribute">
+<dt id="test_helpers.mixins.TornadoMixin.client">
+<tt class="descname">client</tt><a class="headerlink" href="#test_helpers.mixins.TornadoMixin.client" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference external" href="http://www.tornadoweb.org/en/branch3.2/httpclient.html#tornado.httpclient.HTTPClient" title="(in Tornado v3.2.2)"><tt class="xref py py-class docutils literal"><span class="pre">tornado.httpclient.HTTPClient</span></tt></a> instance used to
+interact with the application.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_helpers.mixins.TornadoMixin.io_loop">
+<tt class="descname">io_loop</tt><a class="headerlink" href="#test_helpers.mixins.TornadoMixin.io_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference external" href="http://www.tornadoweb.org/en/branch3.2/ioloop.html#tornado.ioloop.IOLoop" title="(in Tornado v3.2.2)"><tt class="xref py py-class docutils literal"><span class="pre">tornado.ioloop.IOLoop</span></tt></a> instance that the application
+is attached to.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_helpers.mixins.TornadoMixin.url_root">
+<tt class="descname">url_root</tt><a class="headerlink" href="#test_helpers.mixins.TornadoMixin.url_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>The URL root used to interact with the application.  This refers
+to host and port that <a class="reference internal" href="#test_helpers.mixins.TornadoMixin.io_loop" title="test_helpers.mixins.TornadoMixin.io_loop"><tt class="xref py py-attr docutils literal"><span class="pre">io_loop</span></tt></a> is attached to.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_helpers.mixins.TornadoMixin.request_timeout">
+<tt class="descname">request_timeout</tt><a class="headerlink" href="#test_helpers.mixins.TornadoMixin.request_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of seconds to run the IO loop for before giving up
+on the request.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">client</tt><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.TornadoMixin.delete">
+<em class="property">classmethod </em><tt class="descname">delete</tt><big>(</big><em>path</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.TornadoMixin.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">DELETE</span></tt> request.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.TornadoMixin.get">
+<em class="property">classmethod </em><tt class="descname">get</tt><big>(</big><em>path</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.TornadoMixin.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">GET</span></tt> request.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">io_loop</tt><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.TornadoMixin.post">
+<em class="property">classmethod </em><tt class="descname">post</tt><big>(</big><em>path</em>, <em>body</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.TornadoMixin.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">POST</span></tt> request.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.TornadoMixin.put">
+<em class="property">classmethod </em><tt class="descname">put</tt><big>(</big><em>path</em>, <em>body</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.TornadoMixin.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">PUT</span></tt> request.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.TornadoMixin.request">
+<em class="property">classmethod </em><tt class="descname">request</tt><big>(</big><em>method</em>, <em>path</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.TornadoMixin.request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a request to the application.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>method</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; HTTP method to invoke</li>
+<li><strong>path</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; possibly absolute path of the resource
+to invoke</li>
+<li><strong>kwargs</strong> &#8211; additional arguments passed to the
+<a class="reference external" href="http://www.tornadoweb.org/en/branch3.2/httpclient.html#tornado.httpclient.HTTPRequest" title="(in Tornado v3.2.2)"><tt class="xref py py-class docutils literal"><span class="pre">tornado.httpclient.HTTPRequest</span></tt></a> initializer</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">either a <a class="reference external" href="http://www.tornadoweb.org/en/branch3.2/httpclient.html#tornado.httpclient.HTTPResponse" title="(in Tornado v3.2.2)"><tt class="xref py py-class docutils literal"><span class="pre">tornado.httpclient.HTTPResponse</span></tt></a>
+instance or <a class="reference external" href="http://docs.python.org/library/constants.html#None" title="(in Python v2.7)"><tt class="xref py py-data docutils literal"><span class="pre">None</span></tt></a> if the request timed out.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The <cite>path</cite> parameter can be a relative path or an absolute
+URL.  It will be joined to <a class="reference internal" href="#test_helpers.mixins.TornadoMixin.url_root" title="test_helpers.mixins.TornadoMixin.url_root"><tt class="xref py py-attr docutils literal"><span class="pre">url_root</span></tt></a> before the
+request object is created.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">request_timeout</tt><em class="property"> = 20.0</em></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.TornadoMixin.start_tornado">
+<em class="property">classmethod </em><tt class="descname">start_tornado</tt><big>(</big><em>application</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.TornadoMixin.start_tornado" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start up tornado and register <cite>application</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>application</strong> &#8211; anything suitable as a Tornado <em>request
+callback</em> (see <a class="reference external" href="http://www.tornadoweb.org/en/branch3.2/httpserver.html#tornado.httpserver.HTTPServer" title="(in Tornado v3.2.2)"><tt class="xref py py-class docutils literal"><span class="pre">tornado.httpserver.HTTPServer</span></tt></a>)</td>
+</tr>
+</tbody>
+</table>
+<p>This method binds a socket to an arbitrary temporary port,
+creates a new Tornado IOLoop, and adds the <cite>application</cite>&#8216;
+to it.  Calling any of the request-related methods will
+start the IOLoop and run it until a response is received.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.TornadoMixin.stop_tornado">
+<em class="property">classmethod </em><tt class="descname">stop_tornado</tt><big>(</big><big>)</big><a class="headerlink" href="#test_helpers.mixins.TornadoMixin.stop_tornado" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminate the tornado IO loop.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">url_root</tt><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<div class="section" id="module-test_helpers.mixins.tornado">
+<span id="tornado-specific-helpers"></span><h2>Tornado Specific Helpers<a class="headerlink" href="#module-test_helpers.mixins.tornado" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="test_helpers.mixins.tornado.JsonMixin">
+<em class="property">class </em><tt class="descclassname">test_helpers.mixins.tornado.</tt><tt class="descname">JsonMixin</tt><a class="headerlink" href="#test_helpers.mixins.tornado.JsonMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mix in over <a class="reference internal" href="#test_helpers.mixins.tornado.TornadoMixin" title="test_helpers.mixins.tornado.TornadoMixin"><tt class="xref py py-class docutils literal"><span class="pre">TornadoMixin</span></tt></a> to enable JSON handling.</p>
+<p>This mix in extends <a class="reference internal" href="#test_helpers.mixins.tornado.TornadoMixin.request" title="test_helpers.mixins.tornado.TornadoMixin.request"><tt class="xref py py-meth docutils literal"><span class="pre">TornadoMixin.request()</span></tt></a> so that it will
+automatically serialize request data and deserialize responses
+as JSON.  It does honor the HTTP content type headers so it will
+not accidentally deserialize a non-JSON response or serialize an
+already serialized request.</p>
+<dl class="classmethod">
+<dt id="test_helpers.mixins.tornado.JsonMixin.request">
+<em class="property">classmethod </em><tt class="descname">request</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.tornado.JsonMixin.request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a request and process the response.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> &#8211; positional parameters to send to <tt class="docutils literal"><span class="pre">super().request</span></tt></li>
+<li><strong>kwargs</strong> &#8211; keyword parameters to send to <tt class="docutils literal"><span class="pre">super().request</span></tt></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">either a <a class="reference external" href="http://www.tornadoweb.org/en/branch3.2/httpclient.html#tornado.httpclient.HTTPResponse" title="(in Tornado v3.2.2)"><tt class="xref py py-class docutils literal"><span class="pre">tornado.httpclient.HTTPResponse</span></tt></a>
+instance or <a class="reference external" href="http://docs.python.org/library/constants.html#None" title="(in Python v2.7)"><tt class="xref py py-data docutils literal"><span class="pre">None</span></tt></a> if the request timed out.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_helpers.mixins.tornado.TornadoMixin">
+<em class="property">class </em><tt class="descclassname">test_helpers.mixins.tornado.</tt><tt class="descname">TornadoMixin</tt><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test tornado applications with AAA testing.</p>
+<p>Mix this class in over <a class="reference internal" href="bases.html#test_helpers.bases.BaseTest" title="test_helpers.bases.BaseTest"><tt class="xref py py-class docutils literal"><span class="pre">test_helpers.bases.BaseTest</span></tt></a> or
+similar classmethod-based testing class and you can directly
+test tornado-based applications.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">import</span> <span class="nn">test_helpers.mixins.tornado</span>
+<span class="kn">import</span> <span class="nn">myproject</span>
+
+<span class="k">class</span> <span class="nc">WhenMyApplicationsGets</span><span class="p">(</span><span class="n">mixins</span><span class="o">.</span><span class="n">tornado</span><span class="o">.</span><span class="n">TornadoMixin</span><span class="p">,</span> <span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WhenMyApplicationGets</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">setUpClass</span><span class="p">()</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">start_tornado</span><span class="p">(</span><span class="n">myproject</span><span class="o">.</span><span class="n">Application</span><span class="p">())</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">tearDownClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WhenMyApplicationGets</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">tearDownClass</span><span class="p">()</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">stop_tornado</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">response</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/index&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">should_return_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Attributes</strong></p>
+<p>This mix-in creates three useful attributes in addition to the
+methods.  Each of the attributes is initialized by <a class="reference internal" href="#test_helpers.mixins.tornado.TornadoMixin.start_tornado" title="test_helpers.mixins.tornado.TornadoMixin.start_tornado"><tt class="xref py py-meth docutils literal"><span class="pre">start_tornado()</span></tt></a>
+and will be <a class="reference external" href="http://docs.python.org/library/constants.html#None" title="(in Python v2.7)"><tt class="xref py py-data docutils literal"><span class="pre">None</span></tt></a> until that method is called.</p>
+<dl class="attribute">
+<dt id="test_helpers.mixins.tornado.TornadoMixin.client">
+<tt class="descname">client</tt><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoMixin.client" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference external" href="http://www.tornadoweb.org/en/branch3.2/httpclient.html#tornado.httpclient.HTTPClient" title="(in Tornado v3.2.2)"><tt class="xref py py-class docutils literal"><span class="pre">tornado.httpclient.HTTPClient</span></tt></a> instance used to
+interact with the application.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_helpers.mixins.tornado.TornadoMixin.io_loop">
+<tt class="descname">io_loop</tt><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoMixin.io_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference external" href="http://www.tornadoweb.org/en/branch3.2/ioloop.html#tornado.ioloop.IOLoop" title="(in Tornado v3.2.2)"><tt class="xref py py-class docutils literal"><span class="pre">tornado.ioloop.IOLoop</span></tt></a> instance that the application
+is attached to.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_helpers.mixins.tornado.TornadoMixin.url_root">
+<tt class="descname">url_root</tt><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoMixin.url_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>The URL root used to interact with the application.  This refers
+to host and port that <a class="reference internal" href="#test_helpers.mixins.tornado.TornadoMixin.io_loop" title="test_helpers.mixins.tornado.TornadoMixin.io_loop"><tt class="xref py py-attr docutils literal"><span class="pre">io_loop</span></tt></a> is attached to.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_helpers.mixins.tornado.TornadoMixin.request_timeout">
+<tt class="descname">request_timeout</tt><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoMixin.request_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of seconds to run the IO loop for before giving up
+on the request.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.tornado.TornadoMixin.delete">
+<em class="property">classmethod </em><tt class="descname">delete</tt><big>(</big><em>path</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoMixin.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">DELETE</span></tt> request.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.tornado.TornadoMixin.get">
+<em class="property">classmethod </em><tt class="descname">get</tt><big>(</big><em>path</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoMixin.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">GET</span></tt> request.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.tornado.TornadoMixin.post">
+<em class="property">classmethod </em><tt class="descname">post</tt><big>(</big><em>path</em>, <em>body</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoMixin.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">POST</span></tt> request.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.tornado.TornadoMixin.put">
+<em class="property">classmethod </em><tt class="descname">put</tt><big>(</big><em>path</em>, <em>body</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoMixin.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">PUT</span></tt> request.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.tornado.TornadoMixin.request">
+<em class="property">classmethod </em><tt class="descname">request</tt><big>(</big><em>method</em>, <em>path</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoMixin.request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a request to the application.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>method</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; HTTP method to invoke</li>
+<li><strong>path</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; possibly absolute path of the resource
+to invoke</li>
+<li><strong>kwargs</strong> &#8211; additional arguments passed to the
+<a class="reference external" href="http://www.tornadoweb.org/en/branch3.2/httpclient.html#tornado.httpclient.HTTPRequest" title="(in Tornado v3.2.2)"><tt class="xref py py-class docutils literal"><span class="pre">tornado.httpclient.HTTPRequest</span></tt></a> initializer</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">either a <a class="reference external" href="http://www.tornadoweb.org/en/branch3.2/httpclient.html#tornado.httpclient.HTTPResponse" title="(in Tornado v3.2.2)"><tt class="xref py py-class docutils literal"><span class="pre">tornado.httpclient.HTTPResponse</span></tt></a>
+instance or <a class="reference external" href="http://docs.python.org/library/constants.html#None" title="(in Python v2.7)"><tt class="xref py py-data docutils literal"><span class="pre">None</span></tt></a> if the request timed out.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The <cite>path</cite> parameter can be a relative path or an absolute
+URL.  It will be joined to <a class="reference internal" href="#test_helpers.mixins.tornado.TornadoMixin.url_root" title="test_helpers.mixins.tornado.TornadoMixin.url_root"><tt class="xref py py-attr docutils literal"><span class="pre">url_root</span></tt></a> before the
+request object is created.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.tornado.TornadoMixin.start_tornado">
+<em class="property">classmethod </em><tt class="descname">start_tornado</tt><big>(</big><em>application</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoMixin.start_tornado" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start up tornado and register <cite>application</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>application</strong> &#8211; anything suitable as a Tornado <em>request
+callback</em> (see <a class="reference external" href="http://www.tornadoweb.org/en/branch3.2/httpserver.html#tornado.httpserver.HTTPServer" title="(in Tornado v3.2.2)"><tt class="xref py py-class docutils literal"><span class="pre">tornado.httpserver.HTTPServer</span></tt></a>)</td>
+</tr>
+</tbody>
+</table>
+<p>This method binds a socket to an arbitrary temporary port,
+creates a new Tornado IOLoop, and adds the <cite>application</cite>&#8216;
+to it.  Calling any of the request-related methods will
+start the IOLoop and run it until a response is received.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.tornado.TornadoMixin.stop_tornado">
+<em class="property">classmethod </em><tt class="descname">stop_tornado</tt><big>(</big><big>)</big><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoMixin.stop_tornado" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminate the tornado IO loop.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_helpers.mixins.tornado.TornadoTest">
+<em class="property">class </em><tt class="descclassname">test_helpers.mixins.tornado.</tt><tt class="descname">TornadoTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tornado version of <a class="reference internal" href="bases.html#test_helpers.bases.BaseTest" title="test_helpers.bases.BaseTest"><tt class="xref py py-class docutils literal"><span class="pre">BaseTest</span></tt></a>.</p>
+<p>This class acts as a replacement for <a class="reference internal" href="bases.html#test_helpers.bases.BaseTest" title="test_helpers.bases.BaseTest"><tt class="xref py py-class docutils literal"><span class="pre">BaseTest</span></tt></a>
+with the Tornado magic pre-mixed.  All that you have to do
+is:</p>
+<ol class="arabic simple">
+<li>set <a class="reference internal" href="#test_helpers.mixins.tornado.TornadoTest.tornado_application" title="test_helpers.mixins.tornado.TornadoTest.tornado_application"><tt class="xref py py-attr docutils literal"><span class="pre">tornado_application</span></tt></a> as a top-level class
+attribute <em>OR</em></li>
+<li>pass the <tt class="docutils literal"><span class="pre">application</span></tt> keyword to <a class="reference internal" href="#test_helpers.mixins.tornado.TornadoTest.configure" title="test_helpers.mixins.tornado.TornadoTest.configure"><tt class="xref py py-meth docutils literal"><span class="pre">configure()</span></tt></a>
+and make sure that this class is the first one in the
+<tt class="docutils literal"><span class="pre">__mro__</span></tt></li>
+</ol>
+<p>In either case, the <tt class="docutils literal"><span class="pre">application</span></tt> is the Tornado <em>request
+callback</em> that is being tested.  See
+<a class="reference external" href="http://www.tornadoweb.org/en/branch3.2/httpserver.html#tornado.httpserver.HTTPServer" title="(in Tornado v3.2.2)"><tt class="xref py py-class docutils literal"><span class="pre">tornado.httpserver.HTTPServer</span></tt></a> for a complete
+description of what constitutes a <em>&#8220;request callback&#8221;</em>.</p>
+<dl class="classmethod">
+<dt id="test_helpers.mixins.tornado.TornadoTest.annihilate">
+<em class="property">classmethod </em><tt class="descname">annihilate</tt><big>(</big><big>)</big><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoTest.annihilate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminates the Tornado application.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.mixins.tornado.TornadoTest.configure">
+<em class="property">classmethod </em><tt class="descname">configure</tt><big>(</big><em>application=None</em><big>)</big><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoTest.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configures the Tornado IOLoop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>application</strong> &#8211; overrides <a class="reference internal" href="#test_helpers.mixins.tornado.TornadoTest.tornado_application" title="test_helpers.mixins.tornado.TornadoTest.tornado_application"><tt class="xref py py-attr docutils literal"><span class="pre">tornado_application</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_helpers.mixins.tornado.TornadoTest.tornado_application">
+<tt class="descname">tornado_application</tt><em class="property"> = None</em><a class="headerlink" href="#test_helpers.mixins.tornado.TornadoTest.tornado_application" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Tornado request handler callable.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Testing Mixins</a><ul>
+<li><a class="reference internal" href="#module-test_helpers.mixins.tornado">Tornado Specific Helpers</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="bases.html"
+                        title="previous chapter">Base Test Cases</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utils.html"
+                        title="next chapter">Testing Utilities</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/mixins.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="Testing Utilities"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="bases.html" title="Base Test Cases"
+             >previous</a> |</li>
+        <li><a href="index.html">test_helpers 1.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright AWeber Communications.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

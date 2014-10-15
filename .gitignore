@@ -71,8 +71,9 @@ TAGS
 /build
 /chef_script
 /dist/
-/doc/doctrees
-/doc/html
+/docs/doctrees
+/docs/html
+/docs/_build
 /env/
 /htmlcov
 /pip-log.txt

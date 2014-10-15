@@ -1,0 +1,173 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Base Test Cases &mdash; test_helpers 1.5.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="test_helpers 1.5.0 documentation" href="index.html" />
+    <link rel="next" title="Testing Mixins" href="mixins.html" />
+    <link rel="prev" title="Overview" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mixins.html" title="Testing Mixins"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Overview"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">test_helpers 1.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-test_helpers.bases"></span><div class="section" id="base-test-cases">
+<h1>Base Test Cases<a class="headerlink" href="#base-test-cases" title="Permalink to this headline">¶</a></h1>
+<p>The base test cases module contains useful classes that inherit from the
+unit test standard library and optionally inherit from an arbitrary number of
+mixins.  The purpose of these classes is to provide an integration point for
+the mixins and to help promote the usage of the Arrange-Act-Assert testing
+methodology used here at AWeber.</p>
+<dl class="class">
+<dt id="test_helpers.bases.BaseTest">
+<em class="property">class </em><tt class="descclassname">test_helpers.bases.</tt><tt class="descname">BaseTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#test_helpers.bases.BaseTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for the AWeber AAA testing style.</p>
+<p>This implements the Arrange-Act-Assert style of unit testing though
+the names were chosen to match existing convention.  New unit tests
+should use this as a base class and replace the <a class="reference internal" href="#test_helpers.bases.BaseTest.configure" title="test_helpers.bases.BaseTest.configure"><tt class="xref py py-meth docutils literal"><span class="pre">configure()</span></tt></a> and
+<a class="reference internal" href="#test_helpers.bases.BaseTest.execute" title="test_helpers.bases.BaseTest.execute"><tt class="xref py py-meth docutils literal"><span class="pre">execute()</span></tt></a> methods as necessary.</p>
+<dl class="classmethod">
+<dt id="test_helpers.bases.BaseTest.annihilate">
+<em class="property">classmethod </em><tt class="descname">annihilate</tt><big>(</big><big>)</big><a class="headerlink" href="#test_helpers.bases.BaseTest.annihilate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up after a test.</p>
+<p>Unlike <a class="reference internal" href="#test_helpers.bases.BaseTest.tearDownClass" title="test_helpers.bases.BaseTest.tearDownClass"><tt class="xref py py-meth docutils literal"><span class="pre">tearDownClass()</span></tt></a>, this method is guaranteed to
+be called in all cases.  It will be called even if
+<a class="reference internal" href="#test_helpers.bases.BaseTest.configure" title="test_helpers.bases.BaseTest.configure"><tt class="xref py py-meth docutils literal"><span class="pre">configure()</span></tt></a> fails so do not do anything that depends
+on it having been successful without checking if it was.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.bases.BaseTest.configure">
+<em class="property">classmethod </em><tt class="descname">configure</tt><big>(</big><big>)</big><a class="headerlink" href="#test_helpers.bases.BaseTest.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend to configure your test environment.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.bases.BaseTest.execute">
+<em class="property">classmethod </em><tt class="descname">execute</tt><big>(</big><big>)</big><a class="headerlink" href="#test_helpers.bases.BaseTest.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override to execute your test action.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_helpers.bases.BaseTest.maxDiff">
+<tt class="descname">maxDiff</tt><em class="property"> = 100000</em><a class="headerlink" href="#test_helpers.bases.BaseTest.maxDiff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.bases.BaseTest.setUpClass">
+<em class="property">classmethod </em><tt class="descname">setUpClass</tt><big>(</big><big>)</big><a class="headerlink" href="#test_helpers.bases.BaseTest.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arrange the test and do the action.</p>
+<p>If you are extending this method, then you are required to call
+this implementation as the last thing in your version of this
+method.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_helpers.bases.BaseTest.tearDownClass">
+<em class="property">classmethod </em><tt class="descname">tearDownClass</tt><big>(</big><big>)</big><a class="headerlink" href="#test_helpers.bases.BaseTest.tearDownClass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="mixins.html"
+                        title="next chapter">Testing Mixins</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/bases.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mixins.html" title="Testing Mixins"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Overview"
+             >previous</a> |</li>
+        <li><a href="index.html">test_helpers 1.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright AWeber Communications.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
