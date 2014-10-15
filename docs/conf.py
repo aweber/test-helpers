@@ -27,8 +27,8 @@ html_static_path = ['_static']
 if not os.environ.get('READTHEDOCS', False):
     import sphinx_rtd_theme
     html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 master_doc = 'index'
 todo_include_todos = True
