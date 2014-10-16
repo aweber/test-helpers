@@ -15,6 +15,5 @@ as possible.  Each mixin class should ideally only inherit from
 """
 
 from .patch_mixin import PatchMixin
-from .tornado import TornadoMixin
 
-__all__ = ('PatchMixin', 'TornadoMixin')
+__all__ = ('PatchMixin')
