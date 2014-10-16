@@ -1,0 +1,1 @@
+1.5.1 - Allow use of `mixins` module without requiring the `tornado` package

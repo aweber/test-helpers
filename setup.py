@@ -3,7 +3,7 @@ import codecs
 
 from setuptools import setup, find_packages
 
-VERSION = '1.5.0'
+VERSION = '1.5.1'
 
 def read_requirements_file(filename):
     """Read pip-formatted requirements from a file."""
