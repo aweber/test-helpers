@@ -32,7 +32,7 @@ if not os.environ.get('READTHEDOCS', False):
 
 master_doc = 'index'
 todo_include_todos = True
-version = '1.5.0'
+version = '1.5.1'
 release = version
 
 source_suffix = '.rst'
