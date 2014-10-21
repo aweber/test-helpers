@@ -1,4 +1,8 @@
-.. |Coverage Status| image:: https://coveralls.io/repos/aweber/test-helpers/badge.png
+|BuildStatus| |CoverageStatus| |Downloads| |License| |Docs|
+
+.. |BuildStatus| image:: https://pypip.in/download/test-helpers/badge.svg
+   :target: https://pypi.python.org/pypi/test-helpers/
+.. |CoverageStatus| image:: https://coveralls.io/repos/aweber/test-helpers/badge.png
    :target: https://coveralls.io/r/aweber/test-helpers
 .. |Downloads| image:: https://pypip.in/download/test-helpers/badge.svg
    :target: https://pypi.python.org/pypi/test-helpers/
