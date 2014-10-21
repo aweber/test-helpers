@@ -1,7 +1,7 @@
 |BuildStatus| |CoverageStatus| |Downloads| |License| |Docs|
 
-.. |BuildStatus| image:: https://pypip.in/download/test-helpers/badge.svg
-   :target: https://pypi.python.org/pypi/test-helpers/
+.. |BuildStatus| image:: https://travis-ci.org/aweber/test-helpers.svg
+   :target: https://travis-ci.org/aweber/test-helpers
 .. |CoverageStatus| image:: https://coveralls.io/repos/aweber/test-helpers/badge.png
    :target: https://coveralls.io/r/aweber/test-helpers
 .. |Downloads| image:: https://pypip.in/download/test-helpers/badge.svg
