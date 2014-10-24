@@ -18,6 +18,7 @@ class RecordingRequestHandler(web.RequestHandler):
     options = on_request
     post = on_request
     put = on_request
+    patch = on_request
 
 
 class Recorder(web.Application):
@@ -112,14 +113,43 @@ class WhenTornadoMixinPuts(_TornadoMixinTestCase):
         self.assertEqual(self.request.body, b'body')
 
 
+class WhenTornadoMixinPatches(_TornadoMixinTestCase):
+
+    @classmethod
+    def execute(cls):
+        cls.test_instance.patch('/', 'body')
+
+    def should_patch_to_request_handler(self):
+        self.assertEqual(self.request.method, 'PATCH')
+
+    def should_patch_to_requested_path(self):
+        self.assertEqual(self.request.path, '/')
+
+    def should_patch_body(self):
+        self.assertEqual(self.request.body, b'body')
+
+
 class WhenTornadoMixinRequestsOptions(_TornadoMixinTestCase):
 
     @classmethod
     def execute(cls):
-        cls.test_instance.request('OPTIONS', '/')
+        cls.test_instance.options('/')
 
     def should_request_options__from_request_handler(self):
         self.assertEqual(self.request.method, 'OPTIONS')
+
+    def should_request_appropriate_resource(self):
+        self.assertEqual(self.request.path, '/')
+
+
+class WhenTornadoMixinRequestsHead(_TornadoMixinTestCase):
+
+    @classmethod
+    def execute(cls):
+        cls.test_instance.head('/')
+
+    def should_request_options__from_request_handler(self):
+        self.assertEqual(self.request.method, 'HEAD')
 
     def should_request_appropriate_resource(self):
         self.assertEqual(self.request.path, '/')

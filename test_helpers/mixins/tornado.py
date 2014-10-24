@@ -134,6 +134,21 @@ class TornadoMixin(object):
         return cls.request('PUT', path, body=body, **kwargs)
 
     @classmethod
+    def patch(cls, path, body, **kwargs):
+        """Issue a ``PATCH`` request."""
+        return cls.request('PATCH', path, body=body, **kwargs)
+
+    @classmethod
+    def options(cls, path, **kwargs):
+        """Issue a ``OPTIONS`` request."""
+        return cls.request('OPTIONS', path, **kwargs)
+
+    @classmethod
+    def head(cls, path, **kwargs):
+        """Issue a ``HEAD`` request."""
+        return cls.request('HEAD', path, **kwargs)
+
+    @classmethod
     def request(cls, method, path, **kwargs):
         """Issue a request to the application.
 
