@@ -18,6 +18,7 @@ class RecordingRequestHandler(web.RequestHandler):
     options = on_request
     post = on_request
     put = on_request
+    patch = on_request
 
 
 class Recorder(web.Application):
@@ -109,6 +110,22 @@ class WhenTornadoMixinPuts(_TornadoMixinTestCase):
         self.assertEqual(self.request.path, '/')
 
     def should_put_body(self):
+        self.assertEqual(self.request.body, b'body')
+
+
+class WhenTornadoMixinPatches(_TornadoMixinTestCase):
+
+    @classmethod
+    def execute(cls):
+        cls.test_instance.patch('/', 'body')
+
+    def should_patch_to_request_handler(self):
+        self.assertEqual(self.request.method, 'PATCH')
+
+    def should_patch_to_requested_path(self):
+        self.assertEqual(self.request.path, '/')
+
+    def should_patch_body(self):
         self.assertEqual(self.request.body, b'body')
 
 

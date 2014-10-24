@@ -134,6 +134,11 @@ class TornadoMixin(object):
         return cls.request('PUT', path, body=body, **kwargs)
 
     @classmethod
+    def patch(cls, path, body, **kwargs):
+        """Issue a ``PATCH`` request."""
+        return cls.request('PATCH', path, body=body, **kwargs)
+
+    @classmethod
     def request(cls, method, path, **kwargs):
         """Issue a request to the application.
 
