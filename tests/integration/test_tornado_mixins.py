@@ -133,10 +133,23 @@ class WhenTornadoMixinRequestsOptions(_TornadoMixinTestCase):
 
     @classmethod
     def execute(cls):
-        cls.test_instance.request('OPTIONS', '/')
+        cls.test_instance.options('/')
 
     def should_request_options__from_request_handler(self):
         self.assertEqual(self.request.method, 'OPTIONS')
+
+    def should_request_appropriate_resource(self):
+        self.assertEqual(self.request.path, '/')
+
+
+class WhenTornadoMixinRequestsHead(_TornadoMixinTestCase):
+
+    @classmethod
+    def execute(cls):
+        cls.test_instance.head('/')
+
+    def should_request_options__from_request_handler(self):
+        self.assertEqual(self.request.method, 'HEAD')
 
     def should_request_appropriate_resource(self):
         self.assertEqual(self.request.path, '/')
