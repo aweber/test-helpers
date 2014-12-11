@@ -1,7 +1,5 @@
 from __future__ import absolute_import
 
-import socket
-
 from test_helpers.bases import BaseTest
 from test_helpers import mixins
 
