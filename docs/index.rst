@@ -42,6 +42,7 @@ Table of Contents
 
    bases
    mixins
+   rabbit
    utils
 
 Indices and tables
