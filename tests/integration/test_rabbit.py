@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import logging
 import json
 import os
+import socket
 
 import requests
 
@@ -11,6 +12,15 @@ from test_helpers import bases, mixins, rabbit
 
 RABBIT_HOST = os.environ.get('RABBITMQ', 'localhost')
 logging.getLogger('requests').setLevel(logging.DEBUG)
+
+_rabbit_sock = socket.socket(
+    socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
+try:
+    _rabbit_sock.connect((RABBIT_HOST, 5672))
+except:
+    __test__ = False
+finally:
+    _rabbit_sock.close()
 
 
 class _BaseRabbitTestCase(mixins.EnvironmentMixin, bases.BaseTest):
