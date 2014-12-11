@@ -27,7 +27,10 @@ setup(
     author='AWeber Communications',
     author_email='api@aweber.com',
     entry_points={'console_scripts': []},
-    extras_require={'tornado': ['tornado>=3.1']},
+    extras_require={
+        'tornado': ['tornado>=3.1'],
+        'rabbit': ['requests>=2.3'],
+    },
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

@@ -13,12 +13,17 @@ that ease a specific testing task, such as creating patches.
 """
 
 import functools
+import warnings
 
 from test_helpers.compat import mock
 
 
 def create_ppatch(path):
     """Create a partial ppatch object that will only require the object name"""
+    warnings.warn(
+        'create_ppatch has been replaced with mixins.PatchMixin',
+        category=DeprecationWarning,
+    )
     return functools.partial(ppatch, path)
 
 
@@ -30,4 +35,8 @@ def ppatch(path, object_name, **kwargs):
     same path to the patch object.
 
     """
+    warnings.warn(
+        'ppatch has been replaced with mixins.PatchMixin',
+        category=DeprecationWarning,
+    )
     return mock.patch(path.format(object_name), **kwargs)
