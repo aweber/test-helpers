@@ -13,6 +13,11 @@ from test_helpers import bases, mixins, rabbit
 RABBIT_HOST = os.environ.get('RABBITMQ', 'localhost')
 logging.getLogger('requests').setLevel(logging.DEBUG)
 
+# The following makes our tests still work when RabbitMQ is unavailable.
+# This is the painful version of @unittest.skipIf() that actually works
+# across the different Python versions reliably.  It takes advantage of
+# the fact that nose, py.test, and most test runners look at the __test__
+# attribute of an object and skip it if the attribute is falsy.
 _rabbit_sock = socket.socket(
     socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
 try:
