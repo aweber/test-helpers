@@ -14,6 +14,10 @@ as possible.  Each mixin class should ideally only inherit from
 
 """
 
+from .environment import EnvironmentMixin
 from .patch_mixin import PatchMixin
 
-__all__ = ('PatchMixin',)
+__all__ = (
+    'EnvironmentMixin',
+    'PatchMixin',
+)
