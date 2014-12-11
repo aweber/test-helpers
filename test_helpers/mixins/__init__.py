@@ -16,4 +16,4 @@ as possible.  Each mixin class should ideally only inherit from
 
 from .patch_mixin import PatchMixin
 
-__all__ = ('PatchMixin')
+__all__ = ('PatchMixin',)
