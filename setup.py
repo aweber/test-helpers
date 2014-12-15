@@ -2,8 +2,8 @@
 import codecs
 
 from setuptools import setup, find_packages
+import test_helpers
 
-VERSION = '1.5.1'
 
 def read_requirements_file(filename):
     """Read pip-formatted requirements from a file."""
@@ -23,7 +23,7 @@ setup(
     long_description=codecs.open('README.rst', encoding='utf-8').read(),
     install_requires=read_requirements_file('requirements.txt'),
     tests_require=read_requirements_file('dev-requirements.txt'),
-    version=VERSION,
+    version=test_helpers.__version__,
     author='AWeber Communications',
     author_email='api@aweber.com',
     entry_points={'console_scripts': []},
