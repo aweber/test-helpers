@@ -13,13 +13,13 @@ script: nosetests
 services:
 - rabbitmq
 after_success:
-  - coveralls
+- coveralls
 deploy:
   provider: pypi
-  distributions: "sdist bdist_wheel"
-  user: johnb
+  distributions: sdist bdist_wheel
+  user: aweber
   password:
-    secure: "Q0XIvK1R4kv2uFoUDOARQ1swgcnWqlE0jO20Urc0RsuTejY4/uNgUxvp3wfnd+NKARHwrUQFYHGzI5ueVcppQzGzZArr/o3DB9Vh7OURBtbqrSReRsz9QXmV3pDAbSq3p1QbhCryZeEOU0V5DqlnYfVuiM27WWo+V8gg20qn5OY="
+    secure: WSGD19sVFoki7pJUx6cu4oEru/JKw4FEchD1h/zyTh1RV78GSTA78hPzF+nfXus9vfkcbltgkXrdaKQ+iEXcRZ3J1Cd9Be8Z/FseuZCBLB8nVKQSICg4Wxr/hNjGgXWB/BjnSkInFQRXhz5B/MGV4h/Y/89j2TVD2Rb+Djl9Tdg=
   on:
     python: 2.7
     tags: true
