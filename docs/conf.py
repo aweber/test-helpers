@@ -1,5 +1,7 @@
 import os
 
+import test_helpers
+
 project = 'test-helpers'
 intersphinx_mapping = {
     'python': ('http://docs.python.org/', None),
@@ -32,7 +34,7 @@ if not os.environ.get('READTHEDOCS', False):
 
 master_doc = 'index'
 todo_include_todos = True
-version = '1.5.1'
+version = test_helpers.__version__
 release = version
 
 source_suffix = '.rst'

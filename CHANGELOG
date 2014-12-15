@@ -1,1 +1,14 @@
-1.5.1 - Allow use of `mixins` module without requiring the `tornado` package
+Release History
+---------------
+
+* 1.5.2
+
+  - ``test_helpers.rabbit`` module added
+
+* 1.5.1
+
+  - Allow use of `mixins` module without requiring the ``tornado`` package
+
+* 1.5.0
+
+  - Initial public release.

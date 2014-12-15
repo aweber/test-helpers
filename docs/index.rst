@@ -35,8 +35,8 @@ of code.
 
 
 
-Table of Contents
-=================
+Documentation
+=============
 
 .. toctree::
 
@@ -50,3 +50,5 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`search`
+
+.. include:: ../CHANGELOG
