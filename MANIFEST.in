@@ -1,8 +1,9 @@
 include *.py
 include dev-requirements.txt
 include requirements.txt
-include README.md
+include requirements.pip
 include CHANGELOG
+include README.rst
 graft tests
 global-exclude __pycache__
 global-exclude *.pyc
