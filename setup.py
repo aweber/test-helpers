@@ -30,6 +30,7 @@ setup(
     extras_require={
         'tornado': ['tornado>=3.1'],
         'rabbit': ['requests>=2.3'],
+        'postgres': ['psycopg2>=2.5,<3.0'],
     },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
