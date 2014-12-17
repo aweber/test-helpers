@@ -106,3 +106,38 @@ class WhenCreatingTemporaryDatabaseWithoutParametersOrEnvVars(
             }
         )
 
+
+class WhenCreatingTemporaryDatabaseAndExportingEnv(
+        mixins.EnvironmentMixin, bases.BaseTest):
+
+    @classmethod
+    def configure(cls):
+        super(WhenCreatingTemporaryDatabaseAndExportingEnv, cls).configure()
+        cls.unset_environment_variable('PGHOST')
+        cls.unset_environment_variable('PGUSER')
+        cls.unset_environment_variable('PGPORT')
+        cls.unset_environment_variable('PGDATABASE')
+        cls.database = postgres.TemporaryDatabase()
+        cls.database.create()
+
+    @classmethod
+    def execute(cls):
+        cls.database.set_environment()
+
+    def should_export_pghost(self):
+        self.assertEqual(
+            os.environ['PGHOST'], self.database.connection_parameters['host'])
+
+    def should_export_pguser(self):
+        self.assertEqual(
+            os.environ['PGUSER'], self.database.connection_parameters['user'])
+
+    def should_export_pgport(self):
+        self.assertEqual(
+            os.environ['PGPORT'], self.database.connection_parameters['port'])
+
+    def should_export_pgdatabase(self):
+        self.assertEqual(
+            os.environ['PGDATABASE'],
+            self.database.connection_parameters['database'],
+        )

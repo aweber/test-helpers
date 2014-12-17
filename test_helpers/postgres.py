@@ -77,6 +77,21 @@ class TemporaryDatabase(object):
         self._run_ddl('DROP DATABASE IF EXISTS "{0}"', self._database_name)
         self._database_name = None
 
+    def set_environment(self):
+        """
+        Export Postgres environment variables for the database.
+
+        This exports the :envvar:`PGUSER`, :envvar:`PGHOST`,
+        :envvar:`PGPORT`, and :envvar:`PGDATABASE` environment variables
+        set to match :attr:`.connection_parameters`.
+
+        """
+        os.environ['PGUSER'] = self.user
+        os.environ['PGHOST'] = self.host
+        os.environ['PGPORT'] = str(self.port)
+        if self._database_name is not None:
+            os.environ['PGDATABASE'] = self._database_name
+
     def _run_ddl(self, ddl_stmt, *args):
         conn_params = self._connect_kwargs.copy()
         conn_params.update(self.connection_parameters)
