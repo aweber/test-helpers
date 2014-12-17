@@ -1,8 +1,25 @@
+import atexit
 import logging
 import os
 import uuid
 
 import psycopg2
+
+
+_logger = logging.getLogger(__name__)
+_temporary_databases = []
+
+
+def _remove_databases():
+    for db in _temporary_databases:
+        try:
+            db.drop()
+        except:
+            _logger.exception(
+                'failed to drop database %r', db.connection_parameters)
+    del _temporary_databases[:]
+
+atexit.register(_remove_databases)
 
 
 class TemporaryDatabase(object):
@@ -51,6 +68,14 @@ class TemporaryDatabase(object):
             ' '.join("{0}='{1}'".format(k, v) for k, v in options.items()),
         )
         self._database_name = database_name
+        _temporary_databases.append(self)
+
+    def drop(self):
+        """Drop the temporary database if it was created."""
+        if self._database_name is None:
+            return
+        self._run_ddl('DROP DATABASE IF EXISTS "{0}"', self._database_name)
+        self._database_name = None
 
     def _run_ddl(self, ddl_stmt, *args):
         conn_params = self._connect_kwargs.copy()
