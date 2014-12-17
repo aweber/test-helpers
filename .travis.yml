@@ -22,4 +22,3 @@ deploy:
     python: 2.7
     tags: true
     all_branches: true
-sudo: false
