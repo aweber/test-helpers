@@ -16,10 +16,10 @@ after_success:
 - coveralls
 deploy:
   provider: pypi
-  distributions: sdist bdist_wheel
+  distributions: "sdist bdist_wheel"
   user: aweber
   password:
-    secure: WSGD19sVFoki7pJUx6cu4oEru/JKw4FEchD1h/zyTh1RV78GSTA78hPzF+nfXus9vfkcbltgkXrdaKQ+iEXcRZ3J1Cd9Be8Z/FseuZCBLB8nVKQSICg4Wxr/hNjGgXWB/BjnSkInFQRXhz5B/MGV4h/Y/89j2TVD2Rb+Djl9Tdg=
+    secure: "WSGD19sVFoki7pJUx6cu4oEru/JKw4FEchD1h/zyTh1RV78GSTA78hPzF+nfXus9vfkcbltgkXrdaKQ+iEXcRZ3J1Cd9Be8Z/FseuZCBLB8nVKQSICg4Wxr/hNjGgXWB/BjnSkInFQRXhz5B/MGV4h/Y/89j2TVD2Rb+Djl9Tdg="
   on:
     python: 2.7
     tags: true
