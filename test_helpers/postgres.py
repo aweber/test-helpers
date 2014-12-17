@@ -23,6 +23,52 @@ atexit.register(_remove_databases)
 
 
 class TemporaryDatabase(object):
+    """
+    Creates a temporary database that is destroyed automatically.
+
+    :keyword str user: the database user to connect with.  This defaults
+        to :envvar:`PGUSER` or ``postgres`` if unset.
+    :keyword str password: the database password to connect with.  This
+        defaults to :data:`None`.
+    :keyword str host: the database server to connect to.  This defaults
+        to :envvar:`PGHOST` or ``localhost`` if omitted.
+    :keyword str port: port number that the database server is listening
+        on.  This defaults to :envvar:`PGPORT` or ``5432`` if omitted.
+    :keyword kwargs: additional psycopg2 connection parameters
+
+    Instances of this class will create an isolated database from a
+    template and ensure that it is destroyed when the test process
+    exits.  Under the hood it issues DDL commands over a psycopg2
+    connection to manage the database and registers a single cleanup
+    function with :func:`atexit.register`.
+
+    **Usage Example**
+
+    .. code-block:: python
+
+       from test_helpers import postgres
+
+       _testing_db = postgres.TemporaryDatabase()
+
+       def setup_module():
+           _testing_db.create()
+           _testing_db.set_environment()
+
+           # from this point on, the standard Postgres environment
+           # variables PGDATABASE, PGHOST, PGPORT, and PGUSER are
+           # set to connect to the temporary database
+
+    By default, this will connect to postgres using the *postgres* database
+    and clone the *template0* database.  The starting database is controlled
+    by the :attr:`.STARTING_DATABASE` class attribute and the template database
+    can be changed by passing it to the :meth:`.create` method.
+
+    Once a temporary database has been created, you can either call the
+    :meth:`.set_environment` method to export the standard set of Postgres
+    environment variables (e.g., :envvar:`PGHOST`) or get a copy of the
+    connection parameters from the :attr:`.connection_parameters` property.
+
+    """
 
     STARTING_DATABASE = 'postgres'
     """Database to connect to when cloning the template."""
