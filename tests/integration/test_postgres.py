@@ -37,11 +37,7 @@ class WhenCreatingTemporaryDatabaseWithOptions(bases.BaseTest):
 
     @classmethod
     def execute(cls):
-        cls.database.create(
-            encoding='SQL_ASCII',
-            lc_ctype='en_US.US-ASCII',
-            lc_collate='en_US.US-ASCII',
-        )
+        cls.database.create(encoding='SQL_ASCII', lc_collate='C', lc_ctype='C')
 
     def should_create_database_with_options(self):
         conn = psycopg2.connect(**self.database.connection_parameters)
