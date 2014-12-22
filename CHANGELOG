@@ -1,6 +1,10 @@
 Release History
 ---------------
 
+* Next Release
+
+  - ``test_helpers.postgres`` module added
+
 * 1.5.2
 
   - ``test_helpers.rabbit`` module added

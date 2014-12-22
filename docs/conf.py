@@ -6,6 +6,7 @@ project = 'test-helpers'
 intersphinx_mapping = {
     'python': ('http://docs.python.org/', None),
     'tornado': ('http://www.tornadoweb.org/en/branch3.2/', None),
+    'psycopg2': ('http://initd.org/psycopg/docs/', None),
 }
 
 extensions = [
