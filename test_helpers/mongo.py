@@ -80,3 +80,16 @@ class TemporaryDatabase(object):
         mongodb.drop_database(self.database_name)
         _temporary_databases.remove(self)
         self.database_name = None
+
+    def set_environment(self):
+        """
+        Export MongoDB environment variables for the database.
+
+        This exports the :envvar:`MONGOHOST`, :envvar:`MONGOPORT`, and
+        :envvar:`MONGODATABASE` environment variables
+
+        """
+        os.environ['MONGOHOST'] = self.host
+        os.environ['MONGOPORT'] = str(self.port)
+        if self.database_name is not None:
+            os.environ['MONGODATABASE'] = self.database_name
