@@ -1,0 +1,53 @@
+import atexit
+import datetime
+import logging
+import os
+import uuid
+
+from pymongo import MongoClient
+
+_logger = logging.getLogger(__name__)
+_temporary_databases = []
+
+
+def _remove_databases():
+    for db in _temporary_databases:
+        try:
+            db.drop()
+        except:
+            _logger.exception('failed to drop mongo database %r',
+                              db.database_name)
+    del _temporary_databases[:]
+
+atexit.register(_remove_databases)
+
+
+class TemporaryDatabase(object):
+
+    def __init__(self, **kwargs):
+        super(TemporaryDatabase, self).__init__()
+        self.host = kwargs.pop('host',
+                               os.environ.get('MONGOHOST', 'localhost'))
+        self.port = int(kwargs.pop('port', os.environ.get('MONGOPORT', 27017)))
+        self.database_name = None
+
+    def create(self):
+        if self.database_name is not None:
+            return
+        database_name = 'test{0}'.format(uuid.uuid4().hex)
+
+        mongodb = MongoClient(self.host, self.port)
+        db = mongodb[database_name]
+        collection = db['test_helpers']
+        collection.insert({'create_date': datetime.datetime.utcnow()})
+
+        self.database_name = database_name
+        _temporary_databases.append(self)
+
+    def drop(self):
+        if self.database_name is None:
+            return
+        mongodb = MongoClient(self.host, self.port)
+        mongodb.drop_database(self.database_name)
+        _temporary_databases.remove(self)
+        self.database_name = None
