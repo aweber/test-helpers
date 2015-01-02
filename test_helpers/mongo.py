@@ -23,6 +23,32 @@ atexit.register(_remove_databases)
 
 
 class TemporaryDatabase(object):
+    """
+    Creates a temporary MongoDB database that is destroyed automatically.
+
+    :keyword str host: Database to connect to. This defaults to
+        :envvar: ``MONGOHOST`` or ``localhost`` if omitted.
+    :keyword int port: Port number that the database is listening on. This
+        defaults to :envvar: ``MONGOPORT` or ``27017`` if omitted.
+
+    Instances of this class will create a bare MongoDB database with a single
+    collection named ``test_helpers`` containing a single document with a
+    create date for tracking purposes. When the test process exits all
+    databases created will be destroyed automatically. Under the hood it uses
+    ``pymongo`` and registers a single cleanup function with
+    :func`atexit.register`.
+
+    **Usage Example**
+
+    .. code-block:: python
+
+       from test_helpers import mongo
+
+       _testing_db = mongo.TemporaryDatabase()
+
+       def setup_module():
+           _testing_db.create()
+    """
 
     def __init__(self, **kwargs):
         super(TemporaryDatabase, self).__init__()
@@ -32,6 +58,8 @@ class TemporaryDatabase(object):
         self.database_name = None
 
     def create(self):
+        """Create the temporary database if it does not exist."""
+
         if self.database_name is not None:
             return
         database_name = 'test{0}'.format(uuid.uuid4().hex)
@@ -45,6 +73,7 @@ class TemporaryDatabase(object):
         _temporary_databases.append(self)
 
     def drop(self):
+        """Drop the temporary database if it was created."""
         if self.database_name is None:
             return
         mongodb = MongoClient(self.host, self.port)
