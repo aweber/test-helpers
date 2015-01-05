@@ -56,11 +56,11 @@ class WhenCreatingTemporaryDatabaseAndExportingEnv(
     def execute(cls):
         cls.database.set_environment()
 
-    def should_export_pghost(self):
+    def should_export_mongohost(self):
         self.assertEqual(os.environ['MONGOHOST'], self.database.host)
 
-    def should_export_pgport(self):
+    def should_export_mongoport(self):
         self.assertEqual(os.environ['MONGOPORT'], str(self.database.port))
 
-    def should_export_pgdatabase(self):
+    def should_export_mongodatabase(self):
         self.assertEqual(os.environ['MONGODATABASE'], self.database.database_name)
