@@ -4,6 +4,7 @@ Release History
 * Next Release
 
   - ``test_helpers.postgres`` module added
+  - ``test_helpers.mongo`` module added
 
 * 1.5.2
 

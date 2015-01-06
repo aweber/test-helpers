@@ -10,6 +10,7 @@ install:
   - pip install -r requirements.pip
 services:
   - rabbitmq
+  - mongodb
 script: nosetests
 after_success:
   - coveralls

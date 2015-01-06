@@ -42,6 +42,7 @@ Documentation
 
    bases
    mixins
+   mongo
    postgres
    rabbit
    utils

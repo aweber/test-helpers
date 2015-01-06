@@ -56,6 +56,19 @@ you must either:
 1. install Tornado as a dependency *OR*
 2. include a dependency on ``test_helpers[tornado]`` in your pip requirements
 
+Dependent Data Service Helpers
+------------------------------
+
+The Test Helpers library includes classes that facilitate initializing and
+cleaning up dependent data service resources. Provided with connection
+configuration to existing service instances, each class can generate name-spaced
+workspaces and tear down any created workspaces at the end of each test run.
+
+Currently included:
+
+- MongoDB
+- PostgreSQL
+- RabbitMQ
 
 Supported Python Versions
 --------------------------
@@ -91,4 +104,3 @@ Dan Tracy, `John Brodie`_ at `AWeber Communications`_
 .. _Arrange-Act-Assert: http://c2.com/cgi/wiki?ArrangeActAssert
 .. _John Brodie: http://brodie.me
 .. _AWeber Communications: http://www.aweber.com
-
