@@ -67,4 +67,4 @@ class BaseTest(unittest.TestCase):
     @classmethod
     def execute(cls):
         """Override to execute your test action."""
-        raise NotImplementedError('The execute action was not defined!')
+        pass
