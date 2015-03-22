@@ -1,6 +1,10 @@
 Release History
 ---------------
 
+* `1.5.5`_
+
+  - Do not strictly require the execute method in ``bases.BaseTest``.
+
 * `1.5.4`_
 
   - Relax the pin on the `six`_ library
@@ -22,6 +26,7 @@ Release History
 
   - Initial public release.
 
+.. _1.5.5: https://github.com/aweber/test-helpers/compare/1.5.4...1.5.5
 .. _1.5.4: https://github.com/aweber/test-helpers/compare/1.5.3...1.5.4
 .. _1.5.3: https://github.com/aweber/test-helpers/compare/1.5.2...1.5.3
 .. _1.5.2: https://github.com/aweber/test-helpers/compare/1.5.1...1.5.2
