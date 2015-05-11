@@ -3,6 +3,7 @@ Release History
 
 * Next Release
 
+  - ``test_helpers.servicelayer`` module added.
   - Removed Makefile from the development environment.
   - Make overriding ``execute`` optional.
 
