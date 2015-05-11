@@ -7,11 +7,12 @@ python:
   - 3.4
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install unittest2; fi
-  - pip install -r requirements.pip
+  - pip install -r requirements.txt -r test-requirements.txt coveralls
 services:
   - rabbitmq
   - mongodb
-script: nosetests
+script:
+  - nosetests
 after_success:
   - coveralls
 deploy:
