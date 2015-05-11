@@ -101,9 +101,10 @@ Clone the repo and start hacking::
 
 Authors
 -------
-`Dan Tracy`_, `John Brodie`_ at `AWeber Communications`_
+`Dan Tracy`_, `John Brodie`_, `Dave Shawley`_ at `AWeber Communications`_
 
 .. _Arrange-Act-Assert: http://c2.com/cgi/wiki?ArrangeActAssert
 .. _John Brodie: http://brodie.me
 .. _AWeber Communications: http://www.aweber.com
 .. _Dan Tracy: https://github.com/djt5019
+.. _Dave Shawley: https://github.com/dave-shawley
