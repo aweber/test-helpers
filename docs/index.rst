@@ -41,6 +41,7 @@ Documentation
 .. toctree::
 
    bases
+   http-services
    mixins
    mongo
    postgres
