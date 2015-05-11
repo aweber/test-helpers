@@ -22,7 +22,7 @@ setup(
     zip_safe=False,
     long_description=codecs.open('README.rst', encoding='utf-8').read(),
     install_requires=read_requirements_file('requirements.txt'),
-    tests_require=read_requirements_file('dev-requirements.txt'),
+    tests_require=read_requirements_file('test-requirements.txt'),
     version=test_helpers.__version__,
     author='AWeber Communications',
     author_email='api@aweber.com',

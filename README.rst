@@ -86,7 +86,9 @@ Running Tests
 To run the all of the tests across the supported versions of Python via
 ``tox`` run the following commands in your terminal::
 
-    make test
+    $ virtualenv env
+    $ env/bin/pip install -r dev-requirements.txt
+    $ env/bin/detox
 
 
 Developing The Test Helpers library
@@ -94,14 +96,15 @@ Developing The Test Helpers library
 
 Clone the repo and start hacking::
 
-    $ make requirements # If you just cloned the repo or requirements.pip changes
-    $ make test # Run the tests afterwards to ensure everything is running as expected
+    $ virtualenv env
+    $ env/bin/pip install -r dev-requirements.txt
 
 Authors
 -------
-`Dan Tracy`_, `John Brodie`_ at `AWeber Communications`_
+`Dan Tracy`_, `John Brodie`_, `Dave Shawley`_ at `AWeber Communications`_
 
 .. _Arrange-Act-Assert: http://c2.com/cgi/wiki?ArrangeActAssert
 .. _John Brodie: http://brodie.me
 .. _AWeber Communications: http://www.aweber.com
 .. _Dan Tracy: https://github.com/djt5019
+.. _Dave Shawley: https://github.com/dave-shawley

@@ -1,6 +1,11 @@
 Release History
 ---------------
 
+* Next Release
+
+  - Removed Makefile from the development environment.
+  - Make overriding ``execute`` optional.
+
 * `1.5.4`_
 
   - Relax the pin on the `six`_ library
