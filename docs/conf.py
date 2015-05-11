@@ -5,7 +5,7 @@ import test_helpers
 project = 'test-helpers'
 intersphinx_mapping = {
     'python': ('http://docs.python.org/', None),
-    'tornado': ('http://www.tornadoweb.org/en/branch3.2/', None),
+    'tornado': ('http://www.tornadoweb.org/en/latest/', None),
     'psycopg2': ('http://initd.org/psycopg/docs/', None),
 }
 
