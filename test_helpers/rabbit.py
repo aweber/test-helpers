@@ -43,9 +43,11 @@ class RabbitMqFixture(object):
 
     """
 
-    def __init__(self, host, user, password):
+    def __init__(self, host, user, password, port=5672, mgmt_port=15672):
         super(RabbitMqFixture, self).__init__()
         self._host = parse.quote(host, safe='')
+        self._port = int(port)
+        self._mgmt_port = int(mgmt_port)
         self._session = requests.session()
         self._session.headers['Content-Type'] = 'application/json'
         self._session.auth = (user, password)
@@ -70,6 +72,16 @@ class RabbitMqFixture(object):
     def password(self):
         """The URL-quoted rabbit password."""
         return parse.quote(self._session.auth[1], safe='')
+
+    @property
+    def port(self):
+        """The RabbitMQ service port."""
+        return self._port
+
+    @property
+    def mgmt_port(self):
+        """The RabbitMQ cluster management port."""
+        return self._mgmt_port
 
     def install_virtual_host(self):
         """
@@ -96,8 +108,9 @@ class RabbitMqFixture(object):
             data={'configure': '.*', 'write': '.*', 'read': '.*'},
         ).raise_for_status()
 
-        os.environ['AMQP'] = 'amqp://{0}:{1}@{2}:5672/{3}'.format(
-            self.user, self.password, self.host, self.virtual_host)
+        os.environ['AMQP'] = 'amqp://{0}:{1}@{2}:{3}/{4}'.format(
+            self.user, self.password, self.host, self.port,
+            self.virtual_host)
 
         return self._virtual_host
 
@@ -154,6 +167,7 @@ class RabbitMqFixture(object):
             kwargs['data'] = json.dumps(kwargs['data']).encode('utf-8')
         return self._session.request(
             method,
-            'http://{0}:{1}/api/{2}'.format(self.host, 15672, '/'.join(path)),
+            'http://{0}:{1}/api/{2}'.format(
+                self.host, self.mgmt_port, '/'.join(path)),
             **kwargs
         )

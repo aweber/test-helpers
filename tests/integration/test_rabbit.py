@@ -34,7 +34,8 @@ class _BaseRabbitTestCase(mixins.EnvironmentMixin, bases.BaseTest):
     def configure(cls):
         super(_BaseRabbitTestCase, cls).configure()
         cls.fixture = rabbit.RabbitMqFixture(
-            host=RABBIT_HOST, user='guest', password='guest')
+            host=RABBIT_HOST, user='guest', password='guest',
+            port=5672, mgmt_port=15672)
         cls.unset_environment_variable('AMQP')
 
     @staticmethod
