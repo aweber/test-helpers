@@ -73,7 +73,7 @@ Currently included:
 Supported Python Versions
 --------------------------
 
-The Test Helpers library is built and tested against python 2.6, 2.7, and 3.3.
+The Test Helpers library is built and tested against python 2.7, 3.3, 3.4, and 3.5.
 You may need to grab other versions of the interpreter with your preferred package
 manager (MacPorts, Apt, Yum, etc)
 

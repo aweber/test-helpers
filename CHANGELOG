@@ -3,8 +3,13 @@ Release History
 
 * Next Release
 
+* `1.6.0`_
+
   - Removed Makefile from the development environment.
   - Make overriding ``execute`` optional.
+  - Make RabbitMQ ports configurable
+  - Drop support for Python 2.6 and 3.2
+  - Add support for Python 3.5
 
 * `1.5.4`_
 
@@ -27,6 +32,8 @@ Release History
 
   - Initial public release.
 
+.. Next Release: https://github.com/aweber/test-helpers/compare/1.6.0...master
+.. _1.6.0: https://github.com/aweber/test-helpers/compare/1.5.4...1.6.0
 .. _1.5.4: https://github.com/aweber/test-helpers/compare/1.5.3...1.5.4
 .. _1.5.3: https://github.com/aweber/test-helpers/compare/1.5.2...1.5.3
 .. _1.5.2: https://github.com/aweber/test-helpers/compare/1.5.1...1.5.2
