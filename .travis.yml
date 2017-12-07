@@ -18,7 +18,7 @@ deploy:
   distributions: "sdist bdist_wheel"
   user: aweber
   password:
-    secure: "gQOi6s1RCmlrJ7I+A/NDyGFd28Qf/itTovhEUGwHnwz+AgXfE0Fd4AecJ1ikI6LYfxJmy9hvBX7/RN8uiQo+xlZtVVB0SUixTirLkFqwmCq/n4LDWkQioyJz+17FqZ7Z5XikhZxyqywzp1+VMxSq3QLMK3mfivCzjpXiycN2xEc="
+    secure: "QtxkJce1osNRGZIDrdYv5nLj23rvOMH+VW9kKCaTGKpaVTG79gd/VbM9tsAcZOEjVsPeUNj3M70PUTVXZVGJ6js5Hu3se4QGcAP+gGTkdF4UAbbvGuzjC2XFBE6syJdhkQD+Rn59uXsZEN4jlZ+TpLPML7Apba9HugrhtL1j5Pw="
   on:
     python: 2.7
     tags: true
